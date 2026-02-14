@@ -16,20 +16,11 @@ public class DriveToPose extends Command {
   private final Swerve swerve;
   private final Pose2d targetPose;
 
-  private final PIDController xController = new PIDController(
-      Constants.DriveConstants.kXP,
-      Constants.DriveConstants.kXI,
-      Constants.DriveConstants.kXD);
+  private final PIDController xController = Constants.DriveConstants.kXController;
 
-  private final PIDController yController = new PIDController(
-      Constants.DriveConstants.kYP,
-      Constants.DriveConstants.kYI,
-      Constants.DriveConstants.kYD);
+  private final PIDController yController = Constants.DriveConstants.kYController;
 
-  private final PIDController headingController = new PIDController(
-      Constants.DriveConstants.kHeadingP,
-      Constants.DriveConstants.kHeadingI,
-      Constants.DriveConstants.kHeadingD);
+  private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
   public DriveToPose(Swerve subsystem, Pose2d targetPose) {
     /**

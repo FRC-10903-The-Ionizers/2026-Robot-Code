@@ -17,8 +17,10 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.Swerve;
 
@@ -26,12 +28,14 @@ public class Auto {
     /**
      * Auto class for the robot.
      * Uses choreo library to create autonomous routines.
+     * 
      * @author Justin Baratta & Jake Xie
      * @since 2026-01-19
      * @todo Auto branching needs to be implemented.
      */
 
     private final AutoChooser autoChooser;
+    private final AutoChooser branchingAutoChooser;
     private static Swerve swerve;
 
     public Auto(AutoFactory factory, Swerve swerve) {
@@ -46,6 +50,7 @@ public class Auto {
         // Make something to display on the GUI that allows the user to select the
         // autonomous they want to run
         autoChooser = new AutoChooser();
+        branchingAutoChooser = new AutoChooser();
         Auto.swerve = swerve;
         // I added the dummy command just to test things. For real autos, please make
         // routines and use their commands.
@@ -54,8 +59,14 @@ public class Auto {
         autoChooser.addRoutine("T", this::tRoutine);
         autoChooser.addRoutine("T then Loop", this::forwardThenLoopRoutine);
         autoChooser.addRoutine("Loop", this::loopRoutine);
+        autoChooser.addRoutine("Branching Auto", this::branchingAutoRoutine);
+
+        branchingAutoChooser.addRoutine("left", this::leftRoutine);
+        branchingAutoChooser.addRoutine("right", this::rightRoutine);
         // Put the auto chooser on the dashboard
         SmartDashboard.putData("Choreo Chooser", autoChooser);
+
+        SmartDashboard.putData("Branching Autos Test Chooser", branchingAutoChooser);
     }
 
     public AutoRoutine tRoutine() {
@@ -76,9 +87,7 @@ public class Auto {
                 Commands.sequence(
                         trajectory.resetOdometry(),
                         cmdWithAccuracy(
-                                trajectory,
-                                Units.Seconds.of(5),
-                                Units.Inches.of(4.0))));
+                                trajectory)));
 
         return routine;
     }
@@ -100,9 +109,7 @@ public class Auto {
                 Commands.sequence(
                         loopTrajectory.resetOdometry(),
                         cmdWithAccuracy(
-                                loopTrajectory,
-                                Units.Seconds.of(5),
-                                Units.Inches.of(4.0))));
+                                loopTrajectory)));
 
         return routine;
     }
@@ -124,16 +131,70 @@ public class Auto {
         routine.active().onTrue(
                 Commands.sequence(
                         forwardTrajectory.resetOdometry(),
-                        cmdWithAccuracy(
-                                forwardTrajectory,
-                                Units.Seconds.of(5),
-                                Units.Inches.of(4.0)),
-                        cmdWithAccuracy(
-                                loopTrajectory,
-                                Units.Seconds.of(5),
-                                Units.Inches.of(4.0))));
+                        cmdWithAccuracy(forwardTrajectory),
+                        cmdWithAccuracy(loopTrajectory)));
 
         return routine;
+    }
+
+    public AutoRoutine leftRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+
+        // Load the routine's trajectories
+        AutoTrajectory trajectory = routine.trajectory("L.traj");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(trajectory)));
+
+        return routine;
+    }
+
+    public AutoRoutine rightRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+
+        // Load the routine's trajectories
+        AutoTrajectory trajectory = routine.trajectory("R.traj");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(trajectory)));
+
+        return routine;
+    }
+
+    public AutoRoutine branchingAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+
+        // Load the routine's trajectories
+        AutoTrajectory leftTrajectory = routine.trajectory("L.traj");
+        AutoTrajectory rightTrajectory = routine.trajectory("R.traj");
+        AutoTrajectory forwardTrajectory = routine.trajectory("F.traj");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        forwardTrajectory.resetOdometry(),
+                        cmdWithAccuracy(forwardTrajectory),
+                        new ConditionalCommand(
+                                cmdWithAccuracy(rightTrajectory),
+                                cmdWithAccuracy(leftTrajectory),
+                                this::isRight)));
+
+        return routine;
+    }
+
+    public boolean isRight() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory rightTrajectory = routine.trajectory("R.traj");
+        // System.out.println(branchingAutoChooser.selectedCommand().equals(
+        //     rightTrajectory.cmd()
+        // ));
+        // return branchingAutoChooser.selectedCommand().equals(
+        //     rightTrajectory.cmd()
+        // );
+        return true;
     }
 
     public Command getAutoCommand() {
@@ -150,7 +211,8 @@ public class Auto {
 
     private static boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
         /**
-         * Checks if the trajectory is finished, based on whether translation and rotation are finished.
+         * Checks if the trajectory is finished, based on whether translation and
+         * rotation are finished.
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Distance epsilonDist
@@ -169,7 +231,8 @@ public class Auto {
 
     private static boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
         /**
-         * Checks if the translation is finished. Used in {@link #isFinished(AutoTrajectory, Distance)}
+         * Checks if the translation is finished. Used in
+         * {@link #isFinished(AutoTrajectory, Distance)}
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Distance epsilonDist
@@ -189,7 +252,8 @@ public class Auto {
 
     private static boolean rotationIsFinished(AutoTrajectory trajectory) {
         /**
-         * Checks if the rotation is finished. Used in {@link #isFinished(AutoTrajectory, Distance)}
+         * Checks if the rotation is finished. Used in
+         * {@link #isFinished(AutoTrajectory, Distance)}
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory
@@ -206,7 +270,7 @@ public class Auto {
                         .in(Units.Radians);
     }
 
-    public static Command cmdWithAccuracy(AutoTrajectory trajectory, Time timeout, Distance epsilonDist) {
+    public static Command cmdWithAccuracy(AutoTrajectory trajectory) {
         /**
          * Creates a command with accuracy. Used in basically all the routines.
          * This code was inspired by Citrus Circuits' 2025 code.
@@ -221,9 +285,10 @@ public class Auto {
                         trajectory.cmd()::initialize,
                         trajectory.cmd()::execute,
                         trajectory.cmd()::end,
-                        () -> isFinished(trajectory, epsilonDist)),
+                        () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist)),
                 Set.of(swerve))
-                .withTimeout(trajectory.getRawTrajectory().getTotalTime() + timeout.in(Units.Seconds))
+                .withTimeout(trajectory.getRawTrajectory().getTotalTime()
+                        + Constants.AutoConstants.kTimeout.in(Units.Seconds))
                 .finallyDo(() -> swerve.drive(new Translation2d(), 0, false));
     }
 }

@@ -6,6 +6,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 import frc.robot.Constants.Vision;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
 public class DriveToObject extends Command {
@@ -22,7 +23,7 @@ public class DriveToObject extends Command {
         /**
          * Constructor which sets swerve and controller class variables
          * 
-         * @param swerve: the swerve drive
+         * @param swerve:     the swerve drive
          * @param controller: the PID controller
          */
         this.swerve = swerve;
@@ -32,32 +33,35 @@ public class DriveToObject extends Command {
 
     @Override
     public void execute() {
-    /**
-     * Method that drives the swerves
-     */
-    try {
-    // see available cameras
+        /**
+         * Method that drives the swerves
+         */
+        try {
+            // see available cameras
 
-        double[] dataFromPython = LimelightHelpers.getPythonScriptData("limelight-obj");
-        System.out.println("Data from Python: " + java.util.Arrays.toString(dataFromPython));
-        // index 0 is x value of brightest point, we want to center that
-        double angle_diff = (dataFromPython[0] - Vision.kObjectCameraPixelsHorizontal / 2) / Vision.kObjectCameraPixelsHorizontal * Vision.kObjectCameraFovHorizontal;
-        System.out.println("Angle difference: " + angle_diff);
-        // feed into pid controller to get rotation output
-        double rotationOutput = controller.calculate(angle_diff, 0);
+            double[] dataFromPython = LimelightHelpers.getPythonScriptData("limelight-obj");
+            System.out.println("Data from Python: " + java.util.Arrays.toString(dataFromPython));
+            // index 0 is x value of brightest point, we want to center that
+            double angleDiff = (dataFromPython[0] - Vision.kObjectCameraPixelsHorizontal / 2)
+                    / Vision.kObjectCameraPixelsHorizontal * Vision.kObjectCameraFovHorizontal;
 
-        if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
-            swerve.drive(new Translation2d(1, 0), rotationOutput/10, false);
+            angleDiff *= (Math.PI);
+            angleDiff /= 180;
+
+            System.out.println("Angle difference: " + angleDiff);
+            // feed into pid controller to get rotation output
+            double rotationOutput = controller.calculate(angleDiff, 0);
+
+            if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
+                swerve.drive(new Translation2d(1, 0), rotationOutput, false);
+            } else {
+                swerve.drive(new Translation2d(0, 0), 1, false);
+            }
+        } catch (Exception e) {
+            System.out.println("Error in DriveToObject command: " + e.getMessage());
         }
-        else {
-            swerve.drive(new Translation2d(0, 0), 1, false);
-        }
-    } catch (Exception e) {
-        System.out.println("Error in DriveToObject command: " + e.getMessage());
-    }
 
     }
-
 
     public boolean isFinished() {
         return false; // Runs continuously
