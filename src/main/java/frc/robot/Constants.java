@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -36,11 +37,11 @@ public class Constants {
 
         public static final double kXP = 1.0;
         public static final double kXI = 0.0;
-        public static final double kXD = 0.0;
+        public static final double kXD = 0.1;
 
         public static final double kYP = 1.0;
         public static final double kYI = 0.0;
-        public static final double kYD = 0.0;
+        public static final double kYD = 0.1;
         
         public static final double kHeadingP = 1.0;
         public static final double kHeadingI = 0.0;
@@ -75,5 +76,14 @@ public class Constants {
         public static AutoFactory kAutoFactory;
         public static final double kDelayTime = 0.08;
         public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);
+    }
+
+    public static class ShooterConstants {
+        public static final int kTopMotorID = 14;
+        public static final int kBottomMotorID = 15;
+        public static final Pose2d kHubPose = new Pose2d();
+        public static final double kInterpolationLambda = 100;
+        public static final double[] kPositions = {};
+        public static final double[] kValues = {};
     }
 }
