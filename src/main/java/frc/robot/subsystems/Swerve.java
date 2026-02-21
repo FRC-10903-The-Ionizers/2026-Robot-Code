@@ -39,8 +39,8 @@ public class Swerve extends SubsystemBase {
 
     private static boolean isLockedPosition = false;
     public static double currentGear = 1.0;
-    private static boolean isMovementOriented = false;
-
+    
+    
     public Swerve() {
         /**
          * Swerve constructor for the robot.

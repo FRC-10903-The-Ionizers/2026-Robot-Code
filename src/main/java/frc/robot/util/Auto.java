@@ -22,7 +22,9 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.subsystems.Swerve;
+import frc.robot.stateSensors.RegionHandler;
 
 public class Auto {
     /**
@@ -34,11 +36,11 @@ public class Auto {
      * @todo Auto branching needs to be implemented.
      */
 
-    private final AutoChooser autoChooser;
     private final AutoChooser branchingAutoChooser;
     private static Swerve swerve;
+    private final RegionHandler regionHandler;
 
-    public Auto(AutoFactory factory, Swerve swerve) {
+    public Auto(AutoFactory factory, Swerve swerve, RegionHandler regionHandler) {
         /**
          * Auto constructor for the robot.
          * 
@@ -49,152 +51,119 @@ public class Auto {
          */
         // Make something to display on the GUI that allows the user to select the
         // autonomous they want to run
-        autoChooser = new AutoChooser();
         branchingAutoChooser = new AutoChooser();
+        this.regionHandler = regionHandler;
         Auto.swerve = swerve;
+
         // I added the dummy command just to test things. For real autos, please make
         // routines and use their commands.
         // NEVER SET "getAutoCommand()" AS AN OPTION FOR AN AUTONOMOUS
 
-        autoChooser.addRoutine("T", this::tRoutine);
-        autoChooser.addRoutine("T then Loop", this::forwardThenLoopRoutine);
-        autoChooser.addRoutine("Loop", this::loopRoutine);
-        autoChooser.addRoutine("Branching Auto", this::branchingAutoRoutine);
+        branchingAutoChooser.addRoutine("Branching Auto", this::branchingAutoRoutine);
 
-        branchingAutoChooser.addRoutine("left", this::leftRoutine);
-        branchingAutoChooser.addRoutine("right", this::rightRoutine);
         // Put the auto chooser on the dashboard
-        SmartDashboard.putData("Choreo Chooser", autoChooser);
-
-        SmartDashboard.putData("Branching Autos Test Chooser", branchingAutoChooser);
-    }
-
-    public AutoRoutine tRoutine() {
-        /**
-         * Test routine for the robot.
-         * 
-         * @args None
-         * @author Justin Baratta & Jake Xie
-         * @since 2026-01-19
-         * @return AutoRoutine
-         */
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-
-        // Load the routine's trajectories
-        AutoTrajectory trajectory = routine.trajectory("T.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(
-                                trajectory)));
-
-        return routine;
-    }
-
-    public AutoRoutine loopRoutine() {
-        /**
-         * Test loop routine for the robot - drives robot in small loop.
-         * 
-         * @args None
-         * @author Justin Baratta & Jake Xie
-         * @since 2026-01-19
-         * @return AutoRoutine
-         */
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Loop");
-
-        AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        loopTrajectory.resetOdometry(),
-                        cmdWithAccuracy(
-                                loopTrajectory)));
-
-        return routine;
-    }
-
-    public AutoRoutine forwardThenLoopRoutine() {
-        /**
-         * Moves forward, then loops around the field.
-         * 
-         * @args None
-         * @author Justin Baratta & Jake Xie
-         * @since 2026-01-19
-         * @return AutoRoutine
-         */
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("ForwardThenLoop");
-
-        AutoTrajectory forwardTrajectory = routine.trajectory("Forward.traj");
-        AutoTrajectory loopTrajectory = routine.trajectory("Loop.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        forwardTrajectory.resetOdometry(),
-                        cmdWithAccuracy(forwardTrajectory),
-                        cmdWithAccuracy(loopTrajectory)));
-
-        return routine;
-    }
-
-    public AutoRoutine leftRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-
-        // Load the routine's trajectories
-        AutoTrajectory trajectory = routine.trajectory("L.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
-
-        return routine;
-    }
-
-    public AutoRoutine rightRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-
-        // Load the routine's trajectories
-        AutoTrajectory trajectory = routine.trajectory("R.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
-
-        return routine;
+        SmartDashboard.putData("Auto Chooser", branchingAutoChooser);
+        SmartDashboard.putBoolean("Go Under Trench", false);
+        // SmartDashboard.getBoolean("Go Under Trench", false);
     }
 
     public AutoRoutine branchingAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
 
-        // Load the routine's trajectories
-        AutoTrajectory leftTrajectory = routine.trajectory("L.traj");
-        AutoTrajectory rightTrajectory = routine.trajectory("R.traj");
-        AutoTrajectory forwardTrajectory = routine.trajectory("F.traj");
-
+        // Wrap everything in a deferred command so pose is read at execution time
         routine.active().onTrue(
-                Commands.sequence(
-                        forwardTrajectory.resetOdometry(),
-                        cmdWithAccuracy(forwardTrajectory),
-                        new ConditionalCommand(
-                                cmdWithAccuracy(rightTrajectory),
-                                cmdWithAccuracy(leftTrajectory),
-                                this::isRight)));
+                Commands.defer(() -> {
+                    Pose2d currentPose = swerve.getPose();
+
+                    if (regionHandler.inRegion("region1", currentPose)) {
+                        AutoTrajectory trajectory = routine.trajectory("Blue1");
+                        AutoTrajectory trenchTrajectory = routine.trajectory("BlueTopTrench");
+                        AutoTrajectory bumpTrajectory = routine.trajectory("BlueTopBump");
+
+                        return Commands.sequence(
+                                Commands.print("In region 1"),
+                                trajectory.resetOdometry(),
+                                cmdWithAccuracy(trajectory),
+                                new ConditionalCommand(
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        trenchTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(trenchTrajectory)),
+                                        Commands.sequence(
+                                                new DriveToPose(swerve, bumpTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(bumpTrajectory)),
+                                        this::getIsGoingUnderTrench));
+
+                    } else if (regionHandler.inRegion("region2", currentPose)) {
+                        AutoTrajectory trajectory = routine.trajectory("Blue2Top");
+                        AutoTrajectory topTrenchTrajectory = routine.trajectory("BlueTopTrench");
+                        AutoTrajectory topBumpTrajectory = routine.trajectory("BlueTopBump");
+
+                        return Commands.sequence(
+                                Commands.print("In region 2"),
+                                trajectory.resetOdometry(),
+                                cmdWithAccuracy(trajectory),
+                                new ConditionalCommand(
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        topTrenchTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(topTrenchTrajectory)),
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        topBumpTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(topBumpTrajectory)),
+                                        this::getIsGoingUnderTrench));
+
+                    } else if (regionHandler.inRegion("region3", currentPose)) {
+                        AutoTrajectory trajectory = routine.trajectory("Blue2Bottom");
+                        AutoTrajectory bottomTrenchTrajectory = routine.trajectory("BlueBottomTrench");
+                        AutoTrajectory bottomBumpTrajectory = routine.trajectory("BlueBottomBump");
+
+                        return Commands.sequence(
+                                Commands.print("In region 3"),
+                                trajectory.resetOdometry(),
+                                cmdWithAccuracy(trajectory),
+                                new ConditionalCommand(
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        bottomTrenchTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(bottomTrenchTrajectory)),
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        bottomBumpTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(bottomBumpTrajectory)),
+                                        this::getIsGoingUnderTrench));
+
+                    } else if (regionHandler.inRegion("region4", currentPose)) {
+                        AutoTrajectory trajectory = routine.trajectory("Blue3");
+                        AutoTrajectory bottomTrenchTrajectory = routine.trajectory("BlueBottomTrench");
+                        AutoTrajectory bottomBumpTrajectory = routine.trajectory("BlueBottomBump");
+
+                        return Commands.sequence(
+                                Commands.print("In region 4"),
+                                trajectory.resetOdometry(),
+                                cmdWithAccuracy(trajectory),
+                                new ConditionalCommand(
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        bottomTrenchTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(bottomTrenchTrajectory)),
+                                        Commands.sequence(
+                                                new DriveToPose(swerve,
+                                                        bottomBumpTrajectory.getInitialPose().orElseThrow()),
+                                                cmdWithAccuracy(bottomBumpTrajectory)),
+                                        this::getIsGoingUnderTrench));
+
+                    } else {
+                        AutoTrajectory trajectory = routine.trajectory("Safe");
+                        return Commands.sequence(
+                                Commands.print("Default Routine chosen"),
+                                trajectory.resetOdometry(),
+                                cmdWithAccuracy(trajectory));
+                    }
+                }, Set.of(swerve)));
 
         return routine;
-    }
-
-    public boolean isRight() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory rightTrajectory = routine.trajectory("R.traj");
-        // System.out.println(branchingAutoChooser.selectedCommand().equals(
-        //     rightTrajectory.cmd()
-        // ));
-        // return branchingAutoChooser.selectedCommand().equals(
-        //     rightTrajectory.cmd()
-        // );
-        return true;
     }
 
     public Command getAutoCommand() {
@@ -206,7 +175,11 @@ public class Auto {
          * @since 2026-01-19
          * @return Command
          */
-        return autoChooser.selectedCommand();
+        return branchingAutoChooser.selectedCommand();
+    }
+
+    public boolean getIsGoingUnderTrench() {
+        return SmartDashboard.getBoolean("Go Under Trench", false);
     }
 
     private static boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {

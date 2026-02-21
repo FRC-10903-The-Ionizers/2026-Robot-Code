@@ -27,8 +27,8 @@ public class Shooter extends SubsystemBase{
             Pose2d hubPose = Constants.ShooterConstants.kHubPose;
 
             double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
-            double calculatedMotorSpeed = MathUtil.clamp(distance, 0, 1);
-
+            double calculatedMotorSpeed = MathUtil.applyDeadband(distance, 0, 1);
+            System.out.println(calculatedMotorSpeed);
             topMotor.set(calculatedMotorSpeed);
             bottomMotor.set(calculatedMotorSpeed);
         } else {
