@@ -1,8 +1,9 @@
 package frc.robot.util;
 
+import java.nio.channels.Pipe.SourceChannel;
 import java.util.Map;
 import java.util.Set;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -69,101 +70,207 @@ public class Auto {
 
     public AutoRoutine branchingAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-
+        String gameData = DriverStation.getGameSpecificMessage();
         // Wrap everything in a deferred command so pose is read at execution time
-        routine.active().onTrue(
-                Commands.defer(() -> {
-                    Pose2d currentPose = swerve.getPose();
 
-                    if (regionHandler.inRegion("region1", currentPose)) {
-                        AutoTrajectory trajectory = routine.trajectory("Blue1");
-                        AutoTrajectory trenchTrajectory = routine.trajectory("BlueTopTrench");
-                        AutoTrajectory bumpTrajectory = routine.trajectory("BlueTopBump");
+        if (gameData.length() < 1) {
+            throw new Error("Nothing in gameData");
+        }
 
-                        return Commands.sequence(
-                                Commands.print("In region 1"),
-                                trajectory.resetOdometry(),
-                                cmdWithAccuracy(trajectory),
-                                new ConditionalCommand(
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        trenchTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(trenchTrajectory)),
-                                        Commands.sequence(
-                                                new DriveToPose(swerve, bumpTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(bumpTrajectory)),
-                                        this::getIsGoingUnderTrench));
+        switch (gameData.charAt(0)) {
 
-                    } else if (regionHandler.inRegion("region2", currentPose)) {
-                        AutoTrajectory trajectory = routine.trajectory("Blue2Top");
-                        AutoTrajectory topTrenchTrajectory = routine.trajectory("BlueTopTrench");
-                        AutoTrajectory topBumpTrajectory = routine.trajectory("BlueTopBump");
+            case 'B':
+                routine.active().onTrue(
+                        Commands.defer(() -> {
+                            Pose2d currentPose = swerve.getPose();
 
-                        return Commands.sequence(
-                                Commands.print("In region 2"),
-                                trajectory.resetOdometry(),
-                                cmdWithAccuracy(trajectory),
-                                new ConditionalCommand(
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        topTrenchTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(topTrenchTrajectory)),
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        topBumpTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(topBumpTrajectory)),
-                                        this::getIsGoingUnderTrench));
+                            if (regionHandler.inRegion("region1", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Blue1");
+                                AutoTrajectory trenchTrajectory = routine.trajectory("BlueTopTrench");
+                                AutoTrajectory bumpTrajectory = routine.trajectory("BlueTopBump");
 
-                    } else if (regionHandler.inRegion("region3", currentPose)) {
-                        AutoTrajectory trajectory = routine.trajectory("Blue2Bottom");
-                        AutoTrajectory bottomTrenchTrajectory = routine.trajectory("BlueBottomTrench");
-                        AutoTrajectory bottomBumpTrajectory = routine.trajectory("BlueBottomBump");
+                                return Commands.sequence(
+                                        Commands.print("In region 1"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                trenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(trenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
 
-                        return Commands.sequence(
-                                Commands.print("In region 3"),
-                                trajectory.resetOdometry(),
-                                cmdWithAccuracy(trajectory),
-                                new ConditionalCommand(
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        bottomTrenchTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(bottomTrenchTrajectory)),
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        bottomBumpTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(bottomBumpTrajectory)),
-                                        this::getIsGoingUnderTrench));
+                            } else if (regionHandler.inRegion("region2", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Blue2Top");
+                                AutoTrajectory topTrenchTrajectory = routine.trajectory("BlueTopTrench");
+                                AutoTrajectory topBumpTrajectory = routine.trajectory("BlueTopBump");
 
-                    } else if (regionHandler.inRegion("region4", currentPose)) {
-                        AutoTrajectory trajectory = routine.trajectory("Blue3");
-                        AutoTrajectory bottomTrenchTrajectory = routine.trajectory("BlueBottomTrench");
-                        AutoTrajectory bottomBumpTrajectory = routine.trajectory("BlueBottomBump");
+                                return Commands.sequence(
+                                        Commands.print("In region 2"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                topTrenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(topTrenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                topBumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(topBumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
 
-                        return Commands.sequence(
-                                Commands.print("In region 4"),
-                                trajectory.resetOdometry(),
-                                cmdWithAccuracy(trajectory),
-                                new ConditionalCommand(
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        bottomTrenchTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(bottomTrenchTrajectory)),
-                                        Commands.sequence(
-                                                new DriveToPose(swerve,
-                                                        bottomBumpTrajectory.getInitialPose().orElseThrow()),
-                                                cmdWithAccuracy(bottomBumpTrajectory)),
-                                        this::getIsGoingUnderTrench));
+                            } else if (regionHandler.inRegion("region3", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Blue2Bottom");
+                                AutoTrajectory bottomTrenchTrajectory = routine.trajectory("BlueBottomTrench");
+                                AutoTrajectory bottomBumpTrajectory = routine.trajectory("BlueBottomBump");
 
-                    } else {
-                        AutoTrajectory trajectory = routine.trajectory("Safe");
-                        return Commands.sequence(
-                                Commands.print("Default Routine chosen"),
-                                trajectory.resetOdometry(),
-                                cmdWithAccuracy(trajectory));
-                    }
-                }, Set.of(swerve)));
+                                return Commands.sequence(
+                                        Commands.print("In region 3"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bottomTrenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bottomTrenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bottomBumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bottomBumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
 
-        return routine;
+                            } else if (regionHandler.inRegion("region4", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Blue3");
+                                AutoTrajectory bottomTrenchTrajectory = routine.trajectory("BlueBottomTrench");
+                                AutoTrajectory bottomBumpTrajectory = routine.trajectory("BlueBottomBump");
+
+                                return Commands.sequence(
+                                        Commands.print("In region 4"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bottomTrenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bottomTrenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bottomBumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bottomBumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
+
+                            } else {
+                                AutoTrajectory trajectory = routine.trajectory("Safe");
+                                return Commands.sequence(
+                                        Commands.print("Default Routine chosen"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory));
+                            }
+                        }, Set.of(swerve)));
+                return routine;
+
+            case 'R':
+                routine.active().onTrue(
+                        Commands.defer(() -> {
+                            Pose2d currentPose = swerve.getPose();
+
+                            if (regionHandler.inRegion("region5", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Red1");
+                                AutoTrajectory trenchTrajectory = routine.trajectory("RedTopTrench");
+                                AutoTrajectory bumpTrajectory = routine.trajectory("RedTopBump");
+
+                                return Commands.sequence(
+                                        Commands.print("In region 5"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                trenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(trenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
+
+                            } else if (regionHandler.inRegion("region6", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Red2Top");
+                                AutoTrajectory trenchTrajectory = routine.trajectory("RedTopTrench");
+                                AutoTrajectory bumpTrajectory = routine.trajectory("RedTopBump");
+
+                                return Commands.sequence(
+                                        Commands.print("In region 6"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                trenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(trenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
+
+                            } else if (regionHandler.inRegion("region7", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Red2Bottom");
+                                AutoTrajectory trenchTrajectory = routine.trajectory("RedBottomTrench");
+                                AutoTrajectory bumpTrajectory = routine.trajectory("RedTopTrench");
+
+                                return Commands.sequence(
+                                        Commands.print("In region 7"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                trenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(trenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
+
+                            } else if (regionHandler.inRegion("region8", currentPose)) {
+                                AutoTrajectory trajectory = routine.trajectory("Red3");
+                                AutoTrajectory trenchTrajectory = routine.trajectory("RedBottomTrench");
+                                AutoTrajectory bumpTrajectory = routine.trajectory("RedBottomBump");
+
+                                return Commands.sequence(
+                                        Commands.print("In region 1"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory),
+                                        new ConditionalCommand(
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                trenchTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(trenchTrajectory)),
+                                                Commands.sequence(
+                                                        new DriveToPose(swerve,
+                                                                bumpTrajectory.getInitialPose().orElseThrow()),
+                                                        cmdWithAccuracy(bumpTrajectory)),
+                                                this::getIsGoingUnderTrench));
+
+                            } else {
+                                AutoTrajectory trajectory = routine.trajectory("Safe");
+                                return Commands.sequence(
+                                        Commands.print("Default Routine chosen"),
+                                        trajectory.resetOdometry(),
+                                        cmdWithAccuracy(trajectory));
+                            }
+                        }, Set.of(swerve)));
+                return routine;
+        default:
+            throw new Error("Not the right gamedata in gamedata section... needs to be 'B' or 'R'");
+        }
     }
 
     public Command getAutoCommand() {

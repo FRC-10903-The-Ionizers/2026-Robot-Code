@@ -22,5 +22,29 @@
         "type": "circle",
         "center": [3, 1],
         "radius": 1.5
+    },
+    "region5":
+    {
+        "type": "circle",
+        "center": [13.54, 7],
+        "radius": 1.5
+    },
+    "region6":
+    {
+        "type": "circle",
+        "center": [13.54, 4.75],
+        "radius": 0.75
+    },
+    "region7":
+    {
+        "type": "circle",
+        "center": [13.54, 3.25],
+        "radius": 0.75
+    },
+    "region8":
+    {
+        "type": "circle",
+        "center": [13.54, 1],
+        "radius": 0.75
     }
 }
