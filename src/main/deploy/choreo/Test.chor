@@ -1,25 +1,10 @@
 {
- "name":"Auto",
- "version":2,
+ "name":"Test",
+ "version":1,
  "type":"Swerve",
  "variables":{
   "expressions":{},
-  "poses":{
-   "StartPose":{
-    "x":{
-     "exp":"0.8837900161743164 m",
-     "val":0.8837900161743164
-    },
-    "y":{
-     "exp":"2.2025396823883057 m",
-     "val":2.2025396823883057
-    },
-    "heading":{
-     "exp":"0 rad",
-     "val":0.0
-    }
-   }
-  }
+  "poses":{}
  },
  "config":{
   "frontLeft":{
@@ -89,11 +74,5 @@
    "val":0.5588
   }
  },
- "generationFeatures":[],
- "codegen":{
-  "root":null,
-  "genVars":true,
-  "genTrajData":true,
-  "useChoreoLib":true
- }
+ "generationFeatures":[]
 }

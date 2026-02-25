@@ -35,58 +35,34 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.List;
  import java.util.Optional;
-
  import org.photonvision.EstimatedRobotPose;
  import org.photonvision.PhotonCamera;
  import org.photonvision.PhotonPoseEstimator;
  import org.photonvision.PhotonPoseEstimator.PoseStrategy;
  import org.photonvision.targeting.PhotonTrackedTarget;
 
-import frc.robot.Constants;
-
  public class Vision extends SubsystemBase{
-    /**
-     * Vision subsystem for the robot - used to estimate the robot's pose based on April Tags using PhotonVision.
-     * Check out clickup knowledge base for more information on photonvision debugging.
-     * @author Max Clemetson, Siddhartha Hiremath
-     * @since 2025-11
-     * 
-     */
-     private final PhotonCamera camera;
+     private final PhotonCamera april_camera;
+     private final PhotonCamera object_camera;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
      private Swerve swerve;
 
 
      public Vision(Swerve swerve) {
-        /**
-         * Vision constructor for the robot.
-         * 
-         * @args Swerve swerve
-         * @author Max Clemetson, Siddhartha Hiremath
-         * @since 2025-11
-         * @return void
-         */
         this.swerve = swerve;
-        camera = new PhotonCamera(Constants.Vision.kAprilCameraName);
-
-        photonEstimator =
-                new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
-        photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+         april_camera = new PhotonCamera(kCameraName_April);
+         object_camera = new PhotonCamera(kCameraName_Object);
+ 
+         photonEstimator =
+                 new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
+         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
      }
 
  
      public void periodic() {
-        /**
-         * Periodic method for the vision subsystem. Updates the robot's pose based on April Tags - gets standard deviations for the pose estimation.
-         * 
-         * @args None
-         * @author Max Clemetson, Siddhartha Hiremath
-         * @since 2025-11
-         * @return void
-         */
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
-         for (var change : camera.getAllUnreadResults()) {
+         for (var change : april_camera.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
              updateEstimationStdDevs(visionEst, change.getTargets());
  
@@ -94,10 +70,14 @@ import frc.robot.Constants;
                      est -> {
                          // Change our trust in the measurement based on the tags we can see
                          var estStdDevs = getEstimationStdDevs();
-
+                         System.out.println("april tags!");
                          swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                         });
          }
+        System.out.println("running objects");
+        // if results exists, printall results
+        System.out.println(object_camera.getAllUnreadResults());
+
      }
  
      /**
@@ -108,15 +88,6 @@ import frc.robot.Constants;
       * @param targets All targets in this camera frame
       */
      private void updateEstimationStdDevs(
-        /**
-         * Updates the standard deviations for the pose estimation. 
-         * Tbh idk how this works but i think its from docs. - sid
-         * 
-         * @args Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets
-         * @author Max Clemetson, Siddhartha Hiremath
-         * @since 2025-11
-         * @return void
-         */
              Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
          if (estimatedPose.isEmpty()) {
              // No pose input. Default to single-tag std devs
@@ -165,14 +136,6 @@ import frc.robot.Constants;
       * only be used when there are targets visible.
       */
      public Matrix<N3, N1> getEstimationStdDevs() {
-        /**
-         * See docs from {@link #updateEstimationStdDevs()}
-         * 
-         * @args None
-         * @author Max Clemetson. Siddhartha Hiremath
-         * @since 2025-11
-         * @return Matrix<N3, N1> curStdDevs
-         */
          return curStdDevs;
      }
 

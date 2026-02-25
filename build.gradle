@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "edu.wpi.first.GradleRIO" version "2025.3.2"
 }
 
 java {
@@ -43,12 +43,11 @@ deploy {
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
-// Set to true to use debug for all targets including JNI, which will drastically impact
-// performance.
+// Set to true to use debug for JNI.
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = true
+def includeDesktopSupport = false
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
@@ -89,9 +88,7 @@ wpi.sim.addDriverstation()
 // knows where to look for our Robot Class.
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    from('src') { into 'backup/src' }
-    from('vendordeps') { into 'backup/vendordeps' }
-    from('build.gradle') { into 'backup' }
+    from sourceSets.main.allSource
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
