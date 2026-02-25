@@ -93,16 +93,17 @@ public class RobotContainer {
          */
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        
         xboxController.a().whileTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
 
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
+        xboxController.povUp().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
 
-        xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
+        //xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
 
-        xboxController.x().whileTrue(new MovementOriented(swerve, controller));
+        xboxController.b().whileTrue(new MovementOriented(swerve, controller));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        //xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
         xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
         xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
         xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
