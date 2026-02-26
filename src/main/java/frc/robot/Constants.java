@@ -43,7 +43,7 @@ public class Constants {
         public static final double kYI = 0.0;
         public static final double kYD = 0.1;
         
-        public static final double kHeadingP = 1.0;
+        public static final double kHeadingP = 4.0;
         public static final double kHeadingI = 0.0;
         public static final double kHeadingD = 0.0;
 
@@ -55,7 +55,8 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
-        public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kAprilCameraName1 = "Arducam_OV9281_USB_Camera";
+        public static String kAprilCameraName2 = "idk_what_2nd_camera_is_called";
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
         public static Transform3d kRobotToCam = new Transform3d();

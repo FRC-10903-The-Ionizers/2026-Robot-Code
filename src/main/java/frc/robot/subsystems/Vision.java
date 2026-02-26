@@ -52,7 +52,8 @@ import frc.robot.Constants;
      * @since 2025-11
      * 
      */
-     private final PhotonCamera camera;
+     private final PhotonCamera camera_1;
+     private final PhotonCamera camera_2;
      private final PhotonPoseEstimator photonEstimator;
      private Matrix<N3, N1> curStdDevs;
      private Swerve swerve;
@@ -68,8 +69,9 @@ import frc.robot.Constants;
          * @return void
          */
         this.swerve = swerve;
-        camera = new PhotonCamera(Constants.Vision.kAprilCameraName);
 
+        camera_1 = new PhotonCamera(Constants.Vision.kAprilCameraName1);
+        camera_2 = new PhotonCamera(Constants.Vision.kAprilCameraName2);
         photonEstimator =
                 new PhotonPoseEstimator(Constants.Vision.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -86,7 +88,7 @@ import frc.robot.Constants;
          * @return void
          */
          Optional<EstimatedRobotPose> visionEst = Optional.empty();
-         for (var change : camera.getAllUnreadResults()) {
+         for (var change : camera_1.getAllUnreadResults()) {
              visionEst = photonEstimator.update(change);
              updateEstimationStdDevs(visionEst, change.getTargets());
  
@@ -98,8 +100,21 @@ import frc.robot.Constants;
                          swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                         });
          }
-     }
+         
+         for (var change : camera_2.getAllUnreadResults()) {
+             visionEst = photonEstimator.update(change);
+             updateEstimationStdDevs(visionEst, change.getTargets());
  
+             visionEst.ifPresent(
+                     est -> {
+                         // Change our trust in the measurement based on the tags we can see
+                         var estStdDevs = getEstimationStdDevs();
+
+                         swerve.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                        });
+         }
+        }
+        
      /**
       * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
       * deviations based on number of tags, estimation strategy, and distance from the tags.
