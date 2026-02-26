@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
-import frc.robot.Constants.Vision;
+import frc.robot.Constants.VisionConstants;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -42,8 +42,8 @@ public class DriveToObject extends Command {
             double[] dataFromPython = LimelightHelpers.getPythonScriptData("limelight-obj");
             System.out.println("Data from Python: " + java.util.Arrays.toString(dataFromPython));
             // index 0 is x value of brightest point, we want to center that
-            double angleDiff = (dataFromPython[0] - Vision.kObjectCameraPixelsHorizontal / 2)
-                    / Vision.kObjectCameraPixelsHorizontal * Vision.kObjectCameraFovHorizontal;
+            double angleDiff = (dataFromPython[0] - VisionConstants.kObjectCameraPixelsHorizontal / 2)
+                    / VisionConstants.kObjectCameraPixelsHorizontal * VisionConstants.kObjectCameraFovHorizontal;
 
             angleDiff *= (Math.PI);
             angleDiff /= 180;
@@ -52,7 +52,7 @@ public class DriveToObject extends Command {
             // feed into pid controller to get rotation output
             double rotationOutput = controller.calculate(angleDiff, 0);
 
-            if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
+            if (dataFromPython[2] > VisionConstants.kObjectDetectionThreshold) {
                 swerve.drive(new Translation2d(1, 0), rotationOutput, false);
             } else {
                 swerve.drive(new Translation2d(0, 0), 1, false);

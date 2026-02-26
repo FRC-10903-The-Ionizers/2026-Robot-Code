@@ -72,7 +72,7 @@ public class Constants {
 
     }
 
-    public static class Vision {
+    public static class VisionConstants {
         /**
          * Vision constants for the robot. Make sure to set the camera names in case u
          * have different cameras.
@@ -80,10 +80,14 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
-        public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kAprilShooterCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kAprilIntakeCameraName = "Arducam_OV9282_USB_Camera";
+
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
-        public static Transform3d kRobotToCam = new Transform3d();
+        public static Transform3d kShooterCamPosition = new Transform3d();
+        public static Transform3d kIntakeCamPosition = new Transform3d();
+
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
