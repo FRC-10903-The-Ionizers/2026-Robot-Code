@@ -182,9 +182,6 @@ public class RegionHandler {
         return inside;
     }
 
-    /**
-     * Optional: for debugging — lists all loaded regions.
-     */
     public Set<String> getAllRegionNames() {
         return regions.keySet();
     }
