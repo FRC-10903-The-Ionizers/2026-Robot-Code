@@ -99,7 +99,6 @@ public class Constants {
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
-
     public static class AutoConstants {
         /**
          * Auto constants for the robot.
