@@ -13,12 +13,12 @@ public class Hopper extends SubsystemBase{
     private final SparkMax spindexerMotor = new SparkMax(Constants.HopperConstants.kSpindaxerMotorID, MotorType.kBrushless);
     private final SparkMax bobMotor = new SparkMax(Constants.HopperConstants.kBobMotorID, MotorType.kBrushless);
 
-    private boolean isSpinadexerRunning = false;
+    private boolean isspindexerRunning = false;
     private boolean isBobRunning = false;
     // Periodicly set the motors to the correct speed
     public void periodic() {
-        System.out.println("hopper periodic, isSpinadexerRunning: " + isSpinadexerRunning + ", isBobRunning: " + isBobRunning);
-        if(isSpinadexerRunning){
+        System.out.println("hopper periodic, isspindexerRunning: " + isspindexerRunning + ", isBobRunning: " + isBobRunning);
+        if(isspindexerRunning){
             spindexerMotor.set(-0.75);
         } else {
             spindexerMotor.set(0);
@@ -31,29 +31,27 @@ public class Hopper extends SubsystemBase{
         }
     }
 
-    public boolean getIsSpinadexerRunning(){
-        return isSpinadexerRunning;
+    public boolean getIsSpindexerRunning(){
+        return isspindexerRunning;
     }
 
     public boolean getIsBobRunning(){
         return isBobRunning;
     }
 
-    public void setIsSpinadexerRunning(boolean isRunning){
-        this.isSpinadexerRunning = isRunning;
+    public void setIsSpindexerRunning(boolean isRunning){
+        this.isspindexerRunning = isRunning;
     }
 
     public void setIsBobRunning(boolean isRunning){
         this.isBobRunning = isRunning;
     }
 
-    public void toggleIsSpinadexerRunning(){
-        System.out.println("toggling hopper, spindexer running: " + isSpinadexerRunning);
-        isSpinadexerRunning = !isSpinadexerRunning;
+    public void toggleIsSpindexerRunning(){
+        isspindexerRunning = !isspindexerRunning;
     }
 
     public void toggleIsBobRunning(){
-        System.out.println("toggling hopper, bob running: " + isBobRunning);
         isBobRunning = !isBobRunning;
     }
 
