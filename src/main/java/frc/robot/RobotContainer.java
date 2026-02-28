@@ -38,7 +38,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
-    private final Shooter shooter = new Shooter(swerve, controller);
+    private final Shooter shooter = new Shooter();
     private final Hopper hopper = new Hopper();
     CommandXboxController xboxController = new CommandXboxController(0);
 
@@ -139,9 +139,9 @@ public class RobotContainer {
     
         // // Region triggers for scheduling commands
         Trigger blueZoneTrigger = new Trigger(() -> regionHandler.inRegion("blue-zone",swerve.getPose()));
-        blueZoneTrigger.onTrue(Commands.runOnce(() -> System.out.println("Robot entered blue zone")).andThen(() -> shooter.setTargetPose(new Pose2d(1, 1, Rotation2d.kZero))));
+        blueZoneTrigger.onTrue(Commands.runOnce(() -> System.out.println("Robot entered blue zone")));
+        blueZoneTrigger.whileTrue(new DriveWhileLocked(swerve, controller, new Pose2d(4.63, 4.03, Rotation2d.kZero)));
         
-        blueZoneTrigger.onFalse(Commands.runOnce(() -> shooter.setTargetPose(new Pose2d(-1, -1, Rotation2d.kZero)), shooter));
         // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2",
         // swerve.getPose()));
 
