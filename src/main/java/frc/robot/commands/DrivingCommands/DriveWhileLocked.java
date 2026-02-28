@@ -52,6 +52,7 @@ public class DriveWhileLocked extends Command {
 
         headingController.setSetpoint(target_angle);
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
+        System.out.println("Rotation: " + rotation);
         swerve.drive(translation, rotation, controller.isFieldRelative());
     }
 
