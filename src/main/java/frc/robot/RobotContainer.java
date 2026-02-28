@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.DriveWhileLocked; // Assuming this command exists for aiming
@@ -37,7 +38,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
-    private final Shooter shooter = new Shooter(swerve);
+    private final Shooter shooter = new Shooter(swerve, controller);
     private final Hopper hopper = new Hopper();
     CommandXboxController xboxController = new CommandXboxController(0);
 
@@ -141,8 +142,9 @@ public class RobotContainer {
         }, swerve));
     
         // // Region triggers for scheduling commands
-        // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1",
-        // swerve.getPose()));
+        Trigger blueZoneTrigger = new Trigger(() -> regionHandler.inRegion("blue-zone",swerve.getPose()));
+        blueZoneTrigger.onTrue(Commands.runOnce(() -> shooter.setTargetPose(Constants.ShooterConstants.kBlueHubPose), shooter));
+        blueZoneTrigger.onFalse(Commands.runOnce(() -> shooter.setTargetPose(Constants.ShooterConstants.kRedHubPose), shooter));
         // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2",
         // swerve.getPose()));
 

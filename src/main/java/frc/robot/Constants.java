@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -113,6 +114,8 @@ public class Constants {
         public static final double kInterpolationLambda = 100;
         public static final double[] kPositions = {};
         public static final double[] kValues = {};
+        public static final Pose2d kBlueHubPose = new Pose2d(3, 7, Rotation2d.fromDegrees(0));
+        public static final Pose2d kRedHubPose = new Pose2d(-3, 7, Rotation2d.fromDegrees(0));
     }
 
     public static class HopperConstants {
