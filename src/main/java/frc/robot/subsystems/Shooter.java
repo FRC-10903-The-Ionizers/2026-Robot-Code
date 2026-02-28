@@ -26,8 +26,8 @@ public class Shooter extends SubsystemBase{
             Pose2d currentPose = swerve.getPose();
             Pose2d hubPose = Constants.ShooterConstants.kHubPose;
 
-            double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
-            double calculatedMotorSpeed = MathUtil.clamp(distance, 0, 1);
+            // double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
+            // double calculatedMotorSpeed = MathUtil.clamp(distance, 0, 1);
 
             topMotor.set(-0.5);
             bottomMotor.set(-0.5);
@@ -46,7 +46,6 @@ public class Shooter extends SubsystemBase{
     }
 
     public void toggleIsRunning(){
-        System.out.println("toggling shooter, currently isRunning: " + isRunning);
         isRunning = !isRunning;
     }
 
