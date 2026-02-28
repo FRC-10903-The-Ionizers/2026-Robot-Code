@@ -90,9 +90,9 @@ public class Constants {
         public static final int kDriveMotorID = 7;
         public static final int kActuationMotorID = 8;
 
-        public static final int kIntakeActuationP = 0;
-        public static final int kIntakeActuationI = 0;
-        public static final int kIntakeActuationD = 0;
+        public static final double kIntakeActuationP = 0.0;
+        public static final double kIntakeActuationI = 0.0;
+        public static final double kIntakeActuationD = 0.0;
     }
 
 }
