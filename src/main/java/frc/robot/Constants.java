@@ -107,8 +107,8 @@ public class Constants {
     }
 
     public static class ShooterConstants {
-        public static final int kTopMotorID = 10;
-        public static final int kBottomMotorID = 11;
+        public static final int kTopMotorID = 2;
+        public static final int kBottomMotorID = 3;
         public static final Pose2d kHubPose = new Pose2d();
         public static final double kInterpolationLambda = 100;
         public static final double[] kPositions = {};
