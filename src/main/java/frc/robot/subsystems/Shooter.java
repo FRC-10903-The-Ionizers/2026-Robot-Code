@@ -35,9 +35,11 @@ public class Shooter extends SubsystemBase{
             topMotor.set(-0.5);
             bottomMotor.set(-0.5);
             if(targetPose.getY() > 0){
+                System.out.println("running shooter w/ target pose");
                 Pose2d currentPosition = swerve.getPose();
                 double currentX = currentPosition.getX();
                 double currentY = currentPosition.getY();
+
                 Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
                 double target_angle = Math.atan2(this.targetPose.getY() - currentY, this.targetPose.getX() - currentX);
                 
