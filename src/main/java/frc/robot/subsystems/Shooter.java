@@ -21,7 +21,6 @@ public class Shooter extends SubsystemBase{
 
     // Periodicly set the motors to the correct speed
     public void periodic() {
-        System.out.println("shooter periodic, isRunning: " + isRunning);
         if(isRunning){
             Pose2d currentPose = swerve.getPose();
             Pose2d hubPose = Constants.ShooterConstants.kHubPose;
