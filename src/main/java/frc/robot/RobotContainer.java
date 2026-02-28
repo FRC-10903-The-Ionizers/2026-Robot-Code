@@ -144,7 +144,7 @@ public class RobotContainer {
         // // Region triggers for scheduling commands
         Trigger blueZoneTrigger = new Trigger(() -> regionHandler.inRegion("blue-zone",swerve.getPose()));
         blueZoneTrigger.onTrue(Commands.runOnce(() -> shooter.setTargetPose(Constants.ShooterConstants.kBlueHubPose), shooter));
-        blueZoneTrigger.onFalse(Commands.runOnce(() -> shooter.setTargetPose(Constants.ShooterConstants.kRedHubPose), shooter));
+        blueZoneTrigger.onFalse(Commands.runOnce(() -> shooter.setTargetPose(new Pose2d(-1, -1, Rotation2d.kZero)), shooter));
         // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2",
         // swerve.getPose()));
 
