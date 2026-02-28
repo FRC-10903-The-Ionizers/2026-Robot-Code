@@ -96,14 +96,9 @@ public class RobotContainer {
          */
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
-        xboxController.a().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-        xboxController.y().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
-        xboxController.b().onChange(Commands.runOnce(() -> hopper.toggleIsBobRunning(), hopper));
-        
-        xboxController.a().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-        xboxController.y().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
-        xboxController.b().onChange(Commands.runOnce(() -> hopper.toggleIsBobRunning(), hopper));
-        
+        xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
+        xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
+
         // Bind aligning command to another button (e.g., B button)
 
         //xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
