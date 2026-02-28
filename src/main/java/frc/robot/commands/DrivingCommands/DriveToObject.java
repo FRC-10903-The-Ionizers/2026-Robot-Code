@@ -2,6 +2,7 @@ package frc.robot.commands.DrivingCommands;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
@@ -16,9 +17,9 @@ public class DriveToObject extends Command {
      * @since 2026-01-15
      */
     private final Swerve swerve;
-    private final PIDController controller;
+    private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
-    public DriveToObject(Swerve swerve, PIDController controller) {
+    public DriveToObject(Swerve swerve) {
         /**
          * Constructor which sets swerve and controller class variables
          * 
@@ -26,7 +27,6 @@ public class DriveToObject extends Command {
          * @param controller: the PID controller
          */
         this.swerve = swerve;
-        this.controller = controller;
         addRequirements(swerve);
     }
 
@@ -49,7 +49,7 @@ public class DriveToObject extends Command {
 
             System.out.println("Angle difference: " + angleDiff);
             // feed into pid controller to get rotation output
-            double rotationOutput = controller.calculate(angleDiff, 0);
+            double rotationOutput = headingController.calculate(angleDiff, 0);
 
             if (dataFromPython[2] > Vision.kObjectDetectionThreshold) {
                 swerve.drive(new Translation2d(1, 0), rotationOutput, false);

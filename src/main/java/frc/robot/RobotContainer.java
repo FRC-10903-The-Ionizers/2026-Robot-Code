@@ -99,7 +99,7 @@ public class RobotContainer {
         xboxController.a().whileTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
 
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
+        xboxController.b().whileTrue(new DriveToObject(swerve));
 
         xboxController.b().whileTrue(new MovementOriented(swerve, controller));
         // Bind go to point test command to the D pad
