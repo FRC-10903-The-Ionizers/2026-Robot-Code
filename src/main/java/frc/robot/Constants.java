@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -14,6 +15,8 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 
 public class Constants {
     /**
@@ -72,7 +75,7 @@ public class Constants {
 
     }
 
-    public static class Vision {
+    public static class VisionConstants {
         /**
          * Vision constants for the robot. Make sure to set the camera names in case u
          * have different cameras.
@@ -80,16 +83,22 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
-        public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kAprilCamera1Name = "Arducam_OV9281_USB_Camera";
+        public static String kAprilCamera2Name = "Arducam_OV9282_USB_Camera";
+
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
-        public static Transform3d kRobotToCam = new Transform3d();
+
+        public static Transform3d kCam1Position = new Transform3d(new Translation3d(15.625, -13.625, -2), new Rotation3d(0, 35, -90));
+        public static Transform3d kCam2Position = new Transform3d(new Translation3d(-12.4375, -1, 9.5), new Rotation3d(0, 6, 90));
+
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
+
 
     public static class AutoConstants {
         /**
