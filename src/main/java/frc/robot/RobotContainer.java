@@ -18,6 +18,7 @@ import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Intake;
 import frc.robot.util.Controller;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.PIDController;
@@ -94,7 +95,6 @@ public class RobotContainer {
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
         xboxController.a().onChange(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
 
@@ -102,7 +102,7 @@ public class RobotContainer {
 
         xboxController.x().whileTrue(new MovementOriented(swerve, controller));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        xboxController.povUp().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
         xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
         xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
         xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));

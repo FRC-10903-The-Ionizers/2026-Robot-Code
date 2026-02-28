@@ -86,4 +86,8 @@ public class Constants {
         public static final double[] kPositions = {};
         public static final double[] kValues = {};
     }
+    public static class IntakeConstants {
+        public static final int kDriveMotorID = 7;
+    }
+
 }
