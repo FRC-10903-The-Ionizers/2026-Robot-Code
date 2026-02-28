@@ -23,14 +23,14 @@ public class Shooter extends SubsystemBase{
     public void periodic() {
 
         if(isRunning){
-            Pose2d currentPose = swerve.getPose();
-            Pose2d hubPose = Constants.ShooterConstants.kHubPose;
+            // Pose2d currentPose = swerve.getPose();
+            // Pose2d hubPose = Constants.ShooterConstants.kHubPose;
 
-            double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
-            double calculatedMotorSpeed = MathUtil.applyDeadband(distance, 0, 1);
-            System.out.println(calculatedMotorSpeed);
-            topMotor.set(calculatedMotorSpeed);
-            bottomMotor.set(calculatedMotorSpeed);
+            // double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
+            // double calculatedMotorSpeed = MathUtil.clamp(distance, 0, 1);
+
+            topMotor.set(-0.5);
+            bottomMotor.set(-0.5);
         } else {
             topMotor.set(0);
             bottomMotor.set(0);

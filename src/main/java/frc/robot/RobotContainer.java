@@ -16,6 +16,8 @@ import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
@@ -36,6 +38,7 @@ public class RobotContainer {
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
     private final Shooter shooter = new Shooter(swerve);
+    private final Hopper hopper = new Hopper();
     CommandXboxController xboxController = new CommandXboxController(0);
 
     public RobotContainer() {
@@ -92,18 +95,26 @@ public class RobotContainer {
          * @return void
          */
         // Bind aiming command to a button (e.g., A button)
-        // xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new
-        // Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter
-        // for aim drive)
+        //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        xboxController.a().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
+        xboxController.y().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
+        xboxController.b().onChange(Commands.runOnce(() -> hopper.toggleIsBobRunning(), hopper));
         
-        xboxController.a().whileTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-
+        xboxController.a().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
+        xboxController.y().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
+        xboxController.b().onChange(Commands.runOnce(() -> hopper.toggleIsBobRunning(), hopper));
+        
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().whileTrue(new DriveToObject(swerve));
 
-        xboxController.b().whileTrue(new MovementOriented(swerve, controller));
+        //xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
+        
+        //xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
+
+        xboxController.x().whileTrue(new MovementOriented(swerve, controller));
+        xboxController.x().whileTrue(new MovementOriented(swerve, controller));
         // Bind go to point test command to the D pad
-        //xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
         xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
         xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
         xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
