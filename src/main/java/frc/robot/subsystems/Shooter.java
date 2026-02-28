@@ -34,17 +34,16 @@ public class Shooter extends SubsystemBase{
         if(isRunning){
             topMotor.set(-0.5);
             bottomMotor.set(-0.5);
-
-            Pose2d currentPosition = swerve.getPose();
-            double currentX = currentPosition.getX();
-            double currentY = currentPosition.getY();
-            Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
-            double target_angle = Math.atan2(this.targetPose.getY() - currentY, this.targetPose.getX() - currentX);
-    
-    
-            headingController.setSetpoint(target_angle);
-            double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
-            swerve.drive(new Translation2d(0, 0), rotation, true);
+            if(targetPose.getY() > 0){
+                Pose2d currentPosition = swerve.getPose();
+                double currentX = currentPosition.getX();
+                double currentY = currentPosition.getY();
+                Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
+                double target_angle = Math.atan2(this.targetPose.getY() - currentY, this.targetPose.getX() - currentX);
+                
+                headingController.setSetpoint(target_angle);
+                double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
+                swerve.drive(new Translation2d(0, 0), rotation, true);}
     
         } else {
             topMotor.set(0);
