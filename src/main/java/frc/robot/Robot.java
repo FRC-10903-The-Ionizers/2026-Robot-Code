@@ -1,6 +1,8 @@
 package frc.robot;
 
 import choreo.auto.AutoFactory;
+import java.io.File;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -10,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
+import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
@@ -19,6 +22,7 @@ public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
     private final Timer timer = new Timer();
     private Auto auto;
+    private RegionHandler regionHandler;
 
     public Robot(){
         /**
@@ -31,6 +35,7 @@ public class Robot extends TimedRobot {
          */
         System.out.println("Robot initializing");
         robotContainer = new RobotContainer();
+        regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
         Swerve swerve = robotContainer.getSwerve();
 
         AutoFactory autoFactory = new AutoFactory(
@@ -45,7 +50,7 @@ public class Robot extends TimedRobot {
 
         Constants.AutoConstants.kAutoFactory = autoFactory;
 
-        auto = new Auto(autoFactory, swerve);
+        auto = new Auto(autoFactory, swerve, regionHandler);
         System.out.println("Auto initialized.");
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning

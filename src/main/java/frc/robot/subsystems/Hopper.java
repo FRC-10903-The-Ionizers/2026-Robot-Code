@@ -30,7 +30,7 @@ public class Hopper extends SubsystemBase{
         }
     }
 
-    public boolean getIsSpinadexerRunning(){
+    public boolean getIsSpindexerRunning(){
         return isSpindexerRunning;
     }
 
@@ -38,7 +38,7 @@ public class Hopper extends SubsystemBase{
         return isBobRunning;
     }
 
-    public void setIsSpinadexerRunning(boolean isRunning){
+    public void setIsSpindexerRunning(boolean isRunning){
         this.isSpindexerRunning = isRunning;
     }
 
@@ -46,7 +46,7 @@ public class Hopper extends SubsystemBase{
         this.isBobRunning = isRunning;
     }
 
-    public void toggleIsSpinadexerRunning(){
+    public void toggleIsSpindexerRunning(){
         isSpindexerRunning = !isSpindexerRunning;
     }
 

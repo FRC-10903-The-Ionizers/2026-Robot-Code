@@ -5,12 +5,15 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 
 public class Constants {
     /**
@@ -32,25 +35,47 @@ public class Constants {
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
         public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
-        
+
         public static final double kMinimumDistanceToStop = 0.1;
 
-        public static final double kXP = 1.0;
-        public static final double kXI = 0.0;
-        public static final double kXD = 0.1;
+        private static final double kXP = 1.0;
+        private static final double kXI = 0.0;
+        private static final double kXD = 0.1;
 
-        public static final double kYP = 1.0;
-        public static final double kYI = 0.0;
-        public static final double kYD = 0.1;
-        
-        public static final double kHeadingP = 1.0;
-        public static final double kHeadingI = 0.0;
-        public static final double kHeadingD = 0.0;
+        private static final double kYP = 1.0;
+        private static final double kYI = 0.0;
+        private static final double kYD = 0.1;
+
+        private static final double kHeadingP = 4.0;
+        private static final double kHeadingI = 0.0;
+        private static final double kHeadingD = 0.0;
+
+        public static final PIDController kXController = new PIDController(
+                Constants.DriveConstants.kXP,
+                Constants.DriveConstants.kXI,
+                Constants.DriveConstants.kXD);
+
+        public static final PIDController kYController = new PIDController(
+                Constants.DriveConstants.kYP,
+                Constants.DriveConstants.kYI,
+                Constants.DriveConstants.kYD);
+
+        public static final PIDController kHeadingController = new PIDController(
+                Constants.DriveConstants.kHeadingP,
+                Constants.DriveConstants.kHeadingI,
+                Constants.DriveConstants.kHeadingD);
+        // pid controllers here
+
+        static {
+            kHeadingController.enableContinuousInput(-Math.PI, Math.PI);
+        }
 
     }
+
     public static class Vision {
         /**
-         * Vision constants for the robot. Make sure to set the camera names in case u have different cameras.
+         * Vision constants for the robot. Make sure to set the camera names in case u
+         * have different cameras.
          * 
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
@@ -76,6 +101,9 @@ public class Constants {
         public static AutoFactory kAutoFactory;
         public static final double kDelayTime = 0.08;
         public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);
+
+        public static final Time kTimeout = Units.Seconds.of(5);
+        public static final Distance kEpsilonDist = Units.Inches.of(4);
     }
 
     public static class ShooterConstants {

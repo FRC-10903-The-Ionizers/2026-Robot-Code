@@ -33,26 +33,14 @@ public class Swerve extends SubsystemBase {
     private boolean initialized = false;
     private Field2d field = new Field2d();
 
-    private final PIDController xController = new PIDController(
-        Constants.DriveConstants.kXP, 
-        Constants.DriveConstants.kXI, 
-        Constants.DriveConstants.kXD
-    );
-    private final PIDController yController = new PIDController(
-        Constants.DriveConstants.kYP, 
-        Constants.DriveConstants.kYI, 
-        Constants.DriveConstants.kYD
-    );
-    private final PIDController headingController = new PIDController(
-        Constants.DriveConstants.kHeadingP, 
-        Constants.DriveConstants.kHeadingI, 
-        Constants.DriveConstants.kHeadingD
-    );
+    private final PIDController xController = Constants.DriveConstants.kXController;
+    private final PIDController yController = Constants.DriveConstants.kYController;
+    private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
     private static boolean isLockedPosition = false;
     public static double currentGear = 1.0;
-    private static boolean isMovementOriented = false;
-
+    
+    
     public Swerve() {
         /**
          * Swerve constructor for the robot.
@@ -62,7 +50,6 @@ public class Swerve extends SubsystemBase {
          * @return void
          */
         try {
-            headingController.enableContinuousInput(-Math.PI, Math.PI);
             double maximumSpeed = Units.feetToMeters(4.5);
 
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;

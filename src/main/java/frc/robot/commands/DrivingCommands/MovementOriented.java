@@ -18,7 +18,7 @@ public class MovementOriented extends Command {
   private final Swerve swerve;
   private final Controller controller;
   // heading controller
-  private final PIDController headingController = new PIDController(Constants.DriveConstants.kHeadingP, 0, 0);
+  private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
   public MovementOriented(Swerve subsystem, Controller controller) {
     /**

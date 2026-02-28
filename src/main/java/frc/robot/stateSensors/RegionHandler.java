@@ -1,64 +1,69 @@
 package frc.robot.stateSensors;
 
 import com.google.gson.*;
-
 import edu.wpi.first.math.geometry.Pose2d;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.io.File;
 
 /**
  * RegionHandler - manages geometric regions loaded from a JSON file.
- * Supports polygon and circle regions for localization / state sensing.
+ * Supports rectangle and circle regions for localization / state sensing.
  *
  * Example JSON:
  * {
- *     "region1": {
- *         "type": "polygon",
- *         "points": [[6.3, 2.3], [6.3, 5.8], [3, 5.8], [3, 2.3]]
- *     },
- *     "region2": {
- *         "type": "circle",
- *         "center": [5, 5],
- *         "radius": 3
- *     }
+ *   "region1": {
+ *     "type": "rectangle",
+ *     "minX": 3.0, "minY": 2.3, "maxX": 6.3, "maxY": 5.8
+ *   },
+ *   "region2": {
+ *     "type": "circle",
+ *     "center": [5, 5],
+ *     "radius": 3
+ *   }
  * }
  */
 public class RegionHandler {
 
+    private static final double EPSILON = 1e-9;
+
+    private final Map<String, Region> regions = new HashMap<>();
+
     // -------------------------
     // --- Internal Structure ---
     // -------------------------
-    private final Map<String, Region> regions = new HashMap<>();
 
     private interface Region {
         boolean contains(double x, double y);
+        String debugInfo(double x, double y);
     }
 
-    private static class PolygonRegion implements Region {
-        private final List<double[]> points;
+    private static class RectangleRegion implements Region {
+        private final double minX, minY, maxX, maxY;
 
-        public PolygonRegion(List<double[]> points) {
-            this.points = points;
+        public RectangleRegion(double minX, double minY, double maxX, double maxY) {
+            this.minX = minX;
+            this.minY = minY;
+            this.maxX = maxX;
+            this.maxY = maxY;
         }
 
         @Override
         public boolean contains(double x, double y) {
-            boolean inside = false;
-            int n = points.size();
+            return x >= minX - EPSILON && x <= maxX + EPSILON
+                && y >= minY - EPSILON && y <= maxY + EPSILON;
+        }
 
-            for (int i = 0, j = n - 1; i < n; j = i++) {
-                double xi = points.get(i)[0], yi = points.get(i)[1];
-                double xj = points.get(j)[0], yj = points.get(j)[1];
-
-                boolean intersect = ((yi > y) != (yj > y)) &&
-                        (x < (xj - xi) * (y - yi) / (yj - yi + 0.0) + xi);
-                if (intersect) inside = !inside;
-            }
-
-            return inside;
+        @Override
+        public String debugInfo(double x, double y) {
+            return String.format(
+                "Rectangle[minX=%.4f, minY=%.4f, maxX=%.4f, maxY=%.4f] | point=(%.4f, %.4f) | inX=%b inY=%b",
+                minX, minY, maxX, maxY, x, y,
+                x >= minX - EPSILON && x <= maxX + EPSILON,
+                y >= minY - EPSILON && y <= maxY + EPSILON
+            );
         }
     }
 
@@ -75,26 +80,34 @@ public class RegionHandler {
         public boolean contains(double x, double y) {
             double dx = x - cx;
             double dy = y - cy;
-            return dx * dx + dy * dy <= radius * radius;
+            double distSq = dx * dx + dy * dy;
+            double radiusSq = radius * radius;
+            // Use epsilon on the radius to handle floating-point edge cases
+            return distSq <= radiusSq + EPSILON;
+        }
+
+        @Override
+        public String debugInfo(double x, double y) {
+            double dx = x - cx;
+            double dy = y - cy;
+            double dist = Math.sqrt(dx * dx + dy * dy);
+            return String.format(
+                "Circle[cx=%.4f, cy=%.4f, radius=%.4f] | point=(%.4f, %.4f) | dist=%.6f | inside=%b",
+                cx, cy, radius, x, y, dist, contains(x, y)
+            );
         }
     }
 
-    public RegionHandler(String jsonFilePath){
-        loadRegionsFromJson(jsonFilePath);
+    // -------------------------
+    // --- Constructors ---
+    // -------------------------
+
+    public RegionHandler(String jsonFilePath) {
+        loadRegionsFromJson(new File(jsonFilePath));
     }
 
-    public RegionHandler(File path){
+    public RegionHandler(File path) {
         loadRegionsFromJson(path);
-    }
-
-    private void loadRegionsFromJson(String path) {
-        JsonObject root;
-        try (FileReader reader = new FileReader(path)) {
-            root = JsonParser.parseReader(reader).getAsJsonObject();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read regions JSON file: " + path, e);
-        }
-        loadRegionsFromJsonObject(root);
     }
 
     private void loadRegionsFromJson(File path) {
@@ -102,65 +115,81 @@ public class RegionHandler {
         try (FileReader reader = new FileReader(path)) {
             root = JsonParser.parseReader(reader).getAsJsonObject();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read regions JSON file: " + path, e);
+            throw new RuntimeException("Failed to read regions JSON file: " + path.getAbsolutePath(), e);
         }
-        loadRegionsFromJsonObject(root);
-    }
 
-    private void loadRegionsFromJsonObject(JsonObject root){
         for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
             String name = entry.getKey();
-            JsonObject region = entry.getValue().getAsJsonObject();
-            String type = region.get("type").getAsString();
-    
+            JsonObject obj = entry.getValue().getAsJsonObject();
+
+            if (!obj.has("type")) {
+                throw new IllegalArgumentException("Region '" + name + "' is missing a 'type' field.");
+            }
+
+            String type = obj.get("type").getAsString().toLowerCase().trim();
+
             switch (type) {
-                case "polygon" -> {
-                    List<double[]> points = new ArrayList<>();
-                    JsonArray ptsArray = region.getAsJsonArray("points");
-                    for (JsonElement ptElem : ptsArray) {
-                        JsonArray pt = ptElem.getAsJsonArray();
-                        points.add(new double[]{pt.get(0).getAsDouble(), pt.get(1).getAsDouble()});
+                case "rectangle" -> {
+                    double minX = obj.get("minX").getAsDouble();
+                    double minY = obj.get("minY").getAsDouble();
+                    double maxX = obj.get("maxX").getAsDouble();
+                    double maxY = obj.get("maxY").getAsDouble();
+                    if (minX > maxX || minY > maxY) {
+                        throw new IllegalArgumentException(
+                            "Rectangle region '" + name + "' has invalid bounds: min > max."
+                        );
                     }
-                    regions.put(name, new PolygonRegion(points));
+                    regions.put(name, new RectangleRegion(minX, minY, maxX, maxY));
                 }
                 case "circle" -> {
-                    JsonArray center = region.getAsJsonArray("center");
+                    JsonArray center = obj.getAsJsonArray("center");
+                    if (center.size() != 2) {
+                        throw new IllegalArgumentException(
+                            "Circle region '" + name + "' center must have exactly 2 elements [x, y]."
+                        );
+                    }
                     double cx = center.get(0).getAsDouble();
                     double cy = center.get(1).getAsDouble();
-                    double radius = region.get("radius").getAsDouble();
+                    double radius = obj.get("radius").getAsDouble();
+                    if (radius < 0) {
+                        throw new IllegalArgumentException(
+                            "Circle region '" + name + "' has a negative radius."
+                        );
+                    }
                     regions.put(name, new CircleRegion(cx, cy, radius));
                 }
-                default -> throw new IllegalArgumentException("Unknown region type: " + type);
+                default -> throw new IllegalArgumentException(
+                    "Unknown region type '" + type + "' in region '" + name + "'. Expected 'rectangle' or 'circle'."
+                );
             }
         }
     }
-    
 
     // -------------------------
     // --- Public API ---
     // -------------------------
 
     /**
-     * Checks if a given point (x, y) is inside a specific region.
+     * Checks if a given point (x, y) is inside a specific named region.
+     *
+     * @throws IllegalArgumentException if the region name doesn't exist
      */
     public boolean inRegion(String regionName, double x, double y) {
         Region region = regions.get(regionName);
         if (region == null) {
-            throw new IllegalArgumentException("No such region: " + regionName);
+            throw new IllegalArgumentException(
+                "No such region: '" + regionName + "'. Available: " + regions.keySet()
+            );
         }
         return region.contains(x, y);
     }
 
     public boolean inRegion(String regionName, Pose2d pose) {
-        Region region = regions.get(regionName);
-        if (region == null) {
-            throw new IllegalArgumentException("No such region: " + regionName);
-        }
-        return region.contains(pose.getX(), pose.getY());
+        return inRegion(regionName, pose.getX(), pose.getY());
     }
 
     /**
-     * Returns a list of all regions that contain the given point.
+     * Returns a list of all region names that contain the given point.
      */
     public List<String> listCurrentRegions(double x, double y) {
         List<String> inside = new ArrayList<>();
@@ -173,19 +202,28 @@ public class RegionHandler {
     }
 
     public List<String> listCurrentRegions(Pose2d pose) {
-        List<String> inside = new ArrayList<>();
-        for (Map.Entry<String, Region> entry : regions.entrySet()) {
-            if (entry.getValue().contains(pose.getX(), pose.getY())) {
-                inside.add(entry.getKey());
-            }
-        }
-        return inside;
+        return listCurrentRegions(pose.getX(), pose.getY());
     }
 
     /**
-     * Optional: for debugging — lists all loaded regions.
+     * Prints debug info for all regions against a given point.
+     * Useful for diagnosing why a point isn't matching a region.
      */
+    public String debugPoint(double x, double y) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Debug for point (%.6f, %.6f):%n", x, y));
+        for (Map.Entry<String, Region> entry : regions.entrySet()) {
+            sb.append(String.format("  [%s] %s%n", entry.getKey(), entry.getValue().debugInfo(x, y)));
+        }
+        return sb.toString();
+    }
+
+    public String debugPoint(Pose2d pose) {
+        return debugPoint(pose.getX(), pose.getY());
+    }
+
+    /** Returns all loaded region names. */
     public Set<String> getAllRegionNames() {
-        return regions.keySet();
+        return Collections.unmodifiableSet(regions.keySet());
     }
 }
