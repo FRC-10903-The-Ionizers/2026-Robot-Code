@@ -13,6 +13,7 @@ public class InterpolationMatrix {
     }
 
     private static double[] whittakerSmoothing(double[] x) {
+
         int n = x.length;
         int d = 2;
         

@@ -7,6 +7,8 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DriveWhileLocked extends Command {
     /**

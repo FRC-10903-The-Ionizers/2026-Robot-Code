@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.apache.logging.log4j.Level;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -22,6 +24,8 @@ public class Constants {
      * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
      * @since 2025-10
      */
+
+    public static Level kLogLevel = Level.DEBUG;
 
     public static class DriveConstants {
         /**
