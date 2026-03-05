@@ -20,18 +20,13 @@ public class Intake extends SubsystemBase {
     private final SparkMax driveMotor = new SparkMax(Constants.IntakeConstants.kDriveMotorID, MotorType.kBrushless);
     //private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
     private final Swerve swerve;
-    public final PIDController inPID = new PIDController(0.3, 0, 0);
+    public final PIDController inPID = new PIDController(0.15, 0, 0);
     public final PIDController outPID = new PIDController(0.08, 0, 0);
-    private SparkClosedLoopController closedLoopController;
     private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
-    private SparkMaxConfig config;
-    private RelativeEncoder encoder;
     private boolean isRunning = false;
     private boolean intakeIn = false;
     public Intake(Swerve swerve) {
         this.swerve = swerve;
-        config = new SparkMaxConfig();
-
     }
     @Override
     public void periodic() {
@@ -43,6 +38,7 @@ public class Intake extends SubsystemBase {
         } else {
             outPID.setSetpoint(4.6);
             double output = outPID.calculate(actuationMotor.getEncoder().getPosition());
+
             actuationMotor.set(output);
         }
     }
@@ -60,13 +56,13 @@ public class Intake extends SubsystemBase {
     }
 
     private void intakeIn() {
-        driveMotor.set(0);
         intakeIn = true;
+        driveMotor.set(0);
     }
 
     private void intakeOut() {
-        intakeIn = false;
         driveMotor.set(0.5);
+        intakeIn = false;
     }
 
     public Command getIntakeOutCommand() {
