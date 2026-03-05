@@ -88,7 +88,7 @@ public class Constants {
     }
     public static class IntakeConstants {
         public static final int kDriveMotorID = 7;
-        public static final int kActuationMotorID = 8;
+        public static final int kActuationMotorID = 6;
 
         public static final double kIntakeActuationP = 0.0;
         public static final double kIntakeActuationI = 0.0;

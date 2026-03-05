@@ -37,6 +37,7 @@ public class RobotContainer {
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
+    private final Intake intake = new Intake(swerve);
     private final Shooter shooter = new Shooter(swerve);
     CommandXboxController xboxController = new CommandXboxController(0);
     
@@ -94,9 +95,9 @@ public class RobotContainer {
          */
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
-        xboxController.a().onChange(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
+        xboxController.a().onTrue(intake.getIntakeOutCommand());
         // Bind aligning command to another button (e.g., B button)
-        xboxController.b().whileTrue(new DriveToObject(swerve, new PIDController(Constants.DriveConstants.kHeadingP, Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
+        xboxController.b().onTrue(intake.getIntakeInCommand());
 
         //xboxController.y().onTrue(Commands.runOnce(() -> Swerve.toggleIsLockedPosition(), swerve));
 
