@@ -90,6 +90,24 @@ public class Constants {
         public static final int kDriveMotorID = 7;
         public static final int kActuationMotorID = 6;
 
+        /** PID gains for intake actuation when moving in (retracted). */
+        public static final double kInP = 0.15;
+        public static final double kInI = 0.0;
+        public static final double kInD = 0.0;
+
+        /** PID gains for intake actuation when moving out (extended). */
+        public static final double kOutP = 0.08;
+        public static final double kOutI = 0.0;
+        public static final double kOutD = 0.0;
+
+        /** Actuation encoder setpoint when intake is out (extended). */
+        public static final double kActuationOutSetpoint = 4.6;
+
+        /** Drive motor output when intake is in (retracted). */
+        public static final double kDriveSpeedIn = 0.0;
+        /** Drive motor output when intake is out (running). */
+        public static final double kDriveSpeedOut = 0.5;
+
         public static final double kIntakeActuationP = 0.0;
         public static final double kIntakeActuationI = 0.0;
         public static final double kIntakeActuationD = 0.0;

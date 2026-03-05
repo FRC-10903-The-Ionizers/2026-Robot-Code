@@ -20,8 +20,10 @@ public class Intake extends SubsystemBase {
     private final SparkMax driveMotor = new SparkMax(Constants.IntakeConstants.kDriveMotorID, MotorType.kBrushless);
     //private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
     private final Swerve swerve;
-    public final PIDController inPID = new PIDController(0.15, 0, 0);
-    public final PIDController outPID = new PIDController(0.08, 0, 0);
+    public final PIDController inPID = new PIDController(
+            Constants.IntakeConstants.kInP, Constants.IntakeConstants.kInI, Constants.IntakeConstants.kInD);
+    public final PIDController outPID = new PIDController(
+            Constants.IntakeConstants.kOutP, Constants.IntakeConstants.kOutI, Constants.IntakeConstants.kOutD);
     private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
     private boolean isRunning = false;
     private boolean intakeIn = false;
@@ -36,7 +38,7 @@ public class Intake extends SubsystemBase {
             double output = inPID.calculate(actuationMotor.getEncoder().getPosition());
             actuationMotor.set(output);
         } else {
-            outPID.setSetpoint(4.6);
+            outPID.setSetpoint(Constants.IntakeConstants.kActuationOutSetpoint);
             double output = outPID.calculate(actuationMotor.getEncoder().getPosition());
 
             actuationMotor.set(output);
@@ -57,11 +59,11 @@ public class Intake extends SubsystemBase {
 
     private void intakeIn() {
         intakeIn = true;
-        driveMotor.set(0);
+        driveMotor.set(Constants.IntakeConstants.kDriveSpeedIn);
     }
 
     private void intakeOut() {
-        driveMotor.set(0.5);
+        driveMotor.set(Constants.IntakeConstants.kDriveSpeedOut);
         intakeIn = false;
     }
 
