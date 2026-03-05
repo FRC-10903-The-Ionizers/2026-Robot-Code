@@ -27,30 +27,24 @@ public class Intake extends SubsystemBase {
     private SparkMaxConfig config;
     private RelativeEncoder encoder;
     private boolean isRunning = false;
-    private double init_position = 0;
-    private double target_position = 0;
+    private boolean intakeIn = false;
     public Intake(Swerve swerve) {
         this.swerve = swerve;
         config = new SparkMaxConfig();
-        config.closedLoop.pid(0.08, 0, 0);
-        config.softLimit.reverseSoftLimit(0.0);
-        config.softLimit.reverseSoftLimitEnabled(false); // Temporarily disable to test
-        config.softLimit.forwardSoftLimit(5.0);
-        config.softLimit.forwardSoftLimitEnabled(false);
 
-        init_position = actuationMotor.getEncoder().getPosition();
-        actuationMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);    }
-
+    }
     @Override
     public void periodic() {
-        
-        if (isRunning) {
-            // SparkClosedLoopController closedLoopController = actuationMotor.getClosedLoopController();
-            // //log the encoder position
-            // closedLoopController.setSetpoint(4.8, ControlType.kPosition); // 10 RPM
+        //custom pid instead of closed loop
+        if (intakeIn) {
+            inPID.setSetpoint(0);
+            double output = inPID.calculate(actuationMotor.getEncoder().getPosition());
+            actuationMotor.set(output);
         } else {
+            outPID.setSetpoint(4.6);
+            double output = outPID.calculate(actuationMotor.getEncoder().getPosition());
+            actuationMotor.set(output);
         }
-        System.out.println("Intake position: " + actuationMotor.getEncoder().getPosition());
     }
 
     public boolean getIsRunning() {
@@ -67,15 +61,11 @@ public class Intake extends SubsystemBase {
 
     private void intakeIn() {
         driveMotor.set(0);
-        config.closedLoop.pid(0.08, 0, 0);
-        SparkClosedLoopController closedLoopController = actuationMotor.getClosedLoopController();
-        closedLoopController.setSetpoint(0, ControlType.kPosition);
+        intakeIn = true;
     }
 
     private void intakeOut() {
-        config.closedLoop.pid(0.08, 0, 0);
-        SparkClosedLoopController closedLoopController = actuationMotor.getClosedLoopController();
-        closedLoopController.setSetpoint(4.6, ControlType.kPosition);
+        intakeIn = false;
         driveMotor.set(0.5);
     }
 
