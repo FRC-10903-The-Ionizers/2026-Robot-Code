@@ -21,6 +21,7 @@ import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
+import frc.robot.util.InterpolationMatrix;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -32,12 +33,15 @@ public class RobotContainer {
      * @author Max Clemetson, Jake Xie, Justin Baratta, Siddhartha Hiremath
      * @since 2025-10
      */
+
+    private final InterpolationMatrix interpolationMatrix = new InterpolationMatrix();
+
     private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
-    private final Shooter shooter = new Shooter(swerve);
+    private final Shooter shooter = new Shooter(swerve, interpolationMatrix);
     private final Hopper hopper = new Hopper();
     CommandXboxController xboxController = new CommandXboxController(0);
 
