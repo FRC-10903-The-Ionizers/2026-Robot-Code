@@ -7,6 +7,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Shooter extends SubsystemBase{
 
@@ -21,12 +23,13 @@ public class Shooter extends SubsystemBase{
 
     // Periodicly set the motors to the correct speed
     public void periodic() {
-        if(isRunning){
-            Pose2d currentPose = swerve.getPose();
-            Pose2d hubPose = Constants.ShooterConstants.kHubPose;
 
-            double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
-            double calculatedMotorSpeed = MathUtil.clamp(distance, 0, 1);
+        if(isRunning){
+            // Pose2d currentPose = swerve.getPose();
+            // Pose2d hubPose = Constants.ShooterConstants.kHubPose;
+
+            // double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
+            // double calculatedMotorSpeed = MathUtil.clamp(distance, 0, 1);
 
             topMotor.set(-0.5);
             bottomMotor.set(-0.5);
@@ -45,7 +48,6 @@ public class Shooter extends SubsystemBase{
     }
 
     public void toggleIsRunning(){
-        System.out.println("toggling shooter, currently isRunning: " + isRunning);
         isRunning = !isRunning;
     }
 

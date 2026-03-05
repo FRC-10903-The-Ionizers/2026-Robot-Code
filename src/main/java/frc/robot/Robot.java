@@ -1,6 +1,13 @@
 package frc.robot;
 
 import choreo.auto.AutoFactory;
+import java.io.File;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -10,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
+import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
@@ -19,8 +27,10 @@ public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
     private final Timer timer = new Timer();
     private Auto auto;
+    private RegionHandler regionHandler;
+    private final static Logger logger = LogManager.getLogger(Robot.class);
 
-    public Robot(){
+    public Robot() {
         /**
          * Robot constructor for the robot.
          * 
@@ -29,24 +39,27 @@ public class Robot extends TimedRobot {
          * @since 2025-10
          * @return void
          */
-        System.out.println("Robot initializing");
+
+        logger.debug("Robot initializing");
+
         robotContainer = new RobotContainer();
+        regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
         Swerve swerve = robotContainer.getSwerve();
 
         AutoFactory autoFactory = new AutoFactory(
-            swerve::getPose, // A function that returns the current robot pose
-            swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-            swerve::followTrajectory, // The drive subsystem trajectory follower 
-            true, // If alliance flipping should be enabled 
-            swerve // The drive subsystem
+                swerve::getPose, // A function that returns the current robot pose
+                swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+                swerve::followTrajectory, // The drive subsystem trajectory follower
+                true, // If alliance flipping should be enabled
+                swerve // The drive subsystem
         );
 
         autoFactory.bind("Yo", Commands.print("At Yo"));
 
         Constants.AutoConstants.kAutoFactory = autoFactory;
 
-        auto = new Auto(autoFactory, swerve);
-        System.out.println("Auto initialized.");
+        auto = new Auto(autoFactory, swerve, regionHandler);
+        logger.debug("Auto initialized!");
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning
         DriverStation.silenceJoystickConnectionWarning(true);
@@ -60,7 +73,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         /**
-         * Schedules the autonomous command, runs automatically when the robot is in autonomous mode.
+         * Schedules the autonomous command, runs automatically when the robot is in
+         * autonomous mode.
          * 
          * @args None
          * @author Jake Xie & Justin Baratta
@@ -75,7 +89,6 @@ public class Robot extends TimedRobot {
         }
 
     }
-    
 
     @Override
     public void autonomousPeriodic() {
@@ -129,7 +142,7 @@ public class Robot extends TimedRobot {
          * @args None
          * @author Max Clemetson & Jake Xie
          * @since 2025-10
-         * @return boolean 
+         * @return boolean
          */
         return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
     }

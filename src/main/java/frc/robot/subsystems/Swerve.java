@@ -22,6 +22,8 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Swerve extends SubsystemBase {
     /**
@@ -29,29 +31,18 @@ public class Swerve extends SubsystemBase {
      * 
      * @since 2025-10
      */
+
+    private final static Logger logger = LogManager.getLogger(Swerve.class);
     private SwerveDrive swerveDrive;
     private boolean initialized = false;
     private Field2d field = new Field2d();
 
-    private final PIDController xController = new PIDController(
-        Constants.DriveConstants.kXP, 
-        Constants.DriveConstants.kXI, 
-        Constants.DriveConstants.kXD
-    );
-    private final PIDController yController = new PIDController(
-        Constants.DriveConstants.kYP, 
-        Constants.DriveConstants.kYI, 
-        Constants.DriveConstants.kYD
-    );
-    private final PIDController headingController = new PIDController(
-        Constants.DriveConstants.kHeadingP, 
-        Constants.DriveConstants.kHeadingI, 
-        Constants.DriveConstants.kHeadingD
-    );
+    private final PIDController xController = Constants.DriveConstants.kXController;
+    private final PIDController yController = Constants.DriveConstants.kYController;
+    private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
     private static boolean isLockedPosition = false;
     public static double currentGear = 1.0;
-    private static boolean isMovementOriented = false;
 
     public Swerve() {
         /**
@@ -62,7 +53,6 @@ public class Swerve extends SubsystemBase {
          * @return void
          */
         try {
-            headingController.enableContinuousInput(-Math.PI, Math.PI);
             double maximumSpeed = Units.feetToMeters(4.5);
 
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -76,12 +66,10 @@ public class Swerve extends SubsystemBase {
 
             swerveDrive.resetOdometry(new Pose2d(0, 0, Rotation2d.kZero));
 
-            System.out.println("Swerve is initialized!");
+            logger.debug("Swerve initialized!");
             initialized = true;
         } catch (Exception e) {
-            System.out.println("Failed to load swerve config.");
-            DriverStation.reportError("Failed to load swerve configuration from /deploy/swerve: " + e.getMessage(),
-                    e.getStackTrace());
+            logger.fatal("FALIED TO LOAD SWERVE CONFIG", e);
         }
     }
 
@@ -90,6 +78,7 @@ public class Swerve extends SubsystemBase {
          * Periodic method for the swerve subsystem.
          * 
          * Updates the field position of the robot.
+         * 
          * @args None
          * @since 2025-10
          * @return void
@@ -139,7 +128,7 @@ public class Swerve extends SubsystemBase {
          */
         if (!initialized)
             return new Pose2d();
-            
+
         return swerveDrive.getPose();
     }
 
@@ -159,14 +148,13 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + xController.calculate(pose.getX(), sample.x),
                 sample.vy + yController.calculate(pose.getY(), sample.y),
-                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
-            );
+                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
         double xSpeed = speeds.vxMetersPerSecond;
         double ySpeed = speeds.vyMetersPerSecond;
         double rotation = speeds.omegaRadiansPerSecond;
 
-        swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);  
+        swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);
     }
 
     public SwerveDrive getSwerveDrive() {
@@ -182,17 +170,17 @@ public class Swerve extends SubsystemBase {
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
         /**
-         * Adds a vision measurement to the swerve drive, uses standard 
+         * Adds a vision measurement to the swerve drive, uses standard
          * deviations to weight the measurement along with swerve drive's odometry.
          * 
          * @args Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs
          * @since 2025-10
          * @return void
          */
-        if (!initialized){
+        if (!initialized) {
             return;
         }
-        
+
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
     }
 
@@ -218,7 +206,7 @@ public class Swerve extends SubsystemBase {
         currentGear = gearMultiplier;
     }
 
-    public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
+    public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
         /**
          * Drives the robot.
          * 
@@ -232,9 +220,8 @@ public class Swerve extends SubsystemBase {
             // lock the brakes
             swerveDrive.setMotorIdleMode(true);
             return;
-        }
-       else {
-            swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);    
+        } else {
+            swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);
         }
     }
 }

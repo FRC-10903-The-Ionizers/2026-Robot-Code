@@ -6,6 +6,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DriveToPose extends Command {
   /**
@@ -16,20 +18,11 @@ public class DriveToPose extends Command {
   private final Swerve swerve;
   private final Pose2d targetPose;
 
-  private final PIDController xController = new PIDController(
-      Constants.DriveConstants.kXP,
-      Constants.DriveConstants.kXI,
-      Constants.DriveConstants.kXD);
+  private final PIDController xController = Constants.DriveConstants.kXController;
 
-  private final PIDController yController = new PIDController(
-      Constants.DriveConstants.kYP,
-      Constants.DriveConstants.kYI,
-      Constants.DriveConstants.kYD);
+  private final PIDController yController = Constants.DriveConstants.kYController;
 
-  private final PIDController headingController = new PIDController(
-      Constants.DriveConstants.kHeadingP,
-      Constants.DriveConstants.kHeadingI,
-      Constants.DriveConstants.kHeadingD);
+  private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
   public DriveToPose(Swerve subsystem, Pose2d targetPose) {
     /**
