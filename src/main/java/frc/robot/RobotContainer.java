@@ -23,6 +23,7 @@ import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Intake;
 import frc.robot.util.Controller;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.PIDController;
@@ -43,6 +44,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
+    private final Intake intake = new Intake(swerve);
     private final Shooter shooter = new Shooter(swerve);
     private final Hopper hopper = new Hopper();
     CommandXboxController xboxController = new CommandXboxController(0);
@@ -102,6 +104,9 @@ public class RobotContainer {
          */
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        xboxController.x().onTrue(intake.getIntakeOutCommand());
+        // Bind aligning command to another button (e.g., B button)
+        xboxController.b().onTrue(intake.getIntakeInCommand());
         xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
         xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
 
@@ -114,10 +119,9 @@ public class RobotContainer {
         // xboxController.y().onTrue(Commands.runOnce(() ->
         // Swerve.toggleIsLockedPosition(), swerve));
 
-        xboxController.x().whileTrue(new MovementOriented(swerve, controller));
-        xboxController.x().whileTrue(new MovementOriented(swerve, controller));
+        //xboxController.x().whileTrue(new MovementOriented(swerve, controller));
+        //xboxController.x().whileTrue(new MovementOriented(swerve, controller));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
         xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
         xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
         xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
