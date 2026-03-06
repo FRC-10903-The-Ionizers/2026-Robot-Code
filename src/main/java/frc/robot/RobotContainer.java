@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,7 +44,7 @@ public class RobotContainer {
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
-    private final Vision vision = new Vision(swerve);
+    // private final Vision vision = new Vision(swerve);
     private final Intake intake = new Intake(swerve);
     private final Shooter shooter = new Shooter(swerve);
     private final Hopper hopper = new Hopper();
@@ -107,8 +108,9 @@ public class RobotContainer {
         xboxController.x().onTrue(intake.getIntakeOutCommand());
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().onTrue(intake.getIntakeInCommand());
-        xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-        xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
+        xboxController.y().toggleOnTrue(new MovementOriented(swerve, controller));
+        //xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
+        //xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
 
         // Bind aligning command to another button (e.g., B button)
 
