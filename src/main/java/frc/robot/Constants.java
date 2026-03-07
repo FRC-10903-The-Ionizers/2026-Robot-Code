@@ -84,7 +84,7 @@ public class Constants {
          * @since 2025-10
          */
         public static String kAprilCamera1Name = "Arducam_OV9281_USB_Camera";
-        public static String kAprilCamera2Name = "Arducam_OV9282_USB_Camera";
+        public static String kAprilCamera2Name = "Arducam_OV9782_USB_Camera";
 
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
@@ -117,6 +117,7 @@ public class Constants {
     public static class ShooterConstants {
         public static final int kTopMotorID = 2;
         public static final int kBottomMotorID = 3;
+        public static final int kHoodMotorID = 4;
         public static final Pose2d kHubPose = new Pose2d();
         public static final double kInterpolationLambda = 100;
         public static final double[] kPositions = {};

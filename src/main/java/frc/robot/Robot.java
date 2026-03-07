@@ -3,6 +3,7 @@ package frc.robot;
 import choreo.auto.AutoFactory;
 import java.io.File;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
          * @since 2025-10
          * @return void
          */
+
         System.out.println("Robot initializing");
         robotContainer = new RobotContainer();
         regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));

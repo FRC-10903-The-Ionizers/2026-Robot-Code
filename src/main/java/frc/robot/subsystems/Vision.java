@@ -76,6 +76,9 @@ public class Vision extends SubsystemBase {
         this.swerve = swerve;
 
         shooterCamera = new PhotonCamera(Constants.VisionConstants.kAprilCamera1Name);
+        if(shooterCamera == null){
+            System.out.println("ur a dumbass");
+        }
         intakeCamera = new PhotonCamera(Constants.VisionConstants.kAprilCamera2Name);
 
         shooterPhotonEstimator = new PhotonPoseEstimator(Constants.VisionConstants.kTagLayout,
@@ -88,33 +91,31 @@ public class Vision extends SubsystemBase {
     }
 
     public void periodic() {
-        // Process shooter camera
+        Optional<EstimatedRobotPose> shooterEst = Optional.empty();
+        Optional<EstimatedRobotPose> intakeEst = Optional.empty();
+        List<PhotonTrackedTarget> shooterTargets = List.of();
+        List<PhotonTrackedTarget> intakeTargets = List.of();
+        
         for (var change : shooterCamera.getAllUnreadResults()) {
-            Optional<EstimatedRobotPose> visionEst = shooterPhotonEstimator.update(change);
-            updateEstimationStdDevs(visionEst, change.getTargets(), shooterPhotonEstimator);
-
-            visionEst.ifPresent(est -> {
-                var estStdDevs = getEstimationStdDevs();
-                swerve.addVisionMeasurement(
-                        est.estimatedPose.toPose2d(),
-                        est.timestampSeconds,
-                        estStdDevs);
-            });
+            shooterEst = shooterPhotonEstimator.update(change);
+            shooterTargets = change.getTargets();
+            System.out.println(shooterTargets);
         }
 
-        // Process intake camera
         for (var change : intakeCamera.getAllUnreadResults()) {
-            Optional<EstimatedRobotPose> visionEst = intakePhotonEstimator.update(change);
-            updateEstimationStdDevs(visionEst, change.getTargets(), intakePhotonEstimator);
-
-            visionEst.ifPresent(est -> {
-                var estStdDevs = getEstimationStdDevs();
-                swerve.addVisionMeasurement(
-                        est.estimatedPose.toPose2d(),
-                        est.timestampSeconds,
-                        estStdDevs);
-            });
+            intakeEst = intakePhotonEstimator.update(change);
+            intakeTargets = change.getTargets();
+            System.out.println(intakeTargets);
         }
+
+        updateEstimationStdDevs(shooterEst, intakeEst, shooterTargets, intakeTargets);
+
+        final var stdDevs = getEstimationStdDevs();
+
+        shooterEst.ifPresent(est -> swerve.addVisionMeasurement(
+                est.estimatedPose.toPose2d(), est.timestampSeconds, stdDevs));
+        intakeEst.ifPresent(est -> swerve.addVisionMeasurement(
+                est.estimatedPose.toPose2d(), est.timestampSeconds, stdDevs));
     }
 
     /**
@@ -128,11 +129,16 @@ public class Vision extends SubsystemBase {
      * @param photonEstimator The PhotonPoseEstimator associated with this camera
      */
     private void updateEstimationStdDevs(
-            Optional<EstimatedRobotPose> estimatedPose,
-            List<PhotonTrackedTarget> targets,
-            PhotonPoseEstimator photonEstimator) {
+            Optional<EstimatedRobotPose> shooterEst,
+            Optional<EstimatedRobotPose> intakeEst,
+            List<PhotonTrackedTarget> shooterTargets,
+            List<PhotonTrackedTarget> intakeTargets) {
 
-        if (estimatedPose.isEmpty()) {
+        // Determine which estimate to use as the pose reference (prefer multi-tag or
+        // first available)
+        Optional<EstimatedRobotPose> referenceEst = shooterEst.isPresent() ? shooterEst : intakeEst;
+
+        if (referenceEst.isEmpty()) {
             curStdDevs = VisionConstants.kSingleTagStdDevs;
             return;
         }
@@ -141,15 +147,28 @@ public class Vision extends SubsystemBase {
         int numTags = 0;
         double avgDist = 0;
 
-        for (var tgt : targets) {
-            var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+        // Accumulate tags from shooter camera
+        for (var tgt : shooterTargets) {
+            var tagPose = shooterPhotonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
             if (tagPose.isEmpty())
                 continue;
             numTags++;
             avgDist += tagPose.get()
                     .toPose2d()
                     .getTranslation()
-                    .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
+                    .getDistance(referenceEst.get().estimatedPose.toPose2d().getTranslation());
+        }
+
+        // Accumulate tags from intake camera
+        for (var tgt : intakeTargets) {
+            var tagPose = intakePhotonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+            if (tagPose.isEmpty())
+                continue;
+            numTags++;
+            avgDist += tagPose.get()
+                    .toPose2d()
+                    .getTranslation()
+                    .getDistance(referenceEst.get().estimatedPose.toPose2d().getTranslation());
         }
 
         if (numTags == 0) {
