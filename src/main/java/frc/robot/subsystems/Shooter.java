@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +26,8 @@ public class Shooter extends SubsystemBase {
     private final SparkMax hoodMotor = new SparkMax(Constants.ShooterConstants.kHoodMotorID, MotorType.kBrushless);
     private final SparkClosedLoopController hoodController = hoodMotor.getClosedLoopController();
     private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
+    private double targetSpeed = 0;
+    private PIDController shooterSpeedPID = new PIDController(0.01, 0.0001, 0.001);
 
     private final Swerve swerve;
     private final InterpolationMatrix interpolationMatrix;
@@ -45,11 +48,13 @@ public class Shooter extends SubsystemBase {
         hoodMotor.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         hoodEncoder.setPosition(0);
 
-        SmartDashboard.putNumber("Shooter Motor Speeds", -0.5);
+        SmartDashboard.putNumber("Shooter Target Speed", 2000);
+        SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
     }
 
     // Periodicly set the motors to the correct speed
     public void periodic() {
+        
 
         if (isRunning) {
             Pose2d currentPose = swerve.getPose();
@@ -61,14 +66,21 @@ public class Shooter extends SubsystemBase {
             double targetRotations = changeInHoodAngle / 360.0;
             //hoodController.setSetpoint(targetRotations, ControlType.kPosition);
 
-            double shooterMotorSpeeds = SmartDashboard.getNumber("Shooter Motor Speeds", -0.5);
-
-            topMotor.set(shooterMotorSpeeds);
-            bottomMotor.set(shooterMotorSpeeds);
+            targetSpeed = SmartDashboard.getNumber("Shooter Target Speed", 2000);
+            shooterSpeedPID.setSetpoint(-targetSpeed);
+            double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
+            SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
+            output = MathUtil.clamp(output, 0, 1);
+            topMotor.set(output);
+            bottomMotor.set(-output);
         } else {
             topMotor.set(0);
             bottomMotor.set(0);
         }
+    }
+
+    public void setMotorSpeed(double speed) {
+        this.targetSpeed = speed;
     }
 
     public boolean getIsRunning() {
