@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.apache.logging.log4j.Level;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -25,6 +27,8 @@ public class Constants {
      * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
      * @since 2025-10
      */
+
+    public static Level kLogLevel = Level.DEBUG;
 
     public static class DriveConstants {
         /**
@@ -123,6 +127,32 @@ public class Constants {
         public static final double kInterpolationLambda = 100;
         public static final double[] kPositions = {};
         public static final double[] kValues = {};
+    }
+    public static class IntakeConstants {
+        public static final int kDriveMotorID = 7;
+        public static final int kActuationMotorID = 6;
+
+        /** PID gains for intake actuation when moving in (retracted). */
+        public static final double kInP = 0.15;
+        public static final double kInI = 0.0;
+        public static final double kInD = 0.0;
+
+        /** PID gains for intake actuation when moving out (extended). */
+        public static final double kOutP = 0.08;
+        public static final double kOutI = 0.0;
+        public static final double kOutD = 0.0;
+
+        /** Actuation encoder setpoint when intake is out (extended). */
+        public static final double kActuationOutSetpoint = 4.6;
+
+        /** Drive motor output when intake is in (retracted). */
+        public static final double kDriveSpeedIn = 0.0;
+        /** Drive motor output when intake is out (running). */
+        public static final double kDriveSpeedOut = 1;
+
+        public static final double kIntakeActuationP = 0.0;
+        public static final double kIntakeActuationI = 0.0;
+        public static final double kIntakeActuationD = 0.0;
     }
 
     public static class HopperConstants {
