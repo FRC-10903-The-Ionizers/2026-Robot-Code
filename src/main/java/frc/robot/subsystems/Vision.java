@@ -82,9 +82,9 @@ public class Vision extends SubsystemBase {
         intakeCamera = new PhotonCamera(Constants.VisionConstants.kAprilCamera2Name);
 
         shooterPhotonEstimator = new PhotonPoseEstimator(Constants.VisionConstants.kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.VisionConstants.kCam1Position);
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.VisionConstants.kShooterCamPosition);
         intakePhotonEstimator = new PhotonPoseEstimator(Constants.VisionConstants.kTagLayout,
-                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.VisionConstants.kCam2Position);
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.VisionConstants.kIntakeCamPosition);
 
         shooterPhotonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
         intakePhotonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -99,13 +99,11 @@ public class Vision extends SubsystemBase {
         for (var change : shooterCamera.getAllUnreadResults()) {
             shooterEst = shooterPhotonEstimator.update(change);
             shooterTargets = change.getTargets();
-            System.out.println(shooterTargets);
         }
 
         for (var change : intakeCamera.getAllUnreadResults()) {
             intakeEst = intakePhotonEstimator.update(change);
             intakeTargets = change.getTargets();
-            System.out.println(intakeTargets);
         }
 
         updateEstimationStdDevs(shooterEst, intakeEst, shooterTargets, intakeTargets);

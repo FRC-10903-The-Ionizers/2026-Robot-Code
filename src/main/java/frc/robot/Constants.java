@@ -83,18 +83,19 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
-        public static String kAprilCamera1Name = "Arducam_OV9281_USB_Camera";
-        public static String kAprilCamera2Name = "Arducam_OV9782_USB_Camera";
+        public static String kAprilCamera1Name = "ShooterCamera";
+        public static String kAprilCamera2Name = "NonShooterCamera";
 
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
 
-        public static Transform3d kCam1Position = new Transform3d(new Translation3d(15.625, -13.625, -2), new Rotation3d(0, 35, -90));
-        public static Transform3d kCam2Position = new Transform3d(new Translation3d(-12.4375, -1, 9.5), new Rotation3d(0, 6, 90));
+        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0,-0.61086524, -1.5707));
+        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
 
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
+        
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
