@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.io.File;
+import java.util.Optional;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -65,6 +67,7 @@ public class Swerve extends SubsystemBase {
 
             System.out.println("Swerve is initialized!");
             initialized = true;
+
         } catch (Exception e) {
             System.out.println("Failed to load swerve config.");
             DriverStation.reportError("Failed to load swerve configuration from /deploy/swerve: " + e.getMessage(),
