@@ -6,7 +6,7 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
-import frc.robot.Constants.Vision;
+import frc.robot.Constants.VisionConstants;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
