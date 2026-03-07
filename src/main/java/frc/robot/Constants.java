@@ -120,8 +120,8 @@ public class Constants {
         public static final int kHoodMotorID = 4;
         public static final Pose2d kHubPose = new Pose2d();
         public static final double kInterpolationLambda = 100;
-        public static final double[] kDistancesToHub = {};
-        public static final double[] kHoodAngles = {};
+        public static final double[] kDistancesToHub = {1, 2, 3};
+        public static final double[] kHoodAngles = {2, 3, 4};
     }
 
     public static class HopperConstants {

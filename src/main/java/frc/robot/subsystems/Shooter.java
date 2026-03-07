@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.InterpolationMatrix;
@@ -43,6 +44,8 @@ public class Shooter extends SubsystemBase {
 
         hoodMotor.configure(hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         hoodEncoder.setPosition(0);
+
+        SmartDashboard.putNumber("Shooter Motor Speeds", -0.5);
     }
 
     // Periodicly set the motors to the correct speed
@@ -56,10 +59,12 @@ public class Shooter extends SubsystemBase {
             double changeInHoodAngle = getHoodAngleToMove(distance);
 
             double targetRotations = changeInHoodAngle / 360.0;
-            hoodController.setSetpoint(targetRotations, ControlType.kPosition);
+            //hoodController.setSetpoint(targetRotations, ControlType.kPosition);
 
-            topMotor.set(-0.5);
-            bottomMotor.set(-0.5);
+            double shooterMotorSpeeds = SmartDashboard.getNumber("Shooter Motor Speeds", -0.5);
+
+            topMotor.set(shooterMotorSpeeds);
+            bottomMotor.set(shooterMotorSpeeds);
         } else {
             topMotor.set(0);
             bottomMotor.set(0);
