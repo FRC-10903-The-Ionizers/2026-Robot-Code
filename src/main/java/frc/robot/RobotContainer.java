@@ -26,6 +26,7 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.Controller;
+import frc.robot.util.InterpolationMatrix;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.math.controller.PIDController;
 
@@ -38,15 +39,17 @@ public class RobotContainer {
      * @since 2025-10
      */
 
+    private final InterpolationMatrix interpolationMatrix = new InterpolationMatrix();
     private final static Logger logger = LogManager.getLogger(RobotContainer.class);
 
     private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(0);
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
+    private final Vision vision = new Vision(swerve);
+    private final Shooter shooter = new Shooter(swerve, interpolationMatrix);
     // private final Vision vision = new Vision(swerve);
     private final Intake intake = new Intake(swerve);
-    private final Shooter shooter = new Shooter(swerve);
     private final Hopper hopper = new Hopper();
     CommandXboxController xboxController = new CommandXboxController(0);
 
@@ -108,7 +111,6 @@ public class RobotContainer {
         xboxController.x().onTrue(intake.getIntakeOutCommand());
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().onTrue(intake.getIntakeInCommand());
-        xboxController.y().toggleOnTrue(new MovementOriented(swerve, controller));
         //xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
         //xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
 
