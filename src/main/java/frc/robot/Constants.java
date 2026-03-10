@@ -10,7 +10,9 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
@@ -71,6 +73,11 @@ public class Constants {
                 Constants.DriveConstants.kHeadingP,
                 Constants.DriveConstants.kHeadingI,
                 Constants.DriveConstants.kHeadingD);
+
+        public static final Pose2d kBlueBottomTrenchLocation = new Pose2d(new Translation2d(4.622, 0.648), new Rotation2d());
+        public static final Pose2d kBlueTopTrenchLocation = new Pose2d(new Translation2d(4.622, 7.423), new Rotation2d());
+        public static final Pose2d kRedBottomTrenchLocation = new Pose2d(new Translation2d(11.919, 0.648), new Rotation2d());
+        public static final Pose2d kRedTopTrenchLocation = new Pose2d(new Translation2d(11.919, 7.423), new Rotation2d());
         // pid controllers here
 
         static {
@@ -159,4 +166,5 @@ public class Constants {
         public static final int kSpindaxerMotorID = 1;
         public static final int kBobMotorID = 5;
     }
+
 }

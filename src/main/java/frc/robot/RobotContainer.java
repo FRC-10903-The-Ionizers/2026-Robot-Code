@@ -27,6 +27,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Intake;
 import frc.robot.util.Controller;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.DrivingCommands.GoToNearestTrench;
 import edu.wpi.first.math.controller.PIDController;
 
 public class RobotContainer {
@@ -124,10 +125,12 @@ public class RobotContainer {
         //xboxController.x().whileTrue(new MovementOriented(swerve, controller));
         //xboxController.x().whileTrue(new MovementOriented(swerve, controller));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
-        xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
-        xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
-        xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
+
+        xboxController.povLeft().onTrue(new GoToNearestTrench(swerve).driveToNearestTrench());
+        // xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        // xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
+        // xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
+        // xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
 
         // change gear commands
         xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
