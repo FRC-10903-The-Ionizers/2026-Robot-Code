@@ -7,6 +7,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.util.Controller;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MovementOriented extends Command {
   /**
@@ -56,7 +58,7 @@ public class MovementOriented extends Command {
       headingController.setSetpoint(movementDirection);
       double rotationOutput = headingController.calculate(swerve.getPose().getRotation().getRadians());
       
-      double currentGear = swerve.getCurrentGear();
+      double currentGear = Swerve.getCurrentGear();
       swerve.drive(translation.times(currentGear), rotationOutput, true);
   };
 }

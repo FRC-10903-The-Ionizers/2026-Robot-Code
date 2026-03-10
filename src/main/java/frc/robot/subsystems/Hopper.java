@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Hopper extends SubsystemBase{
 
@@ -35,6 +37,7 @@ public class Hopper extends SubsystemBase{
             double bobMotorSpeed = SmartDashboard.getNumber("Bob Motor Speed", 0.75);
             bobMotor.set(bobMotorSpeed);
         } else {
+            spindexerMotor.set(0);
             bobMotor.set(0);
         }
     }
@@ -43,24 +46,11 @@ public class Hopper extends SubsystemBase{
         return isSpindexerRunning;
     }
 
-    public boolean getIsBobRunning(){
-        return isBobRunning;
-    }
-
     public void setIsSpindexerRunning(boolean isRunning){
         this.isSpindexerRunning = isRunning;
-    }
-
-    public void setIsBobRunning(boolean isRunning){
-        this.isBobRunning = isRunning;
     }
 
     public void toggleIsSpindexerRunning(){
         isSpindexerRunning = !isSpindexerRunning;
     }
-
-    public void toggleIsBobRunning(){
-        isBobRunning = !isBobRunning;
-    }
-
 }
