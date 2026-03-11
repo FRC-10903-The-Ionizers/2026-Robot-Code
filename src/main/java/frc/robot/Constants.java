@@ -127,11 +127,9 @@ public class Constants {
         public static final double kShooterI = 0.0;
         public static final double kShooterD = 0.005;
         public static final double kShooterFF = 0.999;
-        public static final Pose2d kHubPose = new Pose2d();
         public static final double kInterpolationLambda = 100;
 
         public static final double[] kDistancesToHub = {1, 2};
-        public static final double[] kHoodAngles = {2, 3};
         public static final double[] kShooterSpeeds = {3, 5};
 
         public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1

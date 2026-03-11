@@ -111,8 +111,8 @@ public class RobotContainer {
         xboxController.x().onTrue(intake.getIntakeOutCommand());
         // Bind aligning command to another button (e.g., B button)
         xboxController.b().onTrue(intake.getIntakeInCommand());
-        //xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-        //xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
+        xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
+        xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
 
         // Bind aligning command to another button (e.g., B button)
 

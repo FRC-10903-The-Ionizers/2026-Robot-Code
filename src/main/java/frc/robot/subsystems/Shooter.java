@@ -6,10 +6,17 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.InterpolationMatrix;
+
+import java.util.Optional;
+
 import com.revrobotics.RelativeEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,14 +54,32 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Target Speed", 2000);
         SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("Hood Target Angle", targetHoodAngle);
+        SmartDashboard.putNumber("Distance to hub", 0);
     }
 
     // Periodicly set the motors to the correct speed
     public void periodic() {
+
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        Pose2d currentPose = swerve.getPose();
+
+
+        if (ally.isPresent()) {
+            if (ally.get() == Alliance.Red) {
+                SmartDashboard.putNumber("Distance to Hub", (currentPose.getTranslation().getDistance(new Translation2d(11.92, 4.035))));
+            }
+            if (ally.get() == Alliance.Blue) {
+                SmartDashboard.putNumber("Distance to Hub", (currentPose.getTranslation().getDistance(new Translation2d(4.62, 4.035))));
+            }
+        }
+        else {
+            System.out.println("Alliance not detected!");
+        }
+
         targetHoodAngle = SmartDashboard.getNumber("Hood Target Angle", targetHoodAngle);
         hoodPID.setSetpoint(targetHoodAngle);
         double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
-        System.out.println("Current hood angle: " + hoodEncoder.getPosition() + ", Target hood angle: " + targetHoodAngle + ", Output: " + hoodOutput + ", Current: " + hoodMotor.getOutputCurrent());
+        // System.out.println("Current hood angle: " + hoodEncoder.getPosition() + ", Target hood angle: " + targetHoodAngle + ", Output: " + hoodOutput + ", Current: " + hoodMotor.getOutputCurrent());
         // if (Math.abs(hoodEncoder.getVelocity()) < 0.05 && Math.abs(hoodOutput) > 0.05) {
         //     hoodOutput = Math.signum(hoodOutput) * 0.6;
         // }
@@ -97,16 +122,11 @@ public class Shooter extends SubsystemBase {
 
         
         if (isRunning) {
-            Pose2d currentPose = swerve.getPose();
-            Pose2d hubPose = Constants.ShooterConstants.kHubPose;
-
-            double distance = currentPose.getTranslation().getDistance(hubPose.getTranslation());
-
             targetSpeed = SmartDashboard.getNumber("Shooter Target Speed", 2000);
             shooterSpeedPID.setSetpoint(-targetSpeed);
             double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
             SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
-            output = MathUtil.clamp(output, 0, 1);
+            output = MathUtil.clamp(output, -1, 0);
             output = (prevOutput * Constants.ShooterConstants.kShooterFF) + (1-Constants.ShooterConstants.kShooterFF) * output;
             prevOutput = output;
             topMotor.set(output);
@@ -131,6 +151,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void toggleIsRunning() {
+        System.out.println("shooter running" + !isRunning);
         isRunning = !isRunning;
     }
 

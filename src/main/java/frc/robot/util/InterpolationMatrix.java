@@ -5,11 +5,11 @@ import frc.robot.Constants;
 public class InterpolationMatrix {
 
     private static final double[] whittakerSmoothedDistances;
-    private static final double[] whittakerSmoothedHoodAngles;
+    private static final double[] whittakerSmoothedShooterSpeeds;
 
     static {
         whittakerSmoothedDistances = whittakerSmoothing(Constants.ShooterConstants.kDistancesToHub);
-        whittakerSmoothedHoodAngles = whittakerSmoothing(Constants.ShooterConstants.kHoodAngles);
+        whittakerSmoothedShooterSpeeds = whittakerSmoothing(Constants.ShooterConstants.kShooterSpeeds);
     }
 
     private static double[] whittakerSmoothing(double[] x) {
@@ -95,15 +95,15 @@ public class InterpolationMatrix {
     public double interpolate(double distance) {
 
         if (distance <= whittakerSmoothedDistances[0]){
-            double[] p1 = {whittakerSmoothedDistances[0], whittakerSmoothedHoodAngles[0]};
-            double[] p2 = {whittakerSmoothedDistances[1], whittakerSmoothedHoodAngles[1]};
+            double[] p1 = {whittakerSmoothedDistances[0], whittakerSmoothedShooterSpeeds[0]};
+            double[] p2 = {whittakerSmoothedDistances[1], whittakerSmoothedShooterSpeeds[1]};
             double slope = (p2[1] - p1[1])/(p2[0] - p1[0]);
             return slope*distance;
         }
 
         if (distance >= whittakerSmoothedDistances[whittakerSmoothedDistances.length - 1]){
-            double[] p1 = {whittakerSmoothedDistances[whittakerSmoothedDistances.length - 2], whittakerSmoothedHoodAngles[whittakerSmoothedHoodAngles.length - 2]};
-            double[] p2 = {whittakerSmoothedDistances[whittakerSmoothedDistances.length - 1], whittakerSmoothedHoodAngles[whittakerSmoothedHoodAngles.length - 1]};
+            double[] p1 = {whittakerSmoothedDistances[whittakerSmoothedDistances.length - 2], whittakerSmoothedShooterSpeeds[whittakerSmoothedShooterSpeeds.length - 2]};
+            double[] p2 = {whittakerSmoothedDistances[whittakerSmoothedDistances.length - 1], whittakerSmoothedShooterSpeeds[whittakerSmoothedShooterSpeeds.length - 1]};
             double slope = (p2[1] - p1[1])/(p2[0] - p1[0]);
             return slope*distance;
         }
@@ -121,6 +121,6 @@ public class InterpolationMatrix {
         }
 
         double fraction = (distance - whittakerSmoothedDistances[left]) / (whittakerSmoothedDistances[right] - whittakerSmoothedDistances[left]);
-        return whittakerSmoothedHoodAngles[left] * (1 - fraction) + whittakerSmoothedHoodAngles[right] * fraction;
+        return whittakerSmoothedShooterSpeeds[left] * (1 - fraction) + whittakerSmoothedShooterSpeeds[right] * fraction;
     }
 }

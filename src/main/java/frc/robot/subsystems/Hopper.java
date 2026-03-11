@@ -33,7 +33,7 @@ public class Hopper extends SubsystemBase{
             spindexerMotor.set(0);
         }
 
-        if(isBobRunning){
+        if(isSpindexerRunning){
             double bobMotorSpeed = SmartDashboard.getNumber("Bob Motor Speed", 0.75);
             bobMotor.set(bobMotorSpeed);
         } else {
