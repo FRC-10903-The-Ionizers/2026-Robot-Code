@@ -59,22 +59,27 @@ public class Shooter extends SubsystemBase {
 
     // Periodicly set the motors to the correct speed
     public void periodic() {
-
+        
         Optional<Alliance> ally = DriverStation.getAlliance();
         Pose2d currentPose = swerve.getPose();
-
+        double distanceToHub = 0;
 
         if (ally.isPresent()) {
             if (ally.get() == Alliance.Red) {
                 SmartDashboard.putNumber("Distance to Hub", (currentPose.getTranslation().getDistance(new Translation2d(11.92, 4.035))));
+                distanceToHub = currentPose.getTranslation().getDistance(new Translation2d(11.92, 4.035));
             }
             if (ally.get() == Alliance.Blue) {
                 SmartDashboard.putNumber("Distance to Hub", (currentPose.getTranslation().getDistance(new Translation2d(4.62, 4.035))));
+                distanceToHub = currentPose.getTranslation().getDistance(new Translation2d(4.62, 4.035));
             }
         }
         else {
             System.out.println("Alliance not detected!");
         }
+
+        double interpolatedHoodAngle = interpolationMatrix.interpolateHoodAngle(distanceToHub);
+        double interpolatedShooterSpeed = interpolationMatrix.interpolateShooterSpeeds(distanceToHub);
 
         targetHoodAngle = SmartDashboard.getNumber("Hood Target Angle", targetHoodAngle);
         hoodPID.setSetpoint(targetHoodAngle);

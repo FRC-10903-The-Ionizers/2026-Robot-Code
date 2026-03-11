@@ -131,6 +131,7 @@ public class Constants {
 
         public static final double[] kDistancesToHub = {1, 2};
         public static final double[] kShooterSpeeds = {3, 5};
+        public static final double[] kHoodAngles = {0, 1};
 
         public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
     }

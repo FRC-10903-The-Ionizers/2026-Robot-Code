@@ -6,10 +6,12 @@ public class InterpolationMatrix {
 
     private static final double[] whittakerSmoothedDistances;
     private static final double[] whittakerSmoothedShooterSpeeds;
+    private static final double[] whittakerSmoothedHoodAngles;
 
     static {
         whittakerSmoothedDistances = whittakerSmoothing(Constants.ShooterConstants.kDistancesToHub);
         whittakerSmoothedShooterSpeeds = whittakerSmoothing(Constants.ShooterConstants.kShooterSpeeds);
+        whittakerSmoothedHoodAngles = whittakerSmoothing(Constants.ShooterConstants.kHoodAngles);
     }
 
     private static double[] whittakerSmoothing(double[] x) {
@@ -92,7 +94,7 @@ public class InterpolationMatrix {
         return z;
     }
 
-    public double interpolate(double distance) {
+    public double interpolateShooterSpeeds(double distance) {
 
         if (distance <= whittakerSmoothedDistances[0]){
             double[] p1 = {whittakerSmoothedDistances[0], whittakerSmoothedShooterSpeeds[0]};
@@ -122,5 +124,37 @@ public class InterpolationMatrix {
 
         double fraction = (distance - whittakerSmoothedDistances[left]) / (whittakerSmoothedDistances[right] - whittakerSmoothedDistances[left]);
         return whittakerSmoothedShooterSpeeds[left] * (1 - fraction) + whittakerSmoothedShooterSpeeds[right] * fraction;
+    }
+
+    public double interpolateHoodAngle(double distance) {
+
+        if (distance <= whittakerSmoothedDistances[0]){
+            double[] p1 = {whittakerSmoothedDistances[0], whittakerSmoothedHoodAngles[0]};
+            double[] p2 = {whittakerSmoothedDistances[1], whittakerSmoothedHoodAngles[1]};
+            double slope = (p2[1] - p1[1])/(p2[0] - p1[0]);
+            return slope*distance;
+        }
+
+        if (distance >= whittakerSmoothedDistances[whittakerSmoothedDistances.length - 1]){
+            double[] p1 = {whittakerSmoothedDistances[whittakerSmoothedDistances.length - 2], whittakerSmoothedHoodAngles[whittakerSmoothedHoodAngles.length - 2]};
+            double[] p2 = {whittakerSmoothedDistances[whittakerSmoothedDistances.length - 1], whittakerSmoothedHoodAngles[whittakerSmoothedHoodAngles.length - 1]};
+            double slope = (p2[1] - p1[1])/(p2[0] - p1[0]);
+            return slope*distance;
+        }
+
+        int left = 0;
+        int right = whittakerSmoothedDistances.length - 1;
+
+        while (left < right - 1) {
+            int mid = (left + right) / 2;
+            if (whittakerSmoothedDistances[mid] <= distance) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+
+        double fraction = (distance - whittakerSmoothedDistances[left]) / (whittakerSmoothedDistances[right] - whittakerSmoothedDistances[left]);
+        return whittakerSmoothedHoodAngles[left] * (1 - fraction) + whittakerSmoothedHoodAngles[right] * fraction;
     }
 }
