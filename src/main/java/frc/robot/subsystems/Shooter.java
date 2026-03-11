@@ -160,12 +160,6 @@ public class Shooter extends SubsystemBase {
         isRunning = !isRunning;
     }
 
-    public double getHoodAngleToMove(double distanceToHub) {
-        double interpolatedHoodAngle = interpolationMatrix.interpolate(distanceToHub);
-        double currentHoodAngle = hoodEncoder.getPosition() * 360.0;
-        return interpolatedHoodAngle - currentHoodAngle;
-    }
-
     public void setHoodAngle(double angle) {
         this.targetHoodAngle = angle;
         System.out.println("Setting hood angle to " + angle);
