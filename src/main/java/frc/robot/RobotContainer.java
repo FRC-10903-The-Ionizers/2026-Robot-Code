@@ -1,12 +1,16 @@
 package frc.robot;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.DriveWhileLocked; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.AimAtTranslationDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
 import frc.robot.stateSensors.RegionHandler;
@@ -43,7 +47,7 @@ public class RobotContainer {
     private final static Logger logger = LogManager.getLogger(RobotContainer.class);
 
     private final Swerve swerve = new Swerve();
-    private final Controller controller = new Controller(0);
+    private final Controller controller = new Controller(Constants.kXboxControllerPort);
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
@@ -51,7 +55,7 @@ public class RobotContainer {
     // private final Vision vision = new Vision(swerve);
     private final Intake intake = new Intake(swerve);
     private final Hopper hopper = new Hopper();
-    CommandXboxController xboxController = new CommandXboxController(0);
+    private final CommandXboxController xboxController = new CommandXboxController(Constants.kXboxControllerPort);
 
     public RobotContainer() {
         /**
@@ -108,9 +112,11 @@ public class RobotContainer {
          */
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
-        xboxController.x().onTrue(intake.getIntakeOutCommand());
-        // Bind aligning command to another button (e.g., B button)
-        xboxController.b().onTrue(intake.getIntakeInCommand());
+        xboxController.x().onTrue(intake.toggleIntakeCommand());
+        xboxController.b().whileTrue(new AimAtTranslationDrive(swerve, 
+            controller, 
+            getTargetHubTranslation())
+        ); // Example: Lock to 90 degrees while driving
         xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
         xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
 
@@ -171,5 +177,15 @@ public class RobotContainer {
         // // Combined trigger example
         // inRegion1.and(inRegion2).onTrue(Commands.runOnce(() ->
         // System.out.println("Robot is in both region1 and region2")));
+    }
+
+    public static Translation2d getTargetHubTranslation() {
+        Optional<Alliance> ally = DriverStation.getAlliance();
+
+        if (!ally.isPresent()) {
+            System.out.println("Alliance not detected!");
+        }
+
+        return (ally.get() == Alliance.Red) ? Constants.ShooterConstants.kRedHubTranslation : Constants.ShooterConstants.kBlueHubTranslation;
     }
 }

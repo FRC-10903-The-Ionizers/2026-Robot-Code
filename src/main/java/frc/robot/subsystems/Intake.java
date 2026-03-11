@@ -83,4 +83,14 @@ public class Intake extends SubsystemBase {
     public Command getIntakeInCommand() {
         return Commands.runOnce(() -> intakeIn(), this);
     }
+
+    public Command toggleIntakeCommand() {
+        return Commands.runOnce(() -> {
+            if (intakeIn) {
+                intakeOut();
+            } else {
+                intakeIn();
+            }
+        }, this);
+    }
 }

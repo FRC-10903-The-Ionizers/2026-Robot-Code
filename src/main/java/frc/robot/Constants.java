@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.Level;
 
 import choreo.auto.AutoFactory;
@@ -11,12 +13,15 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
@@ -29,6 +34,7 @@ public class Constants {
      */
 
     public static Level kLogLevel = Level.DEBUG;
+    public static int kXboxControllerPort = 0;
 
     public static class DriveConstants {
         /**
@@ -129,6 +135,8 @@ public class Constants {
         public static final double kShooterFF = 0.999;
         public static final double kInterpolationLambda = 100;
 
+        public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
+        public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
         public static final double[] kDistancesToHub = {1, 2};
         public static final double[] kShooterSpeeds = {3, 5};
         public static final double[] kHoodAngles = {0, 1};

@@ -10,7 +10,7 @@ import frc.robot.Constants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DriveWhileLocked extends Command {
+public class AimAtTranslationDrive extends Command {
     /**
      * DriveWhileLocked command for the robot. Drives the robot while maintaining a locked orientation.
      * 
@@ -19,13 +19,11 @@ public class DriveWhileLocked extends Command {
      */
     private final Swerve swerve;
     private final Controller controller;
-    private final Pose2d targetPose;
+    private final Translation2d targetTranslation;
 
-    // private final PIDController xController = Constants.DriveConstants.kXController;
-    // private final PIDController yController = Constants.DriveConstants.kYController;
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
-    public DriveWhileLocked(Swerve swerve, Controller controller, Pose2d targetPose) {
+    public AimAtTranslationDrive(Swerve swerve, Controller controller, Translation2d targetTranslation) {
         /**
          * Constructor which sets swerve and controller class variables
          * 
@@ -34,7 +32,7 @@ public class DriveWhileLocked extends Command {
          */
         this.swerve = swerve;
         this.controller = controller;
-        this.targetPose = targetPose;
+        this.targetTranslation = targetTranslation;
         addRequirements(swerve);
     }
 
@@ -49,8 +47,7 @@ public class DriveWhileLocked extends Command {
         double currentX = currentPosition.getX();
         double currentY = currentPosition.getY();
         Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
-        double target_angle = Math.atan2(this.targetPose.getY() - currentY, this.targetPose.getX() - currentX);
-
+        double target_angle = Math.atan2(this.targetTranslation.getY() - currentY, this.targetTranslation.getX() - currentX);
 
         headingController.setSetpoint(target_angle);
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
