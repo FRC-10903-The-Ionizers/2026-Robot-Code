@@ -53,6 +53,10 @@ def includeDesktopSupport = true
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 5.
 dependencies {
+    implementation platform('org.apache.logging.log4j:log4j-bom:2.25.3')
+    implementation 'org.apache.logging.log4j:log4j-api:${log4j-api.version}'
+    implementation 'org.apache.logging.log4j:log4j-core'
+
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()

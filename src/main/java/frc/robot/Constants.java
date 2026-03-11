@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.apache.logging.log4j.Level;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -25,6 +27,8 @@ public class Constants {
      * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
      * @since 2025-10
      */
+
+    public static Level kLogLevel = Level.DEBUG;
 
     public static class DriveConstants {
         /**
@@ -83,18 +87,19 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
-        public static String kAprilCamera1Name = "Arducam_OV9281_USB_Camera";
-        public static String kAprilCamera2Name = "Arducam_OV9282_USB_Camera";
+        public static String kAprilCamera1Name = "ShooterCamera";
+        public static String kAprilCamera2Name = "NonShooterCamera";
 
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
 
-        public static Transform3d kCam1Position = new Transform3d(new Translation3d(15.625, -13.625, -2), new Rotation3d(0, 35, -90));
-        public static Transform3d kCam2Position = new Transform3d(new Translation3d(-12.4375, -1, 9.5), new Rotation3d(0, 6, 90));
+        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0,-0.61086524, -1.5707));
+        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
 
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
+        
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
@@ -130,6 +135,32 @@ public class Constants {
         public static final double[] kShooterSpeeds = {3, 5};
 
         public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
+    }
+    public static class IntakeConstants {
+        public static final int kDriveMotorID = 7;
+        public static final int kActuationMotorID = 6;
+
+        /** PID gains for intake actuation when moving in (retracted). */
+        public static final double kInP = 0.15;
+        public static final double kInI = 0.0;
+        public static final double kInD = 0.0;
+
+        /** PID gains for intake actuation when moving out (extended). */
+        public static final double kOutP = 0.08;
+        public static final double kOutI = 0.0;
+        public static final double kOutD = 0.0;
+
+        /** Actuation encoder setpoint when intake is out (extended). */
+        public static final double kActuationOutSetpoint = 4.6;
+
+        /** Drive motor output when intake is in (retracted). */
+        public static final double kDriveSpeedIn = 0.0;
+        /** Drive motor output when intake is out (running). */
+        public static final double kDriveSpeedOut = 0.625;
+
+        public static final double kIntakeActuationP = 0.0;
+        public static final double kIntakeActuationI = 0.0;
+        public static final double kIntakeActuationD = 0.0;
     }
 
     public static class HopperConstants {
