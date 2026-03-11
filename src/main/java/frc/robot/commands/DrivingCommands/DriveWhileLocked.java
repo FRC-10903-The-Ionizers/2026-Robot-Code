@@ -1,14 +1,12 @@
 package frc.robot.commands.DrivingCommands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
-import edu.wpi.first.math.controller.PIDController;
-import frc.robot.Constants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DriveWhileLocked extends Command {
     /**
