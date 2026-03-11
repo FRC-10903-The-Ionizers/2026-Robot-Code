@@ -19,7 +19,10 @@ public class Shooter extends SubsystemBase {
 
     private final SparkMax hoodMotor = new SparkMax(Constants.ShooterConstants.kHoodMotorID, MotorType.kBrushless);
     private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
-    private final PIDController hoodPID = new PIDController(0.2, 0, 0); // Tune these values
+    private final PIDController hoodPID = new PIDController(0.5, 0, 0.2);
+    private double prevHoodOutput = 0; // Tune these values
+    private final double kHoodFF = 0.95; // Feedforward for hood motor, tune this value
+    private final double kHoodClipping = 0.3;
 
     private double targetSpeed = 0;
     private PIDController shooterSpeedPID = new PIDController(0.01, 0, 0.005);
@@ -30,7 +33,9 @@ public class Shooter extends SubsystemBase {
     private boolean isRunning = false;
 
     private double targetHoodAngle = 0;
-
+    // p=0.15
+    // i = 0.05
+    // d = 0.07
     public Shooter(Swerve swerve, InterpolationMatrix interpolationMatrix) {
         this.swerve = swerve;
         this.interpolationMatrix = interpolationMatrix;
@@ -39,21 +44,55 @@ public class Shooter extends SubsystemBase {
 
         SmartDashboard.putNumber("Shooter Target Speed", 2000);
         SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Hood Target Angle", targetHoodAngle);
     }
 
     // Periodicly set the motors to the correct speed
     public void periodic() {
+        targetHoodAngle = SmartDashboard.getNumber("Hood Target Angle", targetHoodAngle);
+        hoodPID.setSetpoint(targetHoodAngle);
+        double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
+        System.out.println("Current hood angle: " + hoodEncoder.getPosition() + ", Target hood angle: " + targetHoodAngle + ", Output: " + hoodOutput + ", Current: " + hoodMotor.getOutputCurrent());
+        // if (Math.abs(hoodEncoder.getVelocity()) < 0.05 && Math.abs(hoodOutput) > 0.05) {
+        //     hoodOutput = Math.signum(hoodOutput) * 0.6;
+        // }
+        hoodOutput = MathUtil.clamp(hoodOutput, -kHoodClipping, kHoodClipping);
+        hoodOutput = (prevHoodOutput * kHoodFF) + (1-kHoodFF) * hoodOutput;
+        prevHoodOutput = hoodOutput;
+        hoodMotor.set(-hoodOutput);
+        
         // Convert angle to encoder units if needed
-        if (targetHoodAngle > hoodEncoder.getPosition()+0.05){
-            hoodMotor.set(-0.1);
-        } else if (targetHoodAngle < hoodEncoder.getPosition()-0.05){
-            hoodMotor.set(0.1);
-        } else {
-            hoodMotor.set(0);
-        }
+        // if (targetHoodAngle > hoodEncoder.getPosition()+0.05){
+        //     System.out.print(hoodEncoder.getPosition());
+        //     System.out.print(", target: ");
+        //     System.out.print(targetHoodAngle);
+        //     System.out.print(", current: ");
+        //     System.out.print(hoodMotor.getOutputCurrent());
+        //     System.out.println("Moving hood down");
+        //     if (Math.abs(hoodEncoder.getVelocity()) < 0.01) {
+        //         System.out.println("Hood is stalled, kicking motor");
+        //         hoodMotor.set(-0.4);
+        //     } else {
+        //         hoodMotor.set(-0.1);
+        //     }
+        // } else if (targetHoodAngle < hoodEncoder.getPosition()-0.05){
+        //     System.out.print(hoodEncoder.getPosition());
+        //      System.out.print(", target: ");
+        //     System.out.print(targetHoodAngle);
+        //     System.out.print(", current: ");
+        //     System.out.print(hoodMotor.getOutputCurrent());
+        //     System.out.println("Moving hood up");
+        //     if (Math.abs(hoodEncoder.getVelocity()) < 0.01) {
+        //         System.out.println("Hood is stalled, kicking motor");
+        //         hoodMotor.set(0.4);
+        //     } else {
+        //         hoodMotor.set(0.1);
+        //     }
+        // } else {
+        //     hoodMotor.set(0);
+        // }
 
 
-        System.out.println(hoodMotor.getEncoder().getPosition());
         
         if (isRunning) {
             Pose2d currentPose = swerve.getPose();
