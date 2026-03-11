@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.Level;
 
 import choreo.auto.AutoFactory;
@@ -28,6 +30,7 @@ public class Constants {
      */
 
     public static Level kLogLevel = Level.DEBUG;
+    public static int kXboxControllerPort = 0;
 
     public static class DriveConstants {
         /**
@@ -128,6 +131,8 @@ public class Constants {
         public static final double kShooterFF = 0.999;
         public static final double kInterpolationLambda = 100;
 
+        public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
+        public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
         public static final double[] kDistancesToHub = {1, 2};
         public static final double[] kShooterSpeeds = {3, 5};
         public static final double[] kHoodAngles = {0, 1};
