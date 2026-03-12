@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.io.File;
+import java.util.Optional;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +24,8 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Swerve extends SubsystemBase {
     /**
@@ -29,6 +33,8 @@ public class Swerve extends SubsystemBase {
      * 
      * @since 2025-10
      */
+
+    private final static Logger logger = LogManager.getLogger(Swerve.class);
     private SwerveDrive swerveDrive;
     private boolean initialized = false;
     private Field2d field = new Field2d();
@@ -39,8 +45,7 @@ public class Swerve extends SubsystemBase {
 
     private static boolean isLockedPosition = false;
     public static double currentGear = 1.0;
-    
-    
+
     public Swerve() {
         /**
          * Swerve constructor for the robot.
@@ -50,7 +55,7 @@ public class Swerve extends SubsystemBase {
          * @return void
          */
         try {
-            double maximumSpeed = Units.feetToMeters(4.5);
+            double maximumSpeed = Units.feetToMeters(20);
 
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
@@ -63,12 +68,11 @@ public class Swerve extends SubsystemBase {
 
             swerveDrive.resetOdometry(new Pose2d(0, 0, Rotation2d.kZero));
 
-            System.out.println("Swerve is initialized!");
+            logger.debug("Swerve initialized!");
             initialized = true;
+
         } catch (Exception e) {
-            System.out.println("Failed to load swerve config.");
-            DriverStation.reportError("Failed to load swerve configuration from /deploy/swerve: " + e.getMessage(),
-                    e.getStackTrace());
+            logger.fatal("FALIED TO LOAD SWERVE CONFIG", e);
         }
     }
 
@@ -77,6 +81,7 @@ public class Swerve extends SubsystemBase {
          * Periodic method for the swerve subsystem.
          * 
          * Updates the field position of the robot.
+         * 
          * @args None
          * @since 2025-10
          * @return void
@@ -126,7 +131,7 @@ public class Swerve extends SubsystemBase {
          */
         if (!initialized)
             return new Pose2d();
-            
+
         return swerveDrive.getPose();
     }
 
@@ -146,14 +151,13 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds speeds = new ChassisSpeeds(
                 sample.vx + xController.calculate(pose.getX(), sample.x),
                 sample.vy + yController.calculate(pose.getY(), sample.y),
-                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading)
-            );
+                sample.omega + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
         double xSpeed = speeds.vxMetersPerSecond;
         double ySpeed = speeds.vyMetersPerSecond;
         double rotation = speeds.omegaRadiansPerSecond;
 
-        swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);  
+        swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);
     }
 
     public SwerveDrive getSwerveDrive() {
@@ -169,17 +173,17 @@ public class Swerve extends SubsystemBase {
 
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
         /**
-         * Adds a vision measurement to the swerve drive, uses standard 
+         * Adds a vision measurement to the swerve drive, uses standard
          * deviations to weight the measurement along with swerve drive's odometry.
          * 
          * @args Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs
          * @since 2025-10
          * @return void
          */
-        if (!initialized){
+        if (!initialized) {
             return;
         }
-        
+
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
     }
 
@@ -205,7 +209,7 @@ public class Swerve extends SubsystemBase {
         currentGear = gearMultiplier;
     }
 
-    public void drive(Translation2d translation, double rotation, boolean isFieldRelative){
+    public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
         /**
          * Drives the robot.
          * 
@@ -219,9 +223,8 @@ public class Swerve extends SubsystemBase {
             // lock the brakes
             swerveDrive.setMotorIdleMode(true);
             return;
-        }
-       else {
-            swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);    
+        } else {
+            swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);
         }
     }
 }

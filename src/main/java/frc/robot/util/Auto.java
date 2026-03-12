@@ -26,6 +26,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.subsystems.Swerve;
 import frc.robot.stateSensors.RegionHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Auto {
     /**
@@ -40,6 +42,7 @@ public class Auto {
     private final AutoChooser branchingAutoChooser;
     private static Swerve swerve;
     private final RegionHandler regionHandler;
+    private static final Logger logger = LogManager.getLogger(Auto.class);
 
     public Auto(AutoFactory factory, Swerve swerve, RegionHandler regionHandler) {
         /**
@@ -74,7 +77,8 @@ public class Auto {
         // Wrap everything in a deferred command so pose is read at execution time
 
         if (gameData.length() < 1) {
-            throw new Error("Nothing in gameData");
+            logger.error("Nothing in gameData in DS!");
+            throw new Error();
         }
 
         switch (gameData.charAt(0)) {
@@ -245,7 +249,7 @@ public class Auto {
                                 AutoTrajectory bumpTrajectory = routine.trajectory("RedBottomBump");
 
                                 return Commands.sequence(
-                                        Commands.print("In region 1"),
+                                        Commands.print("In region 8"),
                                         trajectory.resetOdometry(),
                                         cmdWithAccuracy(trajectory),
                                         new ConditionalCommand(
@@ -269,7 +273,8 @@ public class Auto {
                         }, Set.of(swerve)));
                 return routine;
         default:
-            throw new Error("Not the right gamedata in gamedata section... needs to be 'B' or 'R'");
+            logger.info("Not the right gamedata in gamedata section... needs to be 'B' or 'R'");
+            throw new Error();
         }
     }
 

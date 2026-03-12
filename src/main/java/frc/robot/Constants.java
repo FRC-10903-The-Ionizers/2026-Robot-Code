@@ -1,19 +1,28 @@
 package frc.robot;
 
+import java.util.Optional;
+
+import org.apache.logging.log4j.Level;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 
 public class Constants {
     /**
@@ -22,6 +31,9 @@ public class Constants {
      * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
      * @since 2025-10
      */
+
+    public static Level kLogLevel = Level.DEBUG;
+    public static int kXboxControllerPort = 0;
 
     public static class DriveConstants {
         /**
@@ -34,7 +46,7 @@ public class Constants {
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
-        public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
+        public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
 
         public static final double kMinimumDistanceToStop = 0.1;
 
@@ -72,7 +84,7 @@ public class Constants {
 
     }
 
-    public static class Vision {
+    public static class VisionConstants {
         /**
          * Vision constants for the robot. Make sure to set the camera names in case u
          * have different cameras.
@@ -80,13 +92,19 @@ public class Constants {
          * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
-        public static String kAprilCameraName = "Arducam_OV9281_USB_Camera";
+        public static String kAprilCamera1Name = "ShooterCamera";
+        public static String kAprilCamera2Name = "NonShooterCamera";
+
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
-        public static Transform3d kRobotToCam = new Transform3d();
+
+        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0,-0.61086524, -1.5707));
+        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
+
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
+        
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
@@ -109,10 +127,46 @@ public class Constants {
     public static class ShooterConstants {
         public static final int kTopMotorID = 2;
         public static final int kBottomMotorID = 3;
-        public static final Pose2d kHubPose = new Pose2d();
+        public static final int kHoodMotorID = 4;
+        public static final double kShooterP = 0.01;
+        public static final double kShooterI = 0.0;
+        public static final double kShooterD = 0.005;
+        public static final double kShooterFF = 0.999;
         public static final double kInterpolationLambda = 100;
-        public static final double[] kPositions = {};
-        public static final double[] kValues = {};
+
+        public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
+        public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
+        public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000}; // In meters
+        public static final double[] kShooterSpeeds = {3400, 3600, 4000}; // In rotations per minute
+        public static final double[] kHoodAngles = {0, 0.2, 0.35}; // In radians
+
+        public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
+    }
+    public static class IntakeConstants {
+        public static final int kDriveMotorID = 7;
+        public static final int kActuationMotorID = 6;
+
+        /** PID gains for intake actuation when moving in (retracted). */
+        public static final double kInP = 0.15;
+        public static final double kInI = 0.0;
+        public static final double kInD = 0.0;
+
+        /** PID gains for intake actuation when moving out (extended). */
+        public static final double kOutP = 0.08;
+        public static final double kOutI = 0.0;
+        public static final double kOutD = 0.0;
+
+        /** Actuation encoder setpoint when intake is out (extended). */
+        public static final double kActuationOutSetpoint = 4.6;
+
+        /** Drive motor output when intake is in (retracted). */
+        public static final double kDriveSpeedIn = 0.0;
+        /** Drive motor output when intake is out (running). */
+        public static final double kDriveSpeedOut = 0.625;
+
+        public static final double kIntakeActuationP = 0.0;
+        public static final double kIntakeActuationI = 0.0;
+        public static final double kIntakeActuationD = 0.0;
     }
 
     public static class HopperConstants {
