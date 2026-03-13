@@ -46,7 +46,7 @@ public class Constants {
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
-        public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
+        public static final double kHIGH_GEAR_MULTIPLIER = 3.0;
 
         public static final double kMinimumDistanceToStop = 0.1;
 
@@ -131,7 +131,7 @@ public class Constants {
         public static final double kShooterP = 0.01;
         public static final double kShooterI = 0.0;
         public static final double kShooterD = 0.005;
-        public static final double kShooterFF = 0.999;
+        public static final double kShooterFF = 0.998;
         public static final double kInterpolationLambda = 100;
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
@@ -162,7 +162,7 @@ public class Constants {
         /** Drive motor output when intake is in (retracted). */
         public static final double kDriveSpeedIn = 0.0;
         /** Drive motor output when intake is out (running). */
-        public static final double kDriveSpeedOut = 0.625;
+        public static final double kDriveSpeedOut = 0.4;
 
         public static final double kIntakeActuationP = 0.0;
         public static final double kIntakeActuationI = 0.0;

@@ -27,7 +27,10 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
-import frc.robot.util.InterpolationMatrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.InterpolatingMatrixTreeMap;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 
 public class RobotContainer {
 
@@ -38,7 +41,7 @@ public class RobotContainer {
      * @since 2025-10
      */
 
-    private final InterpolationMatrix interpolationMatrix = new InterpolationMatrix();
+    private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
     private final static Logger logger = LogManager.getLogger(RobotContainer.class);
 
     private final Swerve swerve = new Swerve();
@@ -67,6 +70,18 @@ public class RobotContainer {
         // send data to Elastic
         SmartDashboard.putData("SwerveField", swerve.getField());
         SmartDashboard.putData(swerve);
+    }
+
+    private static InterpolatingMatrixTreeMap<Double, N2, N1> buildInterpolationMatrix() {
+        InterpolatingMatrixTreeMap<Double, N2, N1> map = new InterpolatingMatrixTreeMap<>();
+        double[] dists = Constants.ShooterConstants.kDistancesToHub;
+        double[] speeds = Constants.ShooterConstants.kShooterSpeeds;
+        double[] angles = Constants.ShooterConstants.kHoodAngles;
+        int len = Math.min(dists.length, Math.min(speeds.length, angles.length));
+        for (int i = 0; i < len; i++) {
+            map.put(dists[i], VecBuilder.fill(speeds[i], angles[i]));
+        }
+        return map;
     }
 
     // Remove controllerDrive() as it's replaced by commands
@@ -127,9 +142,9 @@ public class RobotContainer {
         // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2), shooter));
         // Bind go to point test command to the D pad
         xboxController.povUp().onTrue(Commands.runOnce(() -> shooter.toggleFullSpeed(), shooter));
-        xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
-        xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
-        xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
+        //xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
+        //xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
+        //xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
 
         // change gear commands
         xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
