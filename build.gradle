@@ -110,3 +110,9 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+tasks.register("checkFormat") {
+    group = "Formatting"
+    description = "Checks formatting across all Java sources"
+    dependsOn("spotlessCheck")
+}
