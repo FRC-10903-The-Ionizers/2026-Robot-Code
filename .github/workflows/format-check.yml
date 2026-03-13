@@ -16,4 +16,6 @@ jobs:
         run: chmod +x gradlew
       - name: Check Formatting
         # This only checks style, it doesn't compile the robot code
-        run: ./gradlew checkFormat
+        run: |
+          ./gradlew format
+          git diff --exit-code
