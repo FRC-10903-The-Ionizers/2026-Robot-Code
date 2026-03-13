@@ -21,7 +21,7 @@ public class Shooter extends SubsystemBase {
 
     private final SparkMax hoodMotor = new SparkMax(Constants.ShooterConstants.kHoodMotorID, MotorType.kBrushless);
     private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
-    private final PIDController hoodPID = new PIDController(0.5, 0, 0.2);
+    private final PIDController hoodPID = new PIDController(0.7, 0, 0.4);
     private double prevHoodOutput = 0; // Tune these values
     private final double kHoodFF = 0.95; // Feedforward for hood motor, tune this value
     private final double kHoodClipping = 0.3;
@@ -33,6 +33,7 @@ public class Shooter extends SubsystemBase {
     private final Swerve swerve;
     private final InterpolationMatrix interpolationMatrix;
     private boolean isRunning = false;
+    private boolean isFullSpeed = false;
 
     private double targetHoodAngle = 0;
     // p=0.15
@@ -44,7 +45,6 @@ public class Shooter extends SubsystemBase {
 
         hoodEncoder.setPosition(0);
 
-        SmartDashboard.putNumber("Shooter Target Speed", 2000);
         SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("Hood Target Angle", targetHoodAngle);
         SmartDashboard.putNumber("Distance to hub", 0);
@@ -65,8 +65,11 @@ public class Shooter extends SubsystemBase {
         double interpolatedShooterSpeed = interpolationMatrix.interpolateShooterSpeeds(distanceToHub);
 
         targetHoodAngle = SmartDashboard.getNumber("Hood Target Angle", targetHoodAngle);
-        hoodPID.setSetpoint(targetHoodAngle);
+        //clamp target hood angle to prevent damage to the motor, limit it at 1.4 rad
+        hoodPID.setSetpoint(MathUtil.clamp(targetHoodAngle, 0, 1.4));
         double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
+        // hoodMotor.set(hoodOutput);
+
         // System.out.println("Current hood angle: " + hoodEncoder.getPosition() + ", Target hood angle: " + targetHoodAngle + ", Output: " + hoodOutput + ", Current: " + hoodMotor.getOutputCurrent());
         // if (Math.abs(hoodEncoder.getVelocity()) < 0.05 && Math.abs(hoodOutput) > 0.05) {
         //     hoodOutput = Math.signum(hoodOutput) * 0.6;
@@ -108,10 +111,13 @@ public class Shooter extends SubsystemBase {
         // }
 
 
-        
+        SmartDashboard.putNumber("Hood Pos", hoodEncoder.getPosition());
+
         if (isRunning) {
-            targetSpeed = SmartDashboard.getNumber("Shooter Target Speed", 2000);
+            targetSpeed = SmartDashboard.getNumber("Shooter Target Speed", 0);
+            System.out.println("Target shooter speed: " + targetSpeed);
             shooterSpeedPID.setSetpoint(-targetSpeed);
+            //shooterSpeedPID.setSetpoint(-interpolatedShooterSpeed);
             double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
             SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
             output = MathUtil.clamp(output, -1, 0);
@@ -120,7 +126,8 @@ public class Shooter extends SubsystemBase {
             topMotor.set(output);
             bottomMotor.set(-output);
             
-        } else {
+        }
+        else {
             topMotor.set(0);
             bottomMotor.set(0);
         }
@@ -141,6 +148,10 @@ public class Shooter extends SubsystemBase {
     public void toggleIsRunning() {
         System.out.println("shooter running" + !isRunning);
         isRunning = !isRunning;
+    }
+
+    public void toggleFullSpeed() {
+        isFullSpeed = !isFullSpeed;
     }
 
     public void setHoodAngle(double angle) {

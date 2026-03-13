@@ -9,9 +9,9 @@ public class InterpolationMatrix {
     private static final double[] whittakerSmoothedHoodAngles;
 
     static {
-        whittakerSmoothedDistances = whittakerSmoothing(Constants.ShooterConstants.kDistancesToHub);
-        whittakerSmoothedShooterSpeeds = whittakerSmoothing(Constants.ShooterConstants.kShooterSpeeds);
-        whittakerSmoothedHoodAngles = whittakerSmoothing(Constants.ShooterConstants.kHoodAngles);
+        whittakerSmoothedDistances = Constants.ShooterConstants.kDistancesToHub;
+        whittakerSmoothedShooterSpeeds = Constants.ShooterConstants.kShooterSpeeds;
+        whittakerSmoothedHoodAngles = Constants.ShooterConstants.kHoodAngles;
     }
 
     private static double[] whittakerSmoothing(double[] x) {

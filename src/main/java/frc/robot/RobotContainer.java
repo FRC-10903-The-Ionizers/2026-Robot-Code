@@ -126,7 +126,7 @@ public class RobotContainer {
 
         // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2), shooter));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(new DriveToPose(swerve, new Pose2d(0, 1.5, Rotation2d.kZero)));
+        xboxController.povUp().onTrue(Commands.runOnce(() -> shooter.toggleFullSpeed(), shooter));
         xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
         xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
         xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
