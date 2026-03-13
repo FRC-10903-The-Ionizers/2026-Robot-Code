@@ -136,10 +136,9 @@ public class Constants {
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
         public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
-        public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000}; // In meters
-        public static final double[] kShooterSpeeds = {3400, 3600, 4000}; // In rotations per minute
-        public static final double[] kHoodAngles = {0, 0.2, 0.35}; // In radians
-
+        public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000, 3.97, 5.67}; // In meters
+        public static final double[] kShooterSpeeds = {3400, 3600, 4000, 4293, 5003}; // In rotations per minute
+        public static final double[] kHoodAngles = {0, 0.2, 0.35, 0.4, 0.67}; // In 
         public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
     }
     public static class IntakeConstants {
