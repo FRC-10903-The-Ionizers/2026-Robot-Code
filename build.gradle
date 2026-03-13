@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.palantir.java-format" version "2.56.0"
 }
 
 java {
@@ -108,4 +109,10 @@ wpi.java.configureTestTasks(test)
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
+}
+
+tasks.register("checkFormat") {
+    group = "Formatting"
+    description = "Checks formatting across all Java sources"
+    dependsOn("spotlessCheck")
 }

@@ -86,9 +86,9 @@ public class Shooter extends SubsystemBase {
         //     hoodOutput = Math.signum(hoodOutput) * 0.6;
         // }
         hoodOutput = MathUtil.clamp(hoodOutput, -kHoodClipping, kHoodClipping);
-        hoodOutput = (prevHoodOutput * kHoodFF) + (1-kHoodFF) * hoodOutput;
+                hoodOutput = (prevHoodOutput * kHoodFF) + (1-kHoodFF) * hoodOutput;
         prevHoodOutput = hoodOutput;
-        hoodMotor.set(-hoodOutput);
+hoodMotor.set(-hoodOutput);
         
         // Convert angle to encoder units if needed
         // if (targetHoodAngle > hoodEncoder.getPosition()+0.05){
