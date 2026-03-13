@@ -26,11 +26,14 @@ public class Shooter extends SubsystemBase {
     private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
     private final PIDController hoodPID = new PIDController(0.7, 0, 0.4);
     private double prevHoodOutput = 0; // Tune these values
-    private final double kHoodFF = 0.95; // Feedforward for hood motor, tune this value
+    private double kHoodLPF = 0.95; // Feedforward for hood motor, tune this value
     private final double kHoodClipping = 0.3;
+    private boolean hoodIsZeroed = false;
 
     private double targetSpeed = 0;
-    private PIDController shooterSpeedPID = new PIDController(0.01, 0, 0.004);
+    private PIDController shooterSpeedPID = new PIDController(Constants.ShooterConstants.kShooterP, 
+                                                                Constants.ShooterConstants.kShooterI, 
+                                                                Constants.ShooterConstants.kShooterD);
     private double prevOutput = 0;
 
     private final Swerve swerve;
@@ -49,10 +52,9 @@ public class Shooter extends SubsystemBase {
 
         hoodEncoder.setPosition(0);
 
-        SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
-        SmartDashboard.putNumber("Hood Target Angle", targetHoodAngle);
-        SmartDashboard.putNumber("Distance to hub", 0);
-        SmartDashboard.putNumber("Shooter Target Speed", 0);
+        SmartDashboard.putNumber("Shooter RPM Boost", 0);
+        SmartDashboard.putNumber("Shooter Hood Boost", 0);
+
     }
 
     // Periodicly set the motors to the correct speed
@@ -63,6 +65,7 @@ public class Shooter extends SubsystemBase {
 
         Translation2d targetHubTranslation = RobotContainer.getTargetHubTranslation();
         SmartDashboard.putNumber("Distance to Hub", (currentPose.getTranslation().getDistance(targetHubTranslation)));
+        SmartDashboard.putBoolean("HoodZeroed", hoodIsZeroed);
         distanceToHub = currentPose.getTranslation().getDistance(targetHubTranslation);
 
 
@@ -71,68 +74,35 @@ public class Shooter extends SubsystemBase {
         double interpolatedShooterSpeed = 0.0;
         double interpolatedHoodAngle = 0.0;
         if (interp != null) {
-            interpolatedShooterSpeed = interp.get(0, 0);
-            interpolatedHoodAngle = interp.get(1, 0);
+            interpolatedShooterSpeed = interp.get(0, 0) + SmartDashboard.getNumber("Shooter RPM Boost", 0);
+            interpolatedHoodAngle = interp.get(1, 0) + SmartDashboard.getNumber("Shooter Hood Boost", 0);
+        }
+        if (!hoodIsZeroed){
+            hoodMotor.set(0.2);
+            if (hoodMotor.getOutputCurrent() >= 45) { // If the motor is stalled, we can assume it's at the zero position
+                hoodMotor.set(0);
+                hoodIsZeroed = true;
+                hoodEncoder.setPosition(0);
+            }
+        } else {
+            //clamp target hood angle to prevent damage to the motor, limit it at 1.4 rad
+            hoodPID.setSetpoint(MathUtil.clamp(interpolatedHoodAngle, 0, 1.4));
+            double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
+
+            hoodOutput = MathUtil.clamp(hoodOutput, -kHoodClipping, kHoodClipping);
+            hoodOutput = (prevHoodOutput * kHoodLPF) + (1-kHoodLPF) * hoodOutput;
+            prevHoodOutput = hoodOutput;
+            hoodMotor.set(-hoodOutput);
         }
 
-        targetHoodAngle = SmartDashboard.getNumber("Hood Target Angle", targetHoodAngle);
-        //clamp target hood angle to prevent damage to the motor, limit it at 1.4 rad
-        hoodPID.setSetpoint(MathUtil.clamp(interpolatedHoodAngle, 0, 1.4));
-        double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
-        // hoodMotor.set(hoodOutput);
-
-        // System.out.println("Current hood angle: " + hoodEncoder.getPosition() + ", Target hood angle: " + targetHoodAngle + ", Output: " + hoodOutput + ", Current: " + hoodMotor.getOutputCurrent());
-        // if (Math.abs(hoodEncoder.getVelocity()) < 0.05 && Math.abs(hoodOutput) > 0.05) {
-        //     hoodOutput = Math.signum(hoodOutput) * 0.6;
-        // }
-        hoodOutput = MathUtil.clamp(hoodOutput, -kHoodClipping, kHoodClipping);
-        hoodOutput = (prevHoodOutput * kHoodFF) + (1-kHoodFF) * hoodOutput;
-        prevHoodOutput = hoodOutput;
-        hoodMotor.set(-hoodOutput);
-        
-        // Convert angle to encoder units if needed
-        // if (targetHoodAngle > hoodEncoder.getPosition()+0.05){
-        //     System.out.print(hoodEncoder.getPosition());
-        //     System.out.print(", target: ");
-        //     System.out.print(targetHoodAngle);
-        //     System.out.print(", current: ");
-        //     System.out.print(hoodMotor.getOutputCurrent());
-        //     System.out.println("Moving hood down");
-        //     if (Math.abs(hoodEncoder.getVelocity()) < 0.01) {
-        //         System.out.println("Hood is stalled, kicking motor");
-        //         hoodMotor.set(-0.4);
-        //     } else {
-        //         hoodMotor.set(-0.1);
-        //     }
-        // } else if (targetHoodAngle < hoodEncoder.getPosition()-0.05){
-        //     System.out.print(hoodEncoder.getPosition());
-        //      System.out.print(", target: ");
-        //     System.out.print(targetHoodAngle);
-        //     System.out.print(", current: ");
-        //     System.out.print(hoodMotor.getOutputCurrent());
-        //     System.out.println("Moving hood up");
-        //     if (Math.abs(hoodEncoder.getVelocity()) < 0.01) {
-        //         System.out.println("Hood is stalled, kicking motor");
-        //         hoodMotor.set(0.4);
-        //     } else {
-        //         hoodMotor.set(0.1);
-        //     }
-        // } else {
-        //     hoodMotor.set(0);
-        // }
-
-
-        SmartDashboard.putNumber("Hood Pos", hoodEncoder.getPosition());
-
-        if (isRunning) {
-            targetSpeed = SmartDashboard.getNumber("Shooter Target Speed", 0);
-            System.out.println("Target shooter speed: " + targetSpeed);
+        if (isRunning) {            
             shooterSpeedPID.setSetpoint(-interpolatedShooterSpeed);
-            //shooterSpeedPID.setSetpoint(-interpolatedShooterSpeed);
             double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
             SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
             output = MathUtil.clamp(output, -1, 0);
-            output = (prevOutput * Constants.ShooterConstants.kShooterFF) + (1-Constants.ShooterConstants.kShooterFF) * output;
+            SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPID.getPositionError());
+            output = (prevOutput * Constants.ShooterConstants.kShooterLPF) + (1-Constants.ShooterConstants.kShooterLPF) * 
+                     (output - (interpolatedShooterSpeed * Constants.ShooterConstants.kShooterKV));
             prevOutput = output;
             topMotor.set(output);
             bottomMotor.set(-output);

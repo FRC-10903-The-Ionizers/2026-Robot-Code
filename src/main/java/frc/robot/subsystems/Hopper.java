@@ -18,7 +18,7 @@ public class Hopper extends SubsystemBase{
     
 
     public Hopper(){
-        SmartDashboard.putNumber("Spindexer Motor Speed", -0.75);
+        SmartDashboard.putNumber("Spindexer Motor Speed", -0.45);
         SmartDashboard.putNumber("Bob Motor Speed", 0.75);
     }
 
