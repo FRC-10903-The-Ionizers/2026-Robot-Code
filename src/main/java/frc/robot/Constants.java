@@ -13,13 +13,16 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 
 public class Constants {
     /**
@@ -43,7 +46,7 @@ public class Constants {
         public static final double kControllerRotationMultiplier = 2.0;
         public static final double kAutoDriveMultiplier = 4.5;
         public static final double kLOW_GEAR_MULTIPLIER = 1.0;
-        public static final double kHIGH_GEAR_MULTIPLIER = 2.0;
+        public static final double kHIGH_GEAR_MULTIPLIER = 3.0;
 
         public static final double kMinimumDistanceToStop = 0.1;
 
@@ -128,15 +131,14 @@ public class Constants {
         public static final double kShooterP = 0.01;
         public static final double kShooterI = 0.0;
         public static final double kShooterD = 0.005;
-        public static final double kShooterFF = 0.999;
+        public static final double kShooterFF = 0.998;
         public static final double kInterpolationLambda = 100;
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
         public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
-        public static final double[] kDistancesToHub = {1, 2};
-        public static final double[] kShooterSpeeds = {3, 5};
-        public static final double[] kHoodAngles = {0, 1};
-
+        public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000, 3.97, 5.67}; // In meters
+        public static final double[] kShooterSpeeds = {3400, 3600, 4000, 4293, 5003}; // In rotations per minute
+        public static final double[] kHoodAngles = {0, 0.2, 0.35, 0.4, 0.67}; // In 
         public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
     }
     public static class IntakeConstants {
@@ -159,7 +161,7 @@ public class Constants {
         /** Drive motor output when intake is in (retracted). */
         public static final double kDriveSpeedIn = 0.0;
         /** Drive motor output when intake is out (running). */
-        public static final double kDriveSpeedOut = 0.625;
+        public static final double kDriveSpeedOut = 0.4;
 
         public static final double kIntakeActuationP = 0.0;
         public static final double kIntakeActuationI = 0.0;

@@ -55,7 +55,7 @@ public class Swerve extends SubsystemBase {
          * @return void
          */
         try {
-            double maximumSpeed = Units.feetToMeters(4.5);
+            double maximumSpeed = Units.feetToMeters(20);
 
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 

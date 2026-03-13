@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
             Constants.IntakeConstants.kOutP, Constants.IntakeConstants.kOutI, Constants.IntakeConstants.kOutD);
     private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
     private boolean isRunning = false;
-    private boolean intakeIn = false;
+    private boolean intakeIn = true;
 
     //set the motors to lock mode
     public Intake(Swerve swerve) {
@@ -41,6 +41,7 @@ public class Intake extends SubsystemBase {
         if (intakeIn) {
             inPID.setSetpoint(0);
             double output = inPID.calculate(actuationMotor.getEncoder().getPosition());
+            
             actuationMotor.set(output);
         } else {
             outPID.setSetpoint(Constants.IntakeConstants.kActuationOutSetpoint);

@@ -34,12 +34,10 @@ public class TeleopDriveCommand extends Command {
         this.controller = controller;
 
         Optional<Alliance> alliance = DriverStation.getAlliance();
-        if (alliance.isPresent() && alliance.get() == Alliance.Red) {
+        if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
             this.flippedValue = 1;
-            System.out.println("Red alliance detected, setting initial pose to 180 degrees.");
         } else {
             this.flippedValue = -1;
-             System.out.println("Blue alliance detected, setting initial pose to 0 degrees.");
         }
         addRequirements(swerve);
     }

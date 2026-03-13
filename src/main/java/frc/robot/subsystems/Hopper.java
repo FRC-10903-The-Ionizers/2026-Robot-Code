@@ -27,7 +27,7 @@ public class Hopper extends SubsystemBase{
     // Periodicly set the motors to the correct speed
     public void periodic() {
         if(isSpindexerRunning){
-            double spindexerMotorSpeed = SmartDashboard.getNumber("Spindexer Motor Speed", -0.75);
+            double spindexerMotorSpeed = SmartDashboard.getNumber("Spindexer Motor Speed", -0.45);
             spindexerMotor.set(spindexerMotorSpeed);
         } else {
             spindexerMotor.set(0);
