@@ -32,7 +32,7 @@ public class Constants {
      * @since 2025-10
      */
 
-    public static Level kLogLevel = Level.DEBUG;
+    public static Level kLogLevel = Level.INFO;
     public static int kXboxControllerPort = 0;
 
     public static class DriveConstants {
@@ -132,7 +132,10 @@ public class Constants {
         public static final double kShooterI = 0.0;
         public static final double kShooterD = 0.0;
         public static final double kShooterLPF = 0.9;
-        public static final double kShooterKV = 0.0001795;
+        public static final double kShooterKV = 0.000181;
+        public static final double kHoodP = 0.9;
+        public static final double kHoodI = 0.0;
+        public static final double kHoodD = 0.7;
         public static final double kInterpolationLambda = 100;
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
@@ -172,5 +175,7 @@ public class Constants {
     public static class HopperConstants {
         public static final int kSpindaxerMotorID = 1;
         public static final int kBobMotorID = 5;
+        public static final double kSpindaxerSpeed = -0.55;
+        public static final double kBobSpeed = 0.6;
     }
 }

@@ -14,10 +14,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DrivingCommands.AimAtTranslationDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.AimAtTranslationDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
 import frc.robot.stateSensors.RegionHandler;
@@ -49,7 +50,7 @@ public class RobotContainer {
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
     private final Vision vision = new Vision(swerve);
-    private final Shooter shooter = new Shooter(swerve, interpolationMatrix);
+    private final Shooter shooter = new Shooter();
     // private final Vision vision = new Vision(swerve);
     private final Intake intake = new Intake(swerve);
     private final Hopper hopper = new Hopper();
@@ -123,12 +124,8 @@ public class RobotContainer {
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
         xboxController.x().onTrue(intake.toggleIntakeCommand());
-        xboxController.b().whileTrue(new AimAtTranslationDrive(swerve, 
-            controller, 
-            getTargetHubTranslation())
-        ); // Example: Lock to 90 degrees while driving
-        xboxController.y().onTrue(Commands.runOnce(() -> shooter.toggleIsRunning(), shooter));
-        xboxController.a().onChange(Commands.runOnce(() -> hopper.toggleIsSpindexerRunning(), hopper));
+        xboxController.leftTrigger(0.25).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
+        xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
 
         // Bind aligning command to another button (e.g., B button)
 
@@ -141,7 +138,6 @@ public class RobotContainer {
 
         // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2), shooter));
         // Bind go to point test command to the D pad
-        xboxController.povUp().onTrue(Commands.runOnce(() -> shooter.toggleFullSpeed(), shooter));
         //xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
         //xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
         //xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
@@ -167,35 +163,6 @@ public class RobotContainer {
             }
         }, swerve));
 
-        // // Region triggers for scheduling commands
-        // Trigger inRegion1 = new Trigger(() -> regionHandler.inRegion("region1",
-        // swerve.getPose()));
-        // Trigger inRegion2 = new Trigger(() -> regionHandler.inRegion("region2",
-        // swerve.getPose()));
-
-        // // Example: Schedule a command when entering region1
-        // inRegion1.onTrue(Commands.runOnce(() -> System.out.println("Robot entered
-        // region1")).andThen(/* Add specific command if needed */));
-        // inRegion1.onFalse(Commands.runOnce(() -> System.out.println("Robot left
-        // region1")));
-
-        // inRegion2.onTrue(Commands.runOnce(() -> System.out.println("Robot entered
-        // region2")).andThen(/* Add specific command if needed */));
-        // inRegion2.onFalse(Commands.runOnce(() -> System.out.println("Robot left
-        // region2")));
-
-        // // Combined trigger example
-        // inRegion1.and(inRegion2).onTrue(Commands.runOnce(() ->
-        // System.out.println("Robot is in both region1 and region2")));
-    }
-
-    public static Translation2d getTargetHubTranslation() {
-        Optional<Alliance> ally = DriverStation.getAlliance();
-
-        if (!ally.isPresent()) {
-            System.out.println("Alliance not detected!");
-        }
-
-        return (ally.get() == Alliance.Red) ? Constants.ShooterConstants.kRedHubTranslation : Constants.ShooterConstants.kBlueHubTranslation;
+        
     }
 }

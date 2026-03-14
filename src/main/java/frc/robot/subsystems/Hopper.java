@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.apache.logging.log4j.LogManager;
@@ -18,24 +19,15 @@ public class Hopper extends SubsystemBase{
     
 
     public Hopper(){
-        SmartDashboard.putNumber("Spindexer Motor Speed", -0.45);
-        SmartDashboard.putNumber("Bob Motor Speed", 0.75);
+        this.setDefaultCommand(new InstantCommand(() -> setIsHopperRunning(false), this));
     }
 
     private boolean isSpindexerRunning = false;
-    private boolean isBobRunning = false;
     // Periodicly set the motors to the correct speed
     public void periodic() {
         if(isSpindexerRunning){
-            double spindexerMotorSpeed = SmartDashboard.getNumber("Spindexer Motor Speed", -0.45);
-            spindexerMotor.set(spindexerMotorSpeed);
-        } else {
-            spindexerMotor.set(0);
-        }
-
-        if(isSpindexerRunning){
-            double bobMotorSpeed = SmartDashboard.getNumber("Bob Motor Speed", 0.75);
-            bobMotor.set(bobMotorSpeed);
+            spindexerMotor.set(Constants.HopperConstants.kSpindaxerSpeed);
+            bobMotor.set(Constants.HopperConstants.kBobSpeed);
         } else {
             spindexerMotor.set(0);
             bobMotor.set(0);
@@ -46,7 +38,7 @@ public class Hopper extends SubsystemBase{
         return isSpindexerRunning;
     }
 
-    public void setIsSpindexerRunning(boolean isRunning){
+    public void setIsHopperRunning(boolean isRunning){
         this.isSpindexerRunning = isRunning;
     }
 

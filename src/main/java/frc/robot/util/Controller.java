@@ -1,5 +1,9 @@
 package frc.robot.util;
 
+import java.util.Optional;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 
@@ -11,8 +15,15 @@ public class Controller {
      * @since 2026-01-19
      */
     private final XboxController controller;
+    private int flippedValue;
 
     public Controller(int port) {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
+            this.flippedValue = 1;
+        } else {
+            this.flippedValue = -1;
+        }
         controller = new XboxController(port);
     }
 
@@ -51,12 +62,12 @@ public class Controller {
 
     /** Get forward/backward, with deadband applied */
     public double getDriveX() {
-        return applyDeadband(-controller.getLeftY()) * Constants.DriveConstants.kControllerDriveMultiplier;
+        return applyDeadband(-controller.getLeftY()) * Constants.DriveConstants.kControllerDriveMultiplier * flippedValue * (isFieldRelative() ? 1 : flippedValue);
     }
 
     /** Get strafe, with deadband applied */
     public double getDriveY() {
-        return applyDeadband(-controller.getLeftX()) * Constants.DriveConstants.kControllerDriveMultiplier;
+        return applyDeadband(-controller.getLeftX()) * Constants.DriveConstants.kControllerDriveMultiplier * flippedValue * (isFieldRelative() ? 1 : flippedValue);
     }
 
     /** Get rotation, with deadband applied */
