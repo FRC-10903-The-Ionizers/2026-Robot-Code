@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
@@ -39,8 +40,9 @@ public class ShootAndDrive extends Command {
     private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix;
 
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
-
-    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller, InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix) {
+    private Intake intake;
+    
+    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Intake intake, Controller controller, InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix) {
         /**
          * Constructor which sets swerve and controller class variables
          * 
@@ -50,9 +52,10 @@ public class ShootAndDrive extends Command {
         this.swerve = swerve;
         this.shooter = shooter;
         this.hopper = hopper;
+        this.intake = intake;
         this.controller = controller;
         this.interpolationMatrix = interpolationMatrix;
-        addRequirements(swerve, hopper, shooter);
+        addRequirements(swerve, hopper, shooter,  intake);
     }
 
     @Override
@@ -114,11 +117,13 @@ public class ShootAndDrive extends Command {
         }
 
         this.shooter.setSpeedAndAngle(interpolatedShooterSpeed, interpolatedHoodAngle);
-        if ((this.shooter.getIsReadyToShoot()) && Math.abs(rotation) < 0.3) {
+        if ((this.shooter.getIsReadyToShoot()) && Math.abs(rotation) < Constants.ShooterConstants.kAimRotationTolerance) {
             hopper.setIsHopperRunning(true);
         } else {
             hopper.setIsHopperRunning(false);
         }
+
+        intake.setJiggly(true);
     }
 
     @Override

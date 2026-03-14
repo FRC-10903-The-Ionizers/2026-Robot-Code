@@ -20,14 +20,16 @@ public class Hopper extends SubsystemBase{
 
     public Hopper(){
         this.setDefaultCommand(new InstantCommand(() -> setIsHopperRunning(false), this));
+        SmartDashboard.putNumber("Hopper Spindexer Speed", Constants.HopperConstants.kSpindaxerSpeed);
+        SmartDashboard.putNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed);
     }
 
     private boolean isSpindexerRunning = false;
     // Periodicly set the motors to the correct speed
     public void periodic() {
         if(isSpindexerRunning){
-            spindexerMotor.set(Constants.HopperConstants.kSpindaxerSpeed);
-            bobMotor.set(Constants.HopperConstants.kBobSpeed);
+            spindexerMotor.set(SmartDashboard.getNumber("Hopper Spindexer Speed", Constants.HopperConstants.kSpindaxerSpeed));
+            bobMotor.set(SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
         } else {
             spindexerMotor.set(0);
             bobMotor.set(0);

@@ -44,9 +44,11 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         // Use the passed-in WPILib interpolating map
-        this.setDefaultCommand(new InstantCommand(() -> {setSpeedAndAngle(2000, 0); isRunning=false;}, this));
+        this.setDefaultCommand(new InstantCommand(() -> {setSpeedAndAngle(Constants.ShooterConstants.kShooterIdleSpeed, 0); isRunning=false;}, this));
 
         hoodEncoder.setPosition(0);
+        SmartDashboard.putNumber("Target Shooter Speed Offset", 0);
+        SmartDashboard.putNumber("Target Hood Angle Offset", 0);
 
     }
 
@@ -77,6 +79,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
         output = MathUtil.clamp(output, -1, 0);
         SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPID.getPositionError());
+        SmartDashboard.putNumber("Hood Error", hoodPID.getPositionError());
         output = ((prevOutput * Constants.ShooterConstants.kShooterLPF) + (1-Constants.ShooterConstants.kShooterLPF) * 
                     (output - (targetSpeed * Constants.ShooterConstants.kShooterKV)));
         prevOutput = output;
@@ -92,9 +95,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setSpeedAndAngle(double speed, double angle) {
-        this.targetSpeed = speed;
-        shooterSpeedPID.setSetpoint(-speed);
-        this.targetHoodAngle = angle;
+        this.targetSpeed = speed + SmartDashboard.getNumber("Target Shooter Speed Offset", 0);
+        shooterSpeedPID.setSetpoint(-this.targetSpeed);
+        this.targetHoodAngle = angle + SmartDashboard.getNumber("Target Hood Angle Offset", 0);
     }
 
     public boolean getIsReadyToShoot() {

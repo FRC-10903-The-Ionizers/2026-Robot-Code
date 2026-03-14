@@ -128,7 +128,7 @@ public class Constants {
         public static final int kTopMotorID = 2;
         public static final int kBottomMotorID = 3;
         public static final int kHoodMotorID = 4;
-        public static final double kShooterP = 0.00001;
+        public static final double kShooterP = 0.00002;
         public static final double kShooterI = 0.0;
         public static final double kShooterD = 0.0;
         public static final double kShooterLPF = 0.9;
@@ -137,12 +137,14 @@ public class Constants {
         public static final double kHoodI = 0.0;
         public static final double kHoodD = 0.7;
         public static final double kInterpolationLambda = 100;
+        public static final double kShooterIdleSpeed = 2700;
+        public static final double kAimRotationTolerance = 0.32; // In radians, tune this value
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
         public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
         public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000, 3.97, 5.67}; // In meters
-        public static final double[] kShooterSpeeds = {2700, 3250, 3650, 3930, 5003}; // In rotations per minute
-        public static final double[] kHoodAngles = {0, 0.2, 0.25, 0.4, 0.67}; // In 
+        public static final double[] kShooterSpeeds = {2900, 3150, 3550, 3830, 4603}; // In rotations per minute
+        public static final double[] kHoodAngles = {0, 0.13, 0.25, 0.4, 0.8}; // In 
         public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
     }
     public static class IntakeConstants {
@@ -161,9 +163,12 @@ public class Constants {
 
         /** Actuation encoder setpoint when intake is out (extended). */
         public static final double kActuationOutSetpoint = 4.6;
+        public static final double inJigglyPercentage = 0.4;
+        public static final double outJigglyPercentage = 0.8;
 
         /** Drive motor output when intake is in (retracted). */
         public static final double kDriveSpeedIn = 0.0;
+    
         /** Drive motor output when intake is out (running). */
         public static final double kDriveSpeedOut = 0.4;
 
