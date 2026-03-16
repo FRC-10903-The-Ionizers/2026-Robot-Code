@@ -422,5 +422,6 @@
    {"name":"Shoot", "from":{"target":4, "targetTimestamp":4.49251, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}},
    {"name":"ToggleIntake", "from":{"target":6, "targetTimestamp":6.57535, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"ToggleIntake"}}},
    {"name":"ToggleIntake", "from":{"target":7, "targetTimestamp":7.65231, "offset":{"exp":"0.3 s", "val":0.3}}, "event":{"type":"named", "data":{"name":"ToggleIntake"}}},
-   {"name":"Shoot", "from":{"target":9, "targetTimestamp":9.95591, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}}]
+   {"name":"Shoot", "from":{"target":9, "targetTimestamp":9.95591, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}},
+   {"name":"Shoot", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}}]
 }

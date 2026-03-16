@@ -85,6 +85,7 @@ public class Auto {
         autoChooser.addRoutine("Red Right", this::redRightAutoRoutine);
         autoChooser.addRoutine("Red Middle Top", this::redMiddleTopAutoRoutine);
         autoChooser.addRoutine("Red Middle Bottom", this::redMiddleBottomAutoRoutine);
+        autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
         // Put the auto chooser on the dashboard
         SmartDashboard.putData("Auto Chooser", autoChooser);
         // SmartDashboard.getBoolean("Go Under Trench", false);
@@ -141,7 +142,7 @@ public class Auto {
     }
 
     public AutoRoutine redMiddleBottomAutoRoutine() {
-                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
         AutoTrajectory trajectory = routine.trajectory("RedMiddleBottom.traj");
 
         routine.active().onTrue(
@@ -154,19 +155,55 @@ public class Auto {
     }
 
     public AutoRoutine blueLeftAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory = routine.trajectory("BlueLeft.traj");
 
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Blue Left Auto Chosen"),
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(trajectory)));
+
+        return routine;
     }
 
     public AutoRoutine blueRightAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory = routine.trajectory("BlueRight.traj");
 
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Blue Right Auto Chosen"),
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(trajectory)));
+
+        return routine;
     }
 
     public AutoRoutine blueMiddleTopAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory = routine.trajectory("BlueMiddleTop.traj");
 
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Blue Middle Top Auto Chosen"),
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(trajectory)));
+
+        return routine;
     }
 
     public AutoRoutine blueMiddleBottomAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory = routine.trajectory("BlueMiddleBottom.traj");
 
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Blue Middle Bottom Auto Chosen"),
+                        trajectory.resetOdometry(),
+                        cmdWithAccuracy(trajectory)));
+
+        return routine;
     }
 
     public Command getAutoCommand() {

@@ -388,5 +388,6 @@
    {"name":"Shoot", "from":{"target":5, "targetTimestamp":5.45405, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}},
    {"name":"ToggleIntake", "from":{"target":6, "targetTimestamp":6.9151, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"ToggleIntake"}}},
    {"name":"ToggleIntake", "from":{"target":7, "targetTimestamp":7.99205, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"ToggleIntake"}}},
-   {"name":"Shoot", "from":{"target":8, "targetTimestamp":9.50453, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}}]
+   {"name":"Shoot", "from":{"target":8, "targetTimestamp":9.50453, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}},
+   {"name":"Shoot", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"Shoot"}}}]
 }
