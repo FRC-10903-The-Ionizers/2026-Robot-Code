@@ -17,21 +17,28 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
     private final SparkMax driveMotor = new SparkMax(Constants.IntakeConstants.kDriveMotorID, MotorType.kBrushless);
-    //private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
+    // private final SparkMax actuationMotor = new
+    // SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
     private final Swerve swerve;
     public final PIDController inPID = new PIDController(
             Constants.IntakeConstants.kInP, Constants.IntakeConstants.kInI, Constants.IntakeConstants.kInD);
     public final PIDController outPID = new PIDController(
             Constants.IntakeConstants.kOutP, Constants.IntakeConstants.kOutI, Constants.IntakeConstants.kOutD);
-    private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
-    Timer timer;
+    private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID,
+            MotorType.kBrushless);
+
+    private final Timer timer;
+
     private boolean isRunning = false;
+
     private boolean intakeIn = true;
+
     private boolean jiggly = false;
+
     double jiggleMultiplier = 0;
     private double lastToggleTime = 0;
 
-    //set the motors to lock mode
+    // set the motors to lock mode
     public Intake(Swerve swerve) {
         this.swerve = swerve;
         SparkMaxConfig config = new SparkMaxConfig();
@@ -42,17 +49,18 @@ public class Intake extends SubsystemBase {
         timer.reset();
         timer.start();
         lastToggleTime = timer.get();
-    
+
         // Don't persist parameters since it takes time and this change is temporary
         actuationMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
     }
+
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Intake Jiggly", jiggly);
-        //custom pid instead of closed loop
-        
-        if (jiggly && timer.get() - lastToggleTime > 0.5){
+        // custom pid instead of closed loop
+
+        if (jiggly && timer.get() - lastToggleTime > 0.5) {
             if (jiggleMultiplier == 0) {
                 jiggleMultiplier = 1;
             } else {
@@ -65,17 +73,19 @@ public class Intake extends SubsystemBase {
         }
 
         if (intakeIn) {
-            inPID.setSetpoint(Constants.IntakeConstants.kActuationOutSetpoint * Constants.IntakeConstants.inJigglyPercentage * jiggleMultiplier);
+            inPID.setSetpoint(Constants.IntakeConstants.kActuationOutSetpoint
+                    * Constants.IntakeConstants.inJigglyPercentage * jiggleMultiplier);
             double output = inPID.calculate(actuationMotor.getEncoder().getPosition());
-            actuationMotor.set(output);            
+            actuationMotor.set(output);
         } else {
-            outPID.setSetpoint(Constants.IntakeConstants.kActuationOutSetpoint * (1-Constants.IntakeConstants.outJigglyPercentage*jiggleMultiplier));
+            outPID.setSetpoint(Constants.IntakeConstants.kActuationOutSetpoint
+                    * (1 - Constants.IntakeConstants.outJigglyPercentage * jiggleMultiplier));
             double output = outPID.calculate(actuationMotor.getEncoder().getPosition());
             actuationMotor.set(output);
         }
-        if (jiggly){
+        if (jiggly) {
             driveMotor.set(Constants.IntakeConstants.kDriveSpeedOut);
-        } else if (intakeIn){
+        } else if (intakeIn) {
             driveMotor.set(0);
         }
 
