@@ -86,6 +86,9 @@ public class Auto {
         autoChooser.addRoutine("Red Middle Top", this::redMiddleTopAutoRoutine);
         autoChooser.addRoutine("Red Middle Bottom", this::redMiddleBottomAutoRoutine);
         autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
+        autoChooser.addRoutine("Blue Left", this::blueLeftAutoRoutine);
+        autoChooser.addRoutine("Blue Middle Top", this::blueMiddleTopAutoRoutine);
+        autoChooser.addRoutine("Blue Middle Bottom", this::blueMiddleBottomAutoRoutine);
         // Put the auto chooser on the dashboard
         SmartDashboard.putData("Auto Chooser", autoChooser);
         // SmartDashboard.getBoolean("Go Under Trench", false);
