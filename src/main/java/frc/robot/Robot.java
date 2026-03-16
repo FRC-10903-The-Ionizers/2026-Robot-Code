@@ -1,16 +1,15 @@
 package frc.robot;
 
-import choreo.auto.AutoFactory;
 import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.cameraserver.CameraServer;
+import choreo.auto.AutoFactory;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +39,9 @@ public class Robot extends TimedRobot {
          * @since 2025-10
          * @return void
          */
+
+        // Save network tables data to disk
+        DataLogManager.start();
 
         logger.debug("Robot initializing");
 
