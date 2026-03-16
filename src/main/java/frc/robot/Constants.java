@@ -98,13 +98,14 @@ public class Constants {
         public static Double kObjectCameraFovHorizontal = 70.0;
         public static Double kObjectCameraPixelsHorizontal = 320.0;
 
-        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0,-0.61086524, -1.5707));
-        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
+        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685),
+                new Rotation3d(0, -0.61086524, -1.5707));
+        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953),
+                new Rotation3d(0, -0.10471976, 1.5707));
 
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);;
 
-        
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
@@ -140,11 +141,12 @@ public class Constants {
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
         public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
-        public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000, 3.97, 5.67}; // In meters
-        public static final double[] kShooterSpeeds = {2700, 3250, 3650, 3930, 5003}; // In rotations per minute
-        public static final double[] kHoodAngles = {0, 0.2, 0.25, 0.4, 0.67}; // In 
-        public static final double kHoodMaxRotation = 1.42857; //Hood gear ration is 17.22 to 1
+        public static final double[] kDistancesToHub = { 1.6501, 2.1330, 3.000, 3.97, 5.67 }; // In meters
+        public static final double[] kShooterSpeeds = { 2700, 3250, 3650, 3930, 5003 }; // In rotations per minute
+        public static final double[] kHoodAngles = { 0, 0.2, 0.25, 0.4, 0.67 }; // In
+        public static final double kHoodMaxRotation = 1.42857; // Hood gear ration is 17.22 to 1
     }
+
     public static class IntakeConstants {
         public static final int kDriveMotorID = 7;
         public static final int kActuationMotorID = 6;

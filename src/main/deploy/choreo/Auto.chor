@@ -5,18 +5,32 @@
  "variables":{
   "expressions":{},
   "poses":{
-   "StartPose":{
+   "RedLeftStartPose":{
     "x":{
-     "exp":"0.8837900161743164 m",
-     "val":0.8837900161743164
+     "exp":"13.60866641998291 m",
+     "val":13.60866641998291
     },
     "y":{
-     "exp":"2.2025396823883057 m",
-     "val":2.2025396823883057
+     "exp":"0.7 m",
+     "val":0.7
     },
     "heading":{
-     "exp":"0 rad",
-     "val":0.0
+     "exp":"120 deg",
+     "val":2.0943951023931953
+    }
+   },
+   "RedRightStartPose":{
+    "x":{
+     "exp":"RedLeftStartPose.x",
+     "val":13.60866641998291
+    },
+    "y":{
+     "exp":"7.33 m",
+     "val":7.33
+    },
+    "heading":{
+     "exp":"240 deg",
+     "val":4.1887902047863905
     }
    }
   }

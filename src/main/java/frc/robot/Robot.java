@@ -2,6 +2,7 @@ package frc.robot;
 
 import choreo.auto.AutoFactory;
 import java.io.File;
+import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
 import frc.robot.stateSensors.RegionHandler;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
@@ -55,11 +58,9 @@ public class Robot extends TimedRobot {
                 swerve // The drive subsystem
         );
 
-        autoFactory.bind("Yo", Commands.print("At Yo"));
-
         Constants.AutoConstants.kAutoFactory = autoFactory;
 
-        auto = new Auto(autoFactory, swerve, regionHandler);
+        auto = new Auto(autoFactory, robotContainer, regionHandler);
         logger.debug("Auto initialized!");
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning
@@ -145,6 +146,12 @@ public class Robot extends TimedRobot {
          * @since 2025-10
          * @return boolean
          */
-        return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+
+         Optional<Alliance> alliance = DriverStation.getAlliance();
+        if(alliance.isPresent()){
+            return (alliance.get() == Alliance.Red) ? true : false;
+        }  else {
+            throw new Error("Set Alliance is DS pls");
+        }
     }
 }

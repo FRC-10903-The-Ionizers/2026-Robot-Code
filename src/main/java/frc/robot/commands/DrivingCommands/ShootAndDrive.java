@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +37,8 @@ public class ShootAndDrive extends Command {
     private final Controller controller;
     private final Shooter shooter;
     private Hopper hopper;
+    private Timer timer;
+    private final double time;
     private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix;
 
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
@@ -52,6 +55,25 @@ public class ShootAndDrive extends Command {
         this.hopper = hopper;
         this.controller = controller;
         this.interpolationMatrix = interpolationMatrix;
+        time = 0;
+        addRequirements(swerve, hopper, shooter);
+    }
+
+    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller, InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix, double time) {
+        /**
+         * Constructor which sets swerve and controller class variables
+         * 
+         * @param swerve: the swerve drive
+         * @param controller: the PID controller
+         */
+        this.swerve = swerve;
+        this.shooter = shooter;
+        this.hopper = hopper;
+        this.controller = controller;
+        this.interpolationMatrix = interpolationMatrix;
+        timer.reset();
+        timer.start();
+        this.time = time;
         addRequirements(swerve, hopper, shooter);
     }
 
@@ -123,6 +145,10 @@ public class ShootAndDrive extends Command {
 
     @Override
     public boolean isFinished() {
-        return false; // Runs continuously
+        if (time == 0 || timer.get() < time){
+            return false;
+        } else {
+            return true;
+        }
     }
 }

@@ -99,6 +99,18 @@ public class RobotContainer {
         return swerve;
     }
 
+    public Shooter getShooter() {
+        return shooter;
+    }
+
+    public Hopper getHopper() {
+        return hopper;
+    }
+
+    public Intake getIntake() {
+        return intake;
+    }
+
     public Controller getController() {
         /**
          * Gets the controller.
@@ -122,10 +134,18 @@ public class RobotContainer {
          * @return void
          */
         // Bind aiming command to a button (e.g., A button)
-        //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        // xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new
+        // Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter
+        // for aim drive)
         xboxController.x().onTrue(intake.toggleIntakeCommand());
-        xboxController.leftTrigger(0.25).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
-        xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
+        xboxController.leftTrigger(0.25).onChange(new InstantCommand(() -> controller.toggleFieldRelative()));
+        xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix)); // Example:
+                                                                                                                   // Lock
+                                                                                                                   // to
+                                                                                                                   // 90
+                                                                                                                   // degrees
+                                                                                                                   // while
+                                                                                                                   // driving
 
         // Bind aligning command to another button (e.g., B button)
 
@@ -136,11 +156,15 @@ public class RobotContainer {
         // xboxController.y().onTrue(Commands.runOnce(() ->
         // Swerve.toggleIsLockedPosition(), swerve));
 
-        // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2), shooter));
+        // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2),
+        // shooter));
         // Bind go to point test command to the D pad
-        //xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
-        //xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
-        //xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
+        // xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0,
+        // Rotation2d.kZero)));
+        // xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0,
+        // Rotation2d.kZero)));
+        // xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5,
+        // Rotation2d.kZero)));
 
         // change gear commands
         xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
@@ -163,6 +187,5 @@ public class RobotContainer {
             }
         }, swerve));
 
-        
     }
 }
