@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
 import frc.robot.stateSensors.RegionHandler;
@@ -126,6 +125,11 @@ public class RobotContainer {
         xboxController.x().onTrue(intake.toggleIntakeCommand());
         xboxController.leftTrigger(0.25).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
         xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
+
+        xboxController.povUp().whileTrue(new MovementOriented(swerve, controller));
+
+        xboxController.povDown().whileTrue(new DriveToObject(swerve));
+
 
         // Bind aligning command to another button (e.g., B button)
 
