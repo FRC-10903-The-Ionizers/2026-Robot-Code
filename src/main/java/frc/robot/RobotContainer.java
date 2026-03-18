@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.TrenchWarfare;
 import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
@@ -124,11 +125,14 @@ public class RobotContainer {
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
         xboxController.x().onTrue(intake.toggleIntakeCommand());
         xboxController.leftTrigger(0.25).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
+        xboxController.rightTrigger(0.1).whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
         xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
 
-        xboxController.povUp().whileTrue(new MovementOriented(swerve, controller));
+        xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
 
-        xboxController.povDown().whileTrue(new DriveToObject(swerve));
+        xboxController.povUp().whileTrue(new DriveToObject(swerve));
+
+        xboxController.povRight().whileTrue(new TrenchWarfare(swerve, controller));
 
 
         // Bind aligning command to another button (e.g., B button)
