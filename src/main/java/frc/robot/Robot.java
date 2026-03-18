@@ -65,6 +65,8 @@ public class Robot extends TimedRobot {
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning
         DriverStation.silenceJoystickConnectionWarning(true);
+        
+        WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     }
 
     @Override
