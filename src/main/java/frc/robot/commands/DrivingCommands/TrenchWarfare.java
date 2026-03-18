@@ -8,9 +8,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class TrenchWarfare extends Command {
   /**
    * GoToPoint command for the robot.
@@ -22,7 +19,6 @@ public class TrenchWarfare extends Command {
   private double targetHeading = 0;
   private final PIDController yController = Constants.DriveConstants.kYController;
   private final Controller controller;
-
 
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
@@ -36,12 +32,7 @@ public class TrenchWarfare extends Command {
      */
     swerve = subsystem;
     this.controller = controller;
-    if (swerve.getPose().getY()>4.03) {
-        targetY = 7.42;
-    }
-    else {
-        targetY = 0.65;
-    }
+
   }
 
   public void execute() {
@@ -54,10 +45,15 @@ public class TrenchWarfare extends Command {
      * @since 2026-01-21
      * @return void
      */
+    if (swerve.getPose().getY() > 4.03) {
+      targetY = 7.42;
+    } else {
+      targetY = 0.65;
+    }
 
     Pose2d currentPose = swerve.getPose();
     double yCalculated = yController.calculate(currentPose.getY(), targetY);
-    double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(),targetHeading);
+    double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(), targetHeading);
 
     swerve.drive(new Translation2d(controller.getDriveX(), yCalculated), headingCalculated, true);
   }
