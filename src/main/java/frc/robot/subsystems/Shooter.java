@@ -22,7 +22,6 @@ public class Shooter extends SubsystemBase {
     private final PIDController hoodPID = new PIDController(Constants.ShooterConstants.kHoodP,
             Constants.ShooterConstants.kHoodI, Constants.ShooterConstants.kHoodD);
     private double prevHoodOutput = 0; // Tune these values
-    private double kHoodLPF = 0.95; // Feedforward for hood motor, tune this value
     private final double kHoodClipping = 0.3;
     private boolean hoodIsZeroed = false;
     private boolean isRunning = false;
@@ -45,6 +44,10 @@ public class Shooter extends SubsystemBase {
         hoodEncoder.setPosition(0);
         SmartDashboard.putNumber("Target Shooter Speed Offset", 0);
         SmartDashboard.putNumber("Target Hood Angle Offset", 0);
+        SmartDashboard.putNumber("Hood P", Constants.ShooterConstants.kHoodP);
+        SmartDashboard.putNumber("Hood I", Constants.ShooterConstants.kHoodI);
+        SmartDashboard.putNumber("Hood D", Constants.ShooterConstants.kHoodD);
+        SmartDashboard.putNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
 
     }
 
@@ -60,6 +63,10 @@ public class Shooter extends SubsystemBase {
                 hoodEncoder.setPosition(0);
             }
         } else {
+            hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
+            hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
+            hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
+            double kHoodLPF = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
             // clamp target hood angle to prevent damage to the motor, limit it at 1.4 rad
             hoodPID.setSetpoint(MathUtil.clamp(targetHoodAngle, 0, 1.4));
             double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
