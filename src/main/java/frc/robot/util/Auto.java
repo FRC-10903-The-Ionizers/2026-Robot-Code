@@ -81,10 +81,11 @@ public class Auto {
         // routines and use their commands.
         // NEVER SET "getAutoCommand()" AS AN OPTION FOR AN AUTONOMOUS
 
-        autoChooser.addRoutine("Red Left", this::redLeftAutoRoutine);
-        autoChooser.addRoutine("Red Right", this::redRightAutoRoutine);
-        autoChooser.addRoutine("Red Middle Top", this::redMiddleTopAutoRoutine);
-        autoChooser.addRoutine("Red Middle Bottom", this::redMiddleBottomAutoRoutine);
+        autoChooser.addRoutine("Red Left", this::blueRightAutoRoutine);
+        autoChooser.addRoutine("Red Right", this::blueLeftAutoRoutine);
+        autoChooser.addRoutine("Red Middle Top", this::blueMiddleTopAutoRoutine);
+        autoChooser.addRoutine("Red Middle Bottom", this::blueMiddleBottomAutoRoutine);
+        // Uh this code should just work...
         autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
         autoChooser.addRoutine("Blue Left", this::blueLeftAutoRoutine);
         autoChooser.addRoutine("Blue Middle Top", this::blueMiddleTopAutoRoutine);
@@ -104,58 +105,6 @@ public class Auto {
             map.put(dists[i], VecBuilder.fill(speeds[i], angles[i]));
         }
         return map;
-    }
-
-    public AutoRoutine redLeftAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("RedLeft.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Red Left Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
-        return routine;
-    }
-
-    public AutoRoutine redRightAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("RedRight.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Red Right Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        Commands.print("Reset Odometry"),
-                        cmdWithAccuracy(trajectory)));
-
-        return routine;
-    }
-
-    public AutoRoutine redMiddleTopAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("RedMiddleTop.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Red Middle Top Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
-
-        return routine;
-    }
-
-    public AutoRoutine redMiddleBottomAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("RedMiddleBottom.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Red Middle Bottom Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
-
-        return routine;
     }
 
     public AutoRoutine blueLeftAutoRoutine() {
@@ -296,16 +245,17 @@ public class Auto {
          * @return Command
          */
         return Commands.defer(
-                () -> new FunctionalCommand(
-                        trajectory.cmd()::initialize,
-                        trajectory.cmd()::execute,
-                        trajectory.cmd()::end,
-                        () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist)),
+                () -> {
+                    Command trajCmd = trajectory.cmd();
+                    return new FunctionalCommand(
+                            trajCmd::initialize,
+                            trajCmd::execute,
+                            trajCmd::end,
+                            () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist));
+                },
                 Set.of(swerve))
                 .withTimeout(trajectory.getRawTrajectory().getTotalTime()
                         + Constants.AutoConstants.kTimeout.in(Units.Seconds))
-                .finallyDo(() -> {
-                    swerve.drive(new Translation2d(), 0, false);
-                });
+                .finallyDo(() -> swerve.drive(new Translation2d(), 0, false));
     }
 }

@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
                 swerve::getPose, // A function that returns the current robot pose
                 swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
                 swerve::followTrajectory, // The drive subsystem trajectory follower
-                false, // If alliance flipping should be enabled
+                true, // If alliance flipping should be enabled (all paths on blue side are reflected about y axis when red alliance selected in DS)
                 swerve // The drive subsystem
         );
 
@@ -84,12 +84,6 @@ public class Robot extends TimedRobot {
          * @return void
          */
         timer.restart();
-        Command autoCommand = auto.getAutoCommand();
-
-        if (autoCommand != null) {
-            autoCommand.schedule();
-        }
-
     }
 
     @Override
