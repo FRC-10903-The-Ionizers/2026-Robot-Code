@@ -71,6 +71,7 @@ public class ShootAndDrive extends Command {
         this.hopper = hopper;
         this.controller = controller;
         this.interpolationMatrix = interpolationMatrix;
+        timer = new Timer();
         timer.reset();
         timer.start();
         this.time = time;

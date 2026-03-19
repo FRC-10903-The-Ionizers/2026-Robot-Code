@@ -146,7 +146,6 @@ public class RobotContainer {
                                                                                                                    // degrees
                                                                                                                    // while
                                                                                                                    // driving
-
         // Bind aligning command to another button (e.g., B button)
 
         // xboxController.b().whileTrue(new DriveToObject(swerve, new

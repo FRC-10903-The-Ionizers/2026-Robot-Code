@@ -126,6 +126,7 @@ public class Auto {
                 Commands.sequence(
                         Commands.print("Red Right Auto Chosen"),
                         trajectory.resetOdometry(),
+                        Commands.print("Reset Odometry"),
                         cmdWithAccuracy(trajectory)));
 
         return routine;
