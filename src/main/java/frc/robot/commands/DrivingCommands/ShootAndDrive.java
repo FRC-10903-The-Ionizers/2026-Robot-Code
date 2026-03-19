@@ -73,7 +73,7 @@ public class ShootAndDrive extends Command {
         this.interpolationMatrix = interpolationMatrix;
         timer = new Timer();
         timer.reset();
-        timer.start();
+        
         this.time = time;
         addRequirements(swerve, hopper, shooter);
     }
@@ -84,6 +84,10 @@ public class ShootAndDrive extends Command {
          * Method that drives the swerves
          */
         // Get target translation
+        
+        if(timer != null && !timer.isRunning()){
+            timer.start();
+        }
         Optional<Alliance> ally = DriverStation.getAlliance();
 
         if (!ally.isPresent()) {
@@ -131,6 +135,7 @@ public class ShootAndDrive extends Command {
         Matrix<N2, N1> interp = interpolationMatrix.get(distanceToTarget);
         double interpolatedShooterSpeed = 0.0;
         double interpolatedHoodAngle = 0.0;
+
         if (interp != null) {
             interpolatedShooterSpeed = interp.get(0, 0);
             interpolatedHoodAngle = interp.get(1, 0);
@@ -146,10 +151,17 @@ public class ShootAndDrive extends Command {
 
     @Override
     public boolean isFinished() {
-        if (time == 0 || timer.get() < time){
+        if (timer != null && (time == 0 || timer.get() < time)){
             return false;
         } else {
             return true;
+        } 
+    }
+
+    public void end(){
+        if (timer != null){
+            timer.stop();
+            timer.reset();
         }
     }
 }
