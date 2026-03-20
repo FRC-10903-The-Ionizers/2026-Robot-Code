@@ -102,14 +102,31 @@ public class RegionHandler {
     // --- Constructors ---
     // -------------------------
 
+    /**
+     * Constructs a RegionHandler by loading regions from the given file path.
+     *
+     * @param jsonFilePath the path to the JSON file defining the regions
+     */
     public RegionHandler(String jsonFilePath) {
         loadRegionsFromJson(new File(jsonFilePath));
     }
 
+    /**
+     * Constructs a RegionHandler by loading regions from the given file.
+     *
+     * @param path the JSON file defining the regions
+     */
     public RegionHandler(File path) {
         loadRegionsFromJson(path);
     }
 
+    /**
+     * Parses the JSON file and loads all region definitions into memory.
+     *
+     * @param path the JSON file to parse
+     * @throws RuntimeException if the file cannot be read
+     * @throws IllegalArgumentException if a region definition is invalid
+     */
     private void loadRegionsFromJson(File path) {
         JsonObject root;
         try (FileReader reader = new FileReader(path)) {
@@ -184,6 +201,14 @@ public class RegionHandler {
         return region.contains(x, y);
     }
 
+    /**
+     * Checks if the given pose is inside the specified named region.
+     *
+     * @param regionName the name of the region to check
+     * @param pose the robot pose to test
+     * @return true if the pose is inside the region
+     * @throws IllegalArgumentException if the region name doesn't exist
+     */
     public boolean inRegion(String regionName, Pose2d pose) {
         return inRegion(regionName, pose.getX(), pose.getY());
     }
@@ -201,6 +226,12 @@ public class RegionHandler {
         return inside;
     }
 
+    /**
+     * Returns a list of all region names that contain the given pose.
+     *
+     * @param pose the robot pose to test
+     * @return list of region names containing the pose
+     */
     public List<String> listCurrentRegions(Pose2d pose) {
         return listCurrentRegions(pose.getX(), pose.getY());
     }
@@ -218,6 +249,12 @@ public class RegionHandler {
         return sb.toString();
     }
 
+    /**
+     * Prints debug info for all regions against the given pose.
+     *
+     * @param pose the robot pose to debug
+     * @return a formatted debug string
+     */
     public String debugPoint(Pose2d pose) {
         return debugPoint(pose.getX(), pose.getY());
     }

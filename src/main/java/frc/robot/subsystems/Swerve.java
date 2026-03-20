@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import java.io.File;
-import java.util.Optional;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
@@ -13,8 +12,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,12 +24,12 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Swerve subsystem for the robot.
+ * 
+ * @since 2025-10
+ */
 public class Swerve extends SubsystemBase {
-    /**
-     * Swerve subsystem for the robot.
-     * 
-     * @since 2025-10
-     */
 
     private final static Logger logger = LogManager.getLogger(Swerve.class);
     private SwerveDrive swerveDrive;
@@ -46,16 +43,14 @@ public class Swerve extends SubsystemBase {
     private static boolean isLockedPosition = false;
     public static double currentGear = 1.0;
 
+    /**
+     * Swerve constructor for the robot.
+     * 
+     * @since 2025-10
+     */
     public Swerve() {
-        /**
-         * Swerve constructor for the robot.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
         try {
-            double maximumSpeed = Units.feetToMeters(20);
+            double maximumSpeed = Units.feetToMeters(Constants.DriveConstants.kMaxSpeedFeetPerSecond);
 
             SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
@@ -72,20 +67,17 @@ public class Swerve extends SubsystemBase {
             initialized = true;
 
         } catch (Exception e) {
-            logger.fatal("FALIED TO LOAD SWERVE CONFIG", e);
+            logger.fatal("FAILED TO LOAD SWERVE CONFIG", e);
         }
     }
 
+    /**
+     * Periodic method for the swerve subsystem.
+     * Updates the field position of the robot.
+     * 
+     * @since 2025-10
+     */
     public void periodic() {
-        /**
-         * Periodic method for the swerve subsystem.
-         * 
-         * Updates the field position of the robot.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
         if (!initialized)
             return;
 
@@ -93,56 +85,50 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData(this);
     }
 
+    /**
+     * Resets the odometry of the robot.
+     * 
+     * @param pose the pose to reset odometry to
+     * @return the new pose after resetting
+     * @since 2025-10
+     */
     public Pose2d resetOdometry(Pose2d pose) {
-        /**
-         * Resets the odometry of the robot.
-         * 
-         * @args Pose2d pose
-         * @since 2025-10
-         * @return Pose2d
-         */
         if (!initialized)
             return new Pose2d();
         swerveDrive.resetOdometry(pose);
         return swerveDrive.getPose();
     }
 
-    // Elastic Stuff
-
+    /**
+     * Gets the field position of the robot.
+     * 
+     * @return the Field2d object
+     * @since 2025-10
+     */
     public Field2d getField() {
-        /**
-         * Gets the field position of the robot.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return Field2d
-         */
         return field;
     }
 
+    /**
+     * Gets the pose of the robot.
+     * 
+     * @return the current Pose2d
+     * @since 2025-10
+     */
     public Pose2d getPose() {
-        /**
-         * Gets the pose of the robot.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return Pose2d
-         */
         if (!initialized)
             return new Pose2d();
 
         return swerveDrive.getPose();
     }
 
+    /**
+     * Follows a trajectory for the robot.
+     * 
+     * @param sample the swerve sample to follow
+     * @since 2025-10
+     */
     public void followTrajectory(SwerveSample sample) {
-        /**
-         * Follows a trajectory for the robot using elastic.
-         * 
-         * @args SwerveSample sample
-         * @since 2025-10
-         * @return void
-         */
-
         // Get the current pose of the robot
         Pose2d pose = swerveDrive.getPose();
 
@@ -159,26 +145,26 @@ public class Swerve extends SubsystemBase {
         swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);
     }
 
+    /**
+     * Gets the swerve drive object.
+     * 
+     * @return the SwerveDrive instance
+     * @since 2025-10
+     */
     public SwerveDrive getSwerveDrive() {
-        /**
-         * Gets the swerve drive object.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return SwerveDrive
-         */
         return swerveDrive;
     }
 
+    /**
+     * Adds a vision measurement to the swerve drive, uses standard
+     * deviations to weight the measurement along with swerve drive's odometry.
+     * 
+     * @param visionPose the vision-estimated pose
+     * @param timestamp the timestamp of the vision measurement
+     * @param estimationStdDevs the standard deviations for the measurement
+     * @since 2025-10
+     */
     public void addVisionMeasurement(Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
-        /**
-         * Adds a vision measurement to the swerve drive, uses standard
-         * deviations to weight the measurement along with swerve drive's odometry.
-         * 
-         * @args Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs
-         * @since 2025-10
-         * @return void
-         */
         if (!initialized) {
             return;
         }
@@ -186,36 +172,35 @@ public class Swerve extends SubsystemBase {
         swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
     }
 
+    /**
+     * Gets the current gear of the robot.
+     * 
+     * @return the current gear multiplier
+     * @since 2026-01
+     */
     public static double getCurrentGear() {
-        /**
-         * Gets the current gear of the robot.
-         * 
-         * @args None
-         * @since 2026-01
-         * @return double currentGear
-         */
         return currentGear;
     }
 
+    /**
+     * Sets the current gear of the robot.
+     * 
+     * @param gearMultiplier the gear multiplier to set
+     * @since 2026-01
+     */
     public static void setCurrentGear(double gearMultiplier) {
-        /**
-         * Sets the current gear of the robot.
-         * 
-         * @args double gearMultiplier
-         * @since 2026-01
-         * @return void
-         */
         currentGear = gearMultiplier;
     }
 
+    /**
+     * Drives the robot.
+     * 
+     * @param translation the translation vector
+     * @param rotation the rotation speed
+     * @param isFieldRelative whether driving is field-relative
+     * @since 2026-01
+     */
     public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
-        /**
-         * Drives the robot.
-         * 
-         * @args Translation2d translation, double rotation, boolean isFieldRelative
-         * @since 2026-01
-         * @return void
-         */
         if (isLockedPosition) {
             // locked position (x position)
             swerveDrive.lockPose();

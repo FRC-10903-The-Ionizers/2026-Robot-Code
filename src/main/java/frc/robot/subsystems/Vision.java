@@ -26,7 +26,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
@@ -45,16 +44,15 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 
+/**
+ * Vision subsystem for the robot - used to estimate the robot's pose based on
+ * April Tags using PhotonVision.
+ * Check out clickup knowledge base for more information on photonvision
+ * debugging.
+ * 
+ * @since 2025-11
+ */
 public class Vision extends SubsystemBase {
-    /**
-     * Vision subsystem for the robot - used to estimate the robot's pose based on
-     * April Tags using PhotonVision.
-     * Check out clickup knowledge base for more information on photonvision
-     * debugging.
-     * 
-     * @since 2025-11
-     * 
-     */
 
     private final PhotonCamera shooterCamera;
     private final PhotonCamera intakeCamera;
@@ -63,14 +61,13 @@ public class Vision extends SubsystemBase {
     private Matrix<N3, N1> curStdDevs;
     private Swerve swerve;
 
+    /**
+     * Vision constructor for the robot.
+     * 
+     * @param swerve the swerve subsystem
+     * @since 2025-11
+     */
     public Vision(Swerve swerve) {
-        /**
-         * Vision constructor for the robot.
-         * 
-         * @args Swerve swerve
-         * @since 2025-11
-         * @return void
-         */
         this.swerve = swerve;
 
         shooterCamera = new PhotonCamera(Constants.VisionConstants.kAprilCamera1Name);
@@ -88,6 +85,11 @@ public class Vision extends SubsystemBase {
         intakePhotonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
+    /**
+     * Periodically processes unread camera results from both cameras,
+     * updates the standard deviation estimates, and feeds vision
+     * measurements into the swerve pose estimator.
+     */
     public void periodic() {
         Optional<EstimatedRobotPose> shooterEst = Optional.empty();
         Optional<EstimatedRobotPose> intakeEst = Optional.empty();
@@ -175,10 +177,10 @@ public class Vision extends SubsystemBase {
         avgDist /= numTags;
         if (numTags > 1)
             estStdDevs = VisionConstants.kMultiTagStdDevs;
-        if (numTags == 1 && avgDist > 4)
+        if (numTags == 1 && avgDist > VisionConstants.kSingleTagDistanceThreshold)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         else
-            estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+            estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / VisionConstants.kStdDevScalingFactor));
 
         curStdDevs = estStdDevs;
     }
@@ -191,16 +193,13 @@ public class Vision extends SubsystemBase {
      * only be used when there are targets visible.
      */
     public Matrix<N3, N1> getEstimationStdDevs() {
-        /**
-         * See docs from {@link #updateEstimationStdDevs()}
-         * 
-         * @args None
-         * @since 2025-11
-         * @return Matrix<N3, N1> curStdDevs
-         */
         return curStdDevs;
     }
 
+    /**
+     * Functional interface for consuming vision pose estimates with
+     * their associated timestamps and standard deviations.
+     */
     @FunctionalInterface
     public static interface EstimateConsumer {
         public void accept(Pose2d pose, double timestamp, Matrix<N3, N1> estimationStdDevs);

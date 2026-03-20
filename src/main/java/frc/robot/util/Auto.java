@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-import java.nio.channels.Pipe.SourceChannel;
-import java.util.Map;
 import java.util.Set;
 import edu.wpi.first.wpilibj.DriverStation;
 import choreo.auto.AutoChooser;
@@ -20,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DrivingCommands.DriveToPose;
@@ -29,28 +26,29 @@ import frc.robot.stateSensors.RegionHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Auto class for the robot.
+ * Uses choreo library to create autonomous routines.
+ * 
+ * @since 2026-01-19
+ * @todo Auto branching needs to be implemented.
+ */
 public class Auto {
-    /**
-     * Auto class for the robot.
-     * Uses choreo library to create autonomous routines.
-     * 
-     * @since 2026-01-19
-     * @todo Auto branching needs to be implemented.
-     */
 
     private final AutoChooser branchingAutoChooser;
     private static Swerve swerve;
     private final RegionHandler regionHandler;
     private static final Logger logger = LogManager.getLogger(Auto.class);
 
+    /**
+     * Auto constructor for the robot.
+     * 
+     * @param factory the auto factory
+     * @param swerve the swerve subsystem
+     * @param regionHandler the region handler
+     * @since 2026-01-19
+     */
     public Auto(AutoFactory factory, Swerve swerve, RegionHandler regionHandler) {
-        /**
-         * Auto constructor for the robot.
-         * 
-         * @args AutoFactory factory, Swerve swerve
-         * @since 2026-01-19
-         * @return void
-         */
         // Make something to display on the GUI that allows the user to select the
         // autonomous they want to run
         branchingAutoChooser = new AutoChooser();
@@ -69,6 +67,13 @@ public class Auto {
         // SmartDashboard.getBoolean("Go Under Trench", false);
     }
 
+    /**
+     * Creates the branching autonomous routine. Selects trajectories based
+     * on alliance color from game data and the robot's starting region,
+     * with conditional branching for trench vs bump paths.
+     *
+     * @return the configured auto routine
+     */
     public AutoRoutine branchingAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
         String gameData = DriverStation.getGameSpecificMessage();
@@ -276,31 +281,37 @@ public class Auto {
         }
     }
 
+    /**
+     * Gets the selected auto command from the auto chooser.
+     * 
+     * @return the selected auto command
+     * @since 2026-01-19
+     */
     public Command getAutoCommand() {
-        /**
-         * Gets the selected auto command from the auto chooser.
-         * 
-         * @args None
-         * @since 2026-01-19
-         * @return Command
-         */
         return branchingAutoChooser.selectedCommand();
     }
 
+    /**
+     * Returns whether the driver has selected the "go under trench" option
+     * on SmartDashboard, used for branching auto decisions.
+     *
+     * @return true if the robot should go under the trench
+     */
     public boolean getIsGoingUnderTrench() {
         return SmartDashboard.getBoolean("Go Under Trench", false);
     }
 
+    /**
+     * Checks if the trajectory is finished, based on whether translation and
+     * rotation are finished.
+     * This code was inspired by Citrus Circuits' 2025 code.
+     * 
+     * @param trajectory the auto trajectory
+     * @param epsilonDist the distance epsilon
+     * @return true if the trajectory is finished
+     * @since 2026-01-19
+     */
     private static boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
-        /**
-         * Checks if the trajectory is finished, based on whether translation and
-         * rotation are finished.
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @since 2026-01-19
-         * @return boolean
-         */
         boolean translationCompleted = translationIsFinished(trajectory, epsilonDist);
         boolean rotationCompleted = rotationIsFinished(trajectory);
 
@@ -310,36 +321,37 @@ public class Auto {
         return translationCompleted && rotationCompleted;
     }
 
+    /**
+     * Checks if the translation is finished. Used in
+     * {@link #isFinished(AutoTrajectory, Distance)}.
+     * This code was inspired by Citrus Circuits' 2025 code.
+     * 
+     * @param trajectory the auto trajectory
+     * @param epsilonDist the distance epsilon
+     * @return true if translation is finished
+     * @since 2026-01-19
+     */
     private static boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
-        /**
-         * Checks if the translation is finished. Used in
-         * {@link #isFinished(AutoTrajectory, Distance)}
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @since 2026-01-19
-         * @return boolean
-         */
         Pose2d currentPose = swerve.getPose();
         Pose2d finalPose = trajectory.getFinalPose().get();
 
         SmartDashboard.putNumber(
                 "Choreo/Distance Away Inches",
-                currentPose.getTranslation().getDistance(finalPose.getTranslation()) * 39.37);
+                currentPose.getTranslation().getDistance(finalPose.getTranslation()) * Constants.kMetersToInches);
 
         return currentPose.getTranslation().getDistance(finalPose.getTranslation()) < epsilonDist.in(Units.Meters);
     }
 
+    /**
+     * Checks if the rotation is finished. Used in
+     * {@link #isFinished(AutoTrajectory, Distance)}.
+     * This code was inspired by Citrus Circuits' 2025 code.
+     * 
+     * @param trajectory the auto trajectory
+     * @return true if rotation is finished
+     * @since 2026-01-19
+     */
     private static boolean rotationIsFinished(AutoTrajectory trajectory) {
-        /**
-         * Checks if the rotation is finished. Used in
-         * {@link #isFinished(AutoTrajectory, Distance)}
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory
-         * @since 2026-01-19
-         * @return boolean
-         */
         Pose2d currentPose = swerve.getPose();
         Pose2d finalPose = trajectory.getFinalPose().get();
         Angle epsilonAngle = AutoConstants.kAutoAngleEpsilon;
@@ -349,15 +361,15 @@ public class Auto {
                         .in(Units.Radians);
     }
 
+    /**
+     * Creates a command with accuracy. Used in basically all the routines.
+     * This code was inspired by Citrus Circuits' 2025 code.
+     * 
+     * @param trajectory the auto trajectory
+     * @return the command with accuracy checks
+     * @since 2026-01-19
+     */
     public static Command cmdWithAccuracy(AutoTrajectory trajectory) {
-        /**
-         * Creates a command with accuracy. Used in basically all the routines.
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory, Time timeout, Distance epsilonDist
-         * @since 2026-01-19
-         * @return Command
-         */
         return Commands.defer(
                 () -> new FunctionalCommand(
                         trajectory.cmd()::initialize,

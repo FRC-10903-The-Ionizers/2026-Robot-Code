@@ -1,7 +1,6 @@
 package frc.robot;
 
 import java.io.File;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.ShootAndDrive;
 import frc.robot.commands.DrivingCommands.TrenchWarfare;
 import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.DriveToObject;
@@ -33,13 +32,12 @@ import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 
+/**
+ * RobotContainer class for the robot.
+ * 
+ * @since 2025-10
+ */
 public class RobotContainer {
-
-    /**
-     * RobotContainer class for the robot.
-     * 
-     * @since 2025-10
-     */
 
     private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
     private final static Logger logger = LogManager.getLogger(RobotContainer.class);
@@ -55,14 +53,12 @@ public class RobotContainer {
     private final Hopper hopper = new Hopper();
     private final CommandXboxController xboxController = new CommandXboxController(Constants.kXboxControllerPort);
 
+    /**
+     * RobotContainer constructor for the robot.
+     * 
+     * @since 2025-10
+     */
     public RobotContainer() {
-        /**
-         * RobotContainer constructor for the robot.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
         // configure all triggers
         configureBindings();
 
@@ -71,6 +67,12 @@ public class RobotContainer {
         SmartDashboard.putData(swerve);
     }
 
+    /**
+     * Builds the interpolation matrix that maps distance-to-hub to
+     * shooter speed and hood angle pairs for automatic shot adjustment.
+     *
+     * @return the populated interpolation matrix
+     */
     private static InterpolatingMatrixTreeMap<Double, N2, N1> buildInterpolationMatrix() {
         InterpolatingMatrixTreeMap<Double, N2, N1> map = new InterpolatingMatrixTreeMap<>();
         double[] dists = Constants.ShooterConstants.kDistancesToHub;
@@ -83,44 +85,37 @@ public class RobotContainer {
         return map;
     }
 
-    // Remove controllerDrive() as it's replaced by commands
-
+    /**
+     * Gets the swerve subsystem.
+     * 
+     * @return the swerve subsystem
+     * @since 2025-10
+     */
     public Swerve getSwerve() {
-        /**
-         * Gets the swerve subsystem.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return Swerve swerve
-         */
         return swerve;
     }
 
+    /**
+     * Gets the controller.
+     * 
+     * @return the controller
+     * @since 2025-10
+     */
     public Controller getController() {
-        /**
-         * Gets the controller.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return Controller controller
-         */
         return controller;
     }
 
+    /**
+     * Configures the bindings for the robot controller buttons.
+     * 
+     * @since 2025-10
+     */
     private void configureBindings() {
-        /**
-         * Configures the bindings for the robot, add to this when u have more buttons
-         * that do stuff.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
         // Bind aiming command to a button (e.g., A button)
         //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
         xboxController.x().onTrue(intake.toggleIntakeCommand());
-        xboxController.leftTrigger(0.25).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
-        xboxController.rightTrigger(0.1).whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
+        xboxController.leftTrigger(Constants.DriveConstants.kLeftTriggerThreshold).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
+        xboxController.rightTrigger(Constants.DriveConstants.kRightTriggerThreshold).whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
         xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
 
         xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
@@ -147,8 +142,8 @@ public class RobotContainer {
 
         // change gear commands
         xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
-            if (Swerve.getCurrentGear() + 1.0 < Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER) {
-                Swerve.setCurrentGear(Swerve.getCurrentGear() + 1.0);
+            if (Swerve.getCurrentGear() + Constants.DriveConstants.kGearStep < Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER) {
+                Swerve.setCurrentGear(Swerve.getCurrentGear() + Constants.DriveConstants.kGearStep);
                 logger.info("Shifted to HIGH gear: {}", Swerve.getCurrentGear());
             } else {
                 Swerve.setCurrentGear(Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER);
@@ -157,8 +152,8 @@ public class RobotContainer {
         }, swerve));
 
         xboxController.leftBumper().onTrue(Commands.runOnce(() -> {
-            if (Swerve.getCurrentGear() - 1.0 > Constants.DriveConstants.kLOW_GEAR_MULTIPLIER) {
-                Swerve.setCurrentGear(Swerve.getCurrentGear() - 1);
+            if (Swerve.getCurrentGear() - Constants.DriveConstants.kGearStep > Constants.DriveConstants.kLOW_GEAR_MULTIPLIER) {
+                Swerve.setCurrentGear(Swerve.getCurrentGear() - Constants.DriveConstants.kGearStep);
                 logger.info("Shifted to LOW gear: {}", Swerve.getCurrentGear());
             } else {
                 Swerve.setCurrentGear(Constants.DriveConstants.kLOW_GEAR_MULTIPLIER);

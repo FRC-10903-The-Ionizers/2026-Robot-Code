@@ -5,46 +5,46 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Swerve;
-import frc.robot.util.Controller;
 import frc.robot.Constants.VisionConstants;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 
+/**
+ * DriveToObject command for the robot. Uses limelight object detection to
+ * drive toward a detected object while centering it in the camera view.
+ * 
+ * @since 2026-01-15
+ */
 public class DriveToObject extends Command {
-    /**
-    * 
-     * @since 2026-01-15
-     */
 
     private static final Logger logger = LogManager.getLogger(DriveToObject.class);
 
     private final Swerve swerve;
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
+    /**
+     * Constructor which sets swerve and controller class variables.
+     * 
+     * @param swerve the swerve drive
+     */
     public DriveToObject(Swerve swerve) {
-        /**
-         * Constructor which sets swerve and controller class variables
-         * 
-         * @param swerve:     the swerve drive
-         * @param controller: the PID controller
-         */
         this.swerve = swerve;
         addRequirements(swerve);
     }
 
+    /**
+     * Reads the limelight object detection data, calculates the angular
+     * offset, and drives toward the detected object using PID heading control.
+     */
     @Override
     public void execute() {
-        /**
-         * Method that drives the swerves
-         */
         try {
             // see available cameras
 
-            double[] dataFromPython = LimelightHelpers.getPythonScriptData("limelight-obj");
+            double[] dataFromPython = LimelightHelpers.getPythonScriptData(VisionConstants.kObjectCameraName);
             
             logger.info("Data from Python: {}", java.util.Arrays.toString(dataFromPython));
             // index 0 is x value of brightest point, we want to center that
@@ -69,6 +69,8 @@ public class DriveToObject extends Command {
 
     }
 
+    /** {@inheritDoc} This command runs continuously until interrupted. */
+    @Override
     public boolean isFinished() {
         return false; // Runs continuously
     }

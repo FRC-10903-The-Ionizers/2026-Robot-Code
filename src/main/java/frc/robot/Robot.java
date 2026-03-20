@@ -22,6 +22,11 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
 
+/**
+ * Robot class for the robot.
+ * 
+ * @since 2025-10
+ */
 public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
@@ -30,15 +35,12 @@ public class Robot extends TimedRobot {
     private RegionHandler regionHandler;
     private final static Logger logger = LogManager.getLogger(Robot.class);
 
+    /**
+     * Robot constructor for the robot.
+     * 
+     * @since 2025-10
+     */
     public Robot() {
-        /**
-         * Robot constructor for the robot.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
-
         // Save network tables data to disk
         DataLogManager.start();
 
@@ -67,21 +69,22 @@ public class Robot extends TimedRobot {
         DriverStation.silenceJoystickConnectionWarning(true);
     }
 
+    /**
+     * Runs the command scheduler every robot loop iteration.
+     */
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
     }
 
+    /**
+     * Schedules the autonomous command, runs automatically when the robot is in
+     * autonomous mode.
+     * 
+     * @since 2026-01
+     */
     @Override
     public void autonomousInit() {
-        /**
-         * Schedules the autonomous command, runs automatically when the robot is in
-         * autonomous mode.
-         * 
-         * @args None
-         * @since 2026-01
-         * @return void
-         */
         timer.restart();
         Command autoCommand = auto.getAutoCommand();
 
@@ -91,22 +94,22 @@ public class Robot extends TimedRobot {
 
     }
 
+    /**
+     * Called periodically during autonomous mode. Currently a no-op.
+     *
+     * @todo Remove this unless needed
+     */
     @Override
     public void autonomousPeriodic() {
-        /**
-         * @todo Remove this unless needed
-         */
     }
 
+    /**
+     * Initializes the teleop mode.
+     * 
+     * @since 2025-10
+     */
     @Override
     public void teleopInit() {
-        /**
-         * Initializes the teleop mode.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
         Swerve swerve = robotContainer.getSwerve();
         Controller controller = robotContainer.getController();
         TeleopDriveCommand teleopDriveCommand = new TeleopDriveCommand(swerve, controller);
@@ -114,34 +117,33 @@ public class Robot extends TimedRobot {
         swerve.setDefaultCommand(teleopDriveCommand);
     }
 
+    /**
+     * Called periodically during teleop mode. Currently a no-op.
+     *
+     * @todo Remove this unless needed
+     */
     @Override
     public void teleopPeriodic() {
-        /**
-         * @todo Remove this unless needed
-         */
     }
 
+    /**
+     * Exits the teleop mode, runs when the robot is no longer in teleop mode.
+     * 
+     * @since 2025-10
+     */
     @Override
     public void teleopExit() {
-        /**
-         * Exits the teleop mode, runs when the robot is no longer in teleop mode.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return void
-         */
         Swerve swerve = robotContainer.getSwerve();
         swerve.removeDefaultCommand();
     }
 
+    /**
+     * Checks if the robot is on the red alliance.
+     * 
+     * @return true if the robot is on the red alliance
+     * @since 2025-10
+     */
     private boolean isRedAlliance() {
-        /**
-         * Checks if the robot is on the red alliance.
-         * 
-         * @args None
-         * @since 2025-10
-         * @return boolean
-         */
         return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
     }
 }

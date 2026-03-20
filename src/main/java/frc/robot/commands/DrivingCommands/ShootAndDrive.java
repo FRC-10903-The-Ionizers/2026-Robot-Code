@@ -17,21 +17,19 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
-import edu.wpi.first.math.controller.PIDController;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * ShootAndDrive command for the robot. Drives the robot while maintaining a locked orientation
+ * toward the hub/target and manages the shooter subsystem.
+ * 
+ * @since 2026-01-15
+ */
 public class ShootAndDrive extends Command {
-    /**
-     * DriveWhileLocked command for the robot. Drives the robot while maintaining a locked orientation.
-     * 
-     * @since 2026-01-15
-     */
     private final Swerve swerve;
     private final Controller controller;
     private final Shooter shooter;
@@ -41,13 +39,17 @@ public class ShootAndDrive extends Command {
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
     private Intake intake;
     
+    /**
+     * Constructor which sets swerve and controller class variables.
+     * 
+     * @param swerve the swerve drive
+     * @param shooter the shooter subsystem
+     * @param hopper the hopper subsystem
+     * @param intake the intake subsystem
+     * @param controller the controller
+     * @param interpolationMatrix the interpolation matrix for shooter speed and hood angle
+     */
     public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Intake intake, Controller controller, InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix) {
-        /**
-         * Constructor which sets swerve and controller class variables
-         * 
-         * @param swerve: the swerve drive
-         * @param controller: the PID controller
-         */
         this.swerve = swerve;
         this.shooter = shooter;
         this.hopper = hopper;
@@ -57,11 +59,13 @@ public class ShootAndDrive extends Command {
         addRequirements(swerve, hopper, shooter,  intake);
     }
 
+    /**
+     * Calculates the target heading toward the hub or passing target,
+     * drives with locked orientation, and manages shooter speed/angle
+     * interpolation and hopper feeding when ready.
+     */
     @Override
     public void execute() {
-        /**
-         * Method that drives the swerves
-         */
         // Get target translation
         Optional<Alliance> ally = DriverStation.getAlliance();
 
@@ -69,22 +73,22 @@ public class ShootAndDrive extends Command {
             System.out.println("Alliance not detected!");
         }
         Translation2d targetTranslation;
-        if (ally.get() == Alliance.Red && swerve.getPose().getTranslation().getX() > 11.8) {
+        if (ally.get() == Alliance.Red && swerve.getPose().getTranslation().getX() > Constants.ShooterConstants.kRedAllianceXBoundary) {
             targetTranslation = Constants.ShooterConstants.kRedHubTranslation;
-        } else if (ally.get() == Alliance.Blue && swerve.getPose().getTranslation().getX() < 4.6) {
+        } else if (ally.get() == Alliance.Blue && swerve.getPose().getTranslation().getX() < Constants.ShooterConstants.kBlueAllianceXBoundary) {
             targetTranslation = Constants.ShooterConstants.kBlueHubTranslation;
         } else {
             double targetPoseY;
-            if (this.swerve.getPose().getY() >= 4.035) {
-                targetPoseY = (4.035 / 2) * 3;
+            if (this.swerve.getPose().getY() >= Constants.ShooterConstants.kFieldMidlineY) {
+                targetPoseY = (Constants.ShooterConstants.kFieldMidlineY / 2) * 3;
             } else {
-                targetPoseY = 4.035 / 2;
+                targetPoseY = Constants.ShooterConstants.kFieldMidlineY / 2;
             }
 
             if (ally.get() == Alliance.Red) {
-                targetTranslation = new Translation2d(14.4, targetPoseY);
+                targetTranslation = new Translation2d(Constants.ShooterConstants.kRedPassingTargetX, targetPoseY);
             } else {
-                targetTranslation = new Translation2d(2.3, targetPoseY);
+                targetTranslation = new Translation2d(Constants.ShooterConstants.kBluePassingTargetX, targetPoseY);
             }
         }
         
@@ -100,7 +104,7 @@ public class ShootAndDrive extends Command {
 
         double distance = currentPose.getTranslation().getDistance(targetTranslation);
 
-        double angleOffset = Math.asin(0.254/distance);
+        double angleOffset = Math.asin(Constants.ShooterConstants.kRobotToShooterOffsetMeters / distance);
         target_angle = target_angle + angleOffset;
         headingController.setSetpoint(target_angle);
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
@@ -125,6 +129,7 @@ public class ShootAndDrive extends Command {
         intake.setJiggly(true);
     }
 
+    /** {@inheritDoc} This command runs continuously until interrupted. */
     @Override
     public boolean isFinished() {
         return false; // Runs continuously

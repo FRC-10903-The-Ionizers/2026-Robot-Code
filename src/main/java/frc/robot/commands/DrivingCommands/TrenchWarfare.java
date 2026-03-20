@@ -8,15 +8,13 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+/**
+ * TrenchWarfare command for the robot. Drives the robot toward the nearest
+ * trench Y-coordinate while allowing driver X-axis control.
+ * 
+ * @since 2026-01-20
+ */
 public class TrenchWarfare extends Command {
-  /**
-   * GoToPoint command for the robot.
-   * 
-   * @since 2026-01-20
-   */
   private final Swerve swerve;
   private double targetY;
   private double targetHeading = 0;
@@ -26,35 +24,33 @@ public class TrenchWarfare extends Command {
 
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
+  /**
+   * TrenchWarfare constructor for the robot.
+   * 
+   * @param subsystem the swerve subsystem
+   * @param controller the controller
+   * @since 2026-01-21
+   */
   public TrenchWarfare(Swerve subsystem, Controller controller) {
-    /**
-     * GoToPoint constructor for the robot.
-     * 
-     * @args Swerve subsystem, Pose2d targetPose
-     * @since 2026-01-21
-     * @return void
-     */
     swerve = subsystem;
     this.controller = controller;
-    if (swerve.getPose().getY()>4.03) {
-        targetY = 7.42;
+    if (swerve.getPose().getY() > Constants.TrenchConstants.kFieldMidlineY) {
+        targetY = Constants.TrenchConstants.kUpperTargetY;
     }
     else {
-        targetY = 0.65;
+        targetY = Constants.TrenchConstants.kLowerTargetY;
     }
   }
 
+  /**
+   * Executes the TrenchWarfare command.
+   * Periodically updates the translation and heading distance to the target pose
+   * by subtracting the current pose from the target pose.
+   * 
+   * @since 2026-01-21
+   */
+  @Override
   public void execute() {
-    /**
-     * Executes the GoToPoint command.
-     * Periodically updates the translation and heading distance to the target pose
-     * by subtracting the current pose from the target pose.
-     * 
-     * @args None
-     * @since 2026-01-21
-     * @return void
-     */
-
     Pose2d currentPose = swerve.getPose();
     double yCalculated = yController.calculate(currentPose.getY(), targetY);
     double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(),targetHeading);

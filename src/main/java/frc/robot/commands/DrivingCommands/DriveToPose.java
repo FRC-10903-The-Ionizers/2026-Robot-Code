@@ -6,15 +6,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+/**
+ * DriveToPose command for the robot. Drives to a target pose using PID controllers.
+ * 
+ * @since 2026-01-20
+ */
 public class DriveToPose extends Command {
-  /**
-   * GoToPoint command for the robot.
-   * 
-   * @since 2026-01-20
-   */
   private final Swerve swerve;
   private final Pose2d targetPose;
 
@@ -24,29 +22,27 @@ public class DriveToPose extends Command {
 
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
+  /**
+   * DriveToPose constructor for the robot.
+   * 
+   * @param subsystem the swerve subsystem
+   * @param targetPose the target pose to drive to
+   * @since 2026-01-21
+   */
   public DriveToPose(Swerve subsystem, Pose2d targetPose) {
-    /**
-     * GoToPoint constructor for the robot.
-     * 
-     * @args Swerve subsystem, Pose2d targetPose
-     * @since 2026-01-21
-     * @return void
-     */
     swerve = subsystem;
     this.targetPose = targetPose;
   }
 
+  /**
+   * Executes the DriveToPose command.
+   * Periodically updates the translation and heading distance to the target pose
+   * by subtracting the current pose from the target pose.
+   * 
+   * @since 2026-01-21
+   */
+  @Override
   public void execute() {
-    /**
-     * Executes the GoToPoint command.
-     * Periodically updates the translation and heading distance to the target pose
-     * by subtracting the current pose from the target pose.
-     * 
-     * @args None
-     * @since 2026-01-21
-     * @return void
-     */
-
     Pose2d currentPose = swerve.getPose();
     double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
     double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
@@ -56,16 +52,14 @@ public class DriveToPose extends Command {
     swerve.drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
   }
 
+  /**
+   * Checks if the DriveToPose command is finished based on the minimum distance to
+   * stop.
+   * 
+   * @since 2026-01-21
+   */
   @Override
   public boolean isFinished() {
-    /**
-     * Checks if the GoToPoint command is finished based on the minimum distance to
-     * stop.
-     * 
-     * @args None
-     * @since 2026-01-21
-     * @return boolean
-     */
     Pose2d currentPose = swerve.getPose();
     double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
 
