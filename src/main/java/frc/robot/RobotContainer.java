@@ -130,8 +130,7 @@ public class RobotContainer {
     // driving
 
     xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
-        xboxController.a().whileTrue(new DriveToObject(swerve));
-        xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
+    xboxController.a().whileTrue(new DriveToObject(swerve));
 
     xboxController.povUp().whileTrue(new DriveToObject(swerve));
 
