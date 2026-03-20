@@ -1,4 +1,4 @@
-package frc.robot.commands.DrivingCommands;
+package frc.robot.commands.drivingcommands;
 
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
