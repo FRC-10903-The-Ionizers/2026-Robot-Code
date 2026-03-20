@@ -25,7 +25,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.subsystems.Swerve;
-import frc.robot.stateSensors.RegionHandler;
+import frc.robot.statesensors.RegionHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

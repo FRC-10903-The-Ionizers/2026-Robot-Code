@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.DrivingCommands.TeleopDriveCommand;
-import frc.robot.stateSensors.RegionHandler;
+import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;

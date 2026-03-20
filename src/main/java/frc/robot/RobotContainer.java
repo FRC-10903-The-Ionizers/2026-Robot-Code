@@ -20,7 +20,7 @@ import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.AimAtTranslationDrive; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
-import frc.robot.stateSensors.RegionHandler;
+import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
