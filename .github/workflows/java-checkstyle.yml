@@ -14,4 +14,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_error: true
           level: error
+          filter_mode: nofilter
+          exclude: "src/main/java/frc/robot/LimelightHelpers.java"
 
