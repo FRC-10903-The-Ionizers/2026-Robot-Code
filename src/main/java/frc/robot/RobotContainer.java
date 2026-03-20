@@ -137,24 +137,7 @@ public class RobotContainer {
     xboxController.povRight().whileTrue(new TrenchWarfare(swerve, controller));
 
     // Bind aligning command to another button (e.g., B button)
-
-    // xboxController.b().whileTrue(new DriveToObject(swerve, new
-    // PIDController(Constants.DriveConstants.kHeadingP,
-    // Constants.DriveConstants.kHeadingI, Constants.DriveConstants.kHeadingD)));
-
-    // xboxController.y().onTrue(Commands.runOnce(() ->
-    // Swerve.toggleIsLockedPosition(), swerve));
-
-    // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2),
-    // shooter));
-    // Bind go to point test command to the D pad
-    // xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0,
-    // Rotation2d.kZero)));
-    // xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0,
-    // Rotation2d.kZero)));
-    // xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5,
-    // Rotation2d.kZero)));
-
+    
     // change gear commands
     xboxController
         .rightBumper()
