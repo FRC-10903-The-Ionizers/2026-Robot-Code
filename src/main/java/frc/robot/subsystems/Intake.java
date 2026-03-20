@@ -28,12 +28,12 @@ public class Intake extends SubsystemBase {
   // private final SparkMax actuationMotor = new
   // SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
   private final Swerve swerve;
-  public final PIDController inPID =
+  public final PIDController inPid =
       new PIDController(
           Constants.IntakeConstants.kInP,
           Constants.IntakeConstants.kInI,
           Constants.IntakeConstants.kInD);
-  public final PIDController outPID =
+  public final PIDController outPid =
       new PIDController(
           Constants.IntakeConstants.kOutP,
           Constants.IntakeConstants.kOutI,
@@ -96,17 +96,17 @@ public class Intake extends SubsystemBase {
 
     // Actuation PID control
     if (intakeIn) {
-      inPID.setSetpoint(
+      inPid.setSetpoint(
           Constants.IntakeConstants.kActuationOutSetpoint
               * Constants.IntakeConstants.kInJigglyPercentage
               * jiggleMultiplier);
-      double output = inPID.calculate(actuationMotor.getEncoder().getPosition());
+      double output = inPid.calculate(actuationMotor.getEncoder().getPosition());
       actuationMotor.set(output);
     } else {
-      outPID.setSetpoint(
+      outPid.setSetpoint(
           Constants.IntakeConstants.kActuationOutSetpoint
               * (1 - Constants.IntakeConstants.kOutJigglyPercentage * jiggleMultiplier));
-      double output = outPID.calculate(actuationMotor.getEncoder().getPosition());
+      double output = outPid.calculate(actuationMotor.getEncoder().getPosition());
       actuationMotor.set(output);
     }
 

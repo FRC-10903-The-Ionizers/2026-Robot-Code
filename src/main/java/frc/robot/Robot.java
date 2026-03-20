@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
             swerve::getPose, // A function that returns the current robot pose
             swerve
                 ::resetOdometry, // A function that resets the current robot pose to the provided
-                                 // Pose2d
+            // Pose2d
             swerve::followTrajectory, // The drive subsystem trajectory follower
             true, // If alliance flipping should be enabled
             swerve // The drive subsystem

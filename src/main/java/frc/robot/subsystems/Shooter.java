@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
   private final SparkMax hoodMotor =
       new SparkMax(Constants.ShooterConstants.kHoodMotorID, MotorType.kBrushless);
   private final RelativeEncoder hoodEncoder = hoodMotor.getEncoder();
-  private final PIDController hoodPID =
+  private final PIDController hoodPid =
       new PIDController(
           Constants.ShooterConstants.kHoodP,
           Constants.ShooterConstants.kHoodI,
@@ -40,7 +40,7 @@ public class Shooter extends SubsystemBase {
   // ---- Shooter speed PID ----
   private boolean isRunning = false;
   private double targetSpeed = 0;
-  private PIDController shooterSpeedPID =
+  private PIDController shooterSpeedPid =
       new PIDController(
           Constants.ShooterConstants.kShooterP,
           Constants.ShooterConstants.kShooterI,
@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Hood P", Constants.ShooterConstants.kHoodP);
     SmartDashboard.putNumber("Hood I", Constants.ShooterConstants.kHoodI);
     SmartDashboard.putNumber("Hood D", Constants.ShooterConstants.kHoodD);
-    SmartDashboard.putNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
+    SmartDashboard.putNumber("Hood LPF", Constants.ShooterConstants.kHoodLpf);
   }
 
   /**
@@ -89,31 +89,31 @@ public class Shooter extends SubsystemBase {
       }
     } else {
       // Hood PID with live-tunable gains
-      hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
-      hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
-      hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
-      double kHoodLPF = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
-      hoodPID.setSetpoint(
+      hoodPid.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
+      hoodPid.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
+      hoodPid.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
+      double hoodLpf = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLpf);
+      hoodPid.setSetpoint(
           MathUtil.clamp(targetHoodAngle, 0, Constants.ShooterConstants.kHoodMaxAngleRad));
-      double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
+      double hoodOutput = hoodPid.calculate(hoodEncoder.getPosition());
 
       hoodOutput =
           MathUtil.clamp(
               hoodOutput,
               -Constants.ShooterConstants.kHoodClipping,
               Constants.ShooterConstants.kHoodClipping);
-      hoodOutput = (prevHoodOutput * kHoodLPF) + (1 - kHoodLPF) * hoodOutput;
+      hoodOutput = (prevHoodOutput * hoodLpf) + (1 - hoodLpf) * hoodOutput;
       prevHoodOutput = hoodOutput;
       hoodMotor.set(-hoodOutput);
     }
 
     // Shooter flywheel speed PID with low-pass filter and voltage compensation
-    shooterSpeedPID.setSetpoint(-targetSpeed);
-    double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
+    shooterSpeedPid.setSetpoint(-targetSpeed);
+    double output = shooterSpeedPid.calculate(topMotor.getEncoder().getVelocity());
     SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
     output = MathUtil.clamp(output, -1, 0);
-    SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPID.getPositionError());
-    SmartDashboard.putNumber("Hood Error", hoodPID.getPositionError());
+    SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPid.getPositionError());
+    SmartDashboard.putNumber("Hood Error", hoodPid.getPositionError());
     output =
         ((prevOutput * Constants.ShooterConstants.kShooterLPF)
             + (1 - Constants.ShooterConstants.kShooterLPF)
@@ -143,7 +143,7 @@ public class Shooter extends SubsystemBase {
    */
   public void setSpeedAndAngle(double speed, double angle) {
     this.targetSpeed = speed + SmartDashboard.getNumber("Target Shooter Speed Offset", 0);
-    shooterSpeedPID.setSetpoint(-this.targetSpeed);
+    shooterSpeedPid.setSetpoint(-this.targetSpeed);
     this.targetHoodAngle = angle + SmartDashboard.getNumber("Target Hood Angle Offset", 0);
   }
 
@@ -154,7 +154,7 @@ public class Shooter extends SubsystemBase {
    * @return true if the shooter speed is within tolerance
    */
   public boolean getIsReadyToShoot() {
-    if (Math.abs(shooterSpeedPID.getError())
+    if (Math.abs(shooterSpeedPid.getError())
         < Constants.ShooterConstants.kShooterSpeedToleranceRPM) {
       isRunning = true;
     }

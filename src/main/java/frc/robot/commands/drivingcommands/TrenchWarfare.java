@@ -18,7 +18,7 @@ public class TrenchWarfare extends Command {
   private final Swerve swerve;
   private double targetY;
   private double targetHeading = 0;
-  private final PIDController yController = Constants.DriveConstants.kYController;
+  private final PIDController controllerY = Constants.DriveConstants.kYController;
   private final Controller controller;
 
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
@@ -49,10 +49,10 @@ public class TrenchWarfare extends Command {
   @Override
   public void execute() {
     Pose2d currentPose = swerve.getPose();
-    double yCalculated = yController.calculate(currentPose.getY(), targetY);
+    double calcY = controllerY.calculate(currentPose.getY(), targetY);
     double headingCalculated =
         headingController.calculate(currentPose.getRotation().getRadians(), targetHeading);
 
-    swerve.drive(new Translation2d(controller.getDriveX(), yCalculated), headingCalculated, true);
+    swerve.drive(new Translation2d(controller.getDriveX(), calcY), headingCalculated, true);
   }
 }

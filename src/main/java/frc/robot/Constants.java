@@ -165,7 +165,7 @@ public class Constants {
     public static final double kHoodP = 0.5;
     public static final double kHoodI = 0.0;
     public static final double kHoodD = 0.05;
-    public static final double kHoodLPF = 0.9;
+    public static final double kHoodLpf = 0.9;
     public static final double kHoodClipping = 0.3;
     public static final double kHoodZeroingOutput = 0.2;
     public static final double kHoodStallCurrentAmps = 45;

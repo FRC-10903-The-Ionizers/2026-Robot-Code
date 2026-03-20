@@ -16,9 +16,9 @@ public class DriveToPose extends Command {
   private final Swerve swerve;
   private final Pose2d targetPose;
 
-  private final PIDController xController = Constants.DriveConstants.kXController;
+  private final PIDController controllerX = Constants.DriveConstants.kXController;
 
-  private final PIDController yController = Constants.DriveConstants.kYController;
+  private final PIDController controllerY = Constants.DriveConstants.kYController;
 
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
@@ -43,13 +43,13 @@ public class DriveToPose extends Command {
   @Override
   public void execute() {
     Pose2d currentPose = swerve.getPose();
-    double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
-    double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
+    double calcX = controllerX.calculate(currentPose.getX(), targetPose.getX());
+    double calcY = controllerY.calculate(currentPose.getY(), targetPose.getY());
     double headingCalculated =
         headingController.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
-    swerve.drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
+    swerve.drive(new Translation2d(calcX, calcY), headingCalculated, true);
   }
 
   /**

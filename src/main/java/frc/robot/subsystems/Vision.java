@@ -149,7 +149,9 @@ public class Vision extends SubsystemBase {
     // Accumulate tags from shooter camera
     for (var tgt : shooterTargets) {
       var tagPose = shooterPhotonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
-      if (tagPose.isEmpty()) continue;
+      if (tagPose.isEmpty()) {
+        continue;
+      }
       numTags++;
       avgDist +=
           tagPose
@@ -162,7 +164,9 @@ public class Vision extends SubsystemBase {
     // Accumulate tags from intake camera
     for (var tgt : intakeTargets) {
       var tagPose = intakePhotonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
-      if (tagPose.isEmpty()) continue;
+      if (tagPose.isEmpty()) {
+        continue;
+      }
       numTags++;
       avgDist +=
           tagPose
@@ -178,11 +182,14 @@ public class Vision extends SubsystemBase {
     }
 
     avgDist /= numTags;
-    if (numTags > 1) estStdDevs = VisionConstants.kMultiTagStdDevs;
-    if (numTags == 1 && avgDist > VisionConstants.kSingleTagDistanceThreshold)
+    if (numTags > 1) {
+      estStdDevs = VisionConstants.kMultiTagStdDevs;
+    }
+    if (numTags == 1 && avgDist > VisionConstants.kSingleTagDistanceThreshold) {
       estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-    else
+    } else {
       estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / VisionConstants.kStdDevScalingFactor));
+    }
 
     curStdDevs = estStdDevs;
   }

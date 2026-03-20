@@ -101,14 +101,13 @@ public class ShootAndDrive extends Command {
 
     SmartDashboard.putNumber(
         "Distance to Hub", (swerve.getPose().getTranslation().getDistance(targetTranslation)));
-    double distanceToTarget = swerve.getPose().getTranslation().getDistance(targetTranslation);
 
     // Drivetrain stuff
     Pose2d currentPose = swerve.getPose();
     double currentX = currentPose.getX();
     double currentY = currentPose.getY();
     Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
-    double target_angle =
+    double targetAngle =
         Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
             + Math.PI / 2;
 
@@ -116,12 +115,13 @@ public class ShootAndDrive extends Command {
 
     double angleOffset =
         Math.asin(Constants.ShooterConstants.kRobotToShooterOffsetMeters / distance);
-    target_angle = target_angle + angleOffset;
-    headingController.setSetpoint(target_angle);
+    targetAngle = targetAngle + angleOffset;
+    headingController.setSetpoint(targetAngle);
     double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
     swerve.drive(translation, rotation, controller.isFieldRelative());
 
     // With distance start getting shooting stuff set
+    double distanceToTarget = swerve.getPose().getTranslation().getDistance(targetTranslation);
     Matrix<N2, N1> interp = interpolationMatrix.get(distanceToTarget);
     double interpolatedShooterSpeed = 0.0;
     double interpolatedHoodAngle = 0.0;

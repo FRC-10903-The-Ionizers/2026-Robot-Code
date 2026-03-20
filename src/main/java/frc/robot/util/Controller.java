@@ -95,7 +95,7 @@ public class Controller {
     return controller.getAButton();
   }
 
-  /** Get forward/backward, with deadband applied */
+  /** Get forward/backward, with deadband applied. */
   public double getDriveX() {
     return applyDeadband(-controller.getLeftY())
         * Constants.DriveConstants.kControllerDriveMultiplier
@@ -103,7 +103,7 @@ public class Controller {
         * (isFieldRelative() ? 1 : flippedValue);
   }
 
-  /** Get strafe, with deadband applied */
+  /** Get strafe, with deadband applied. */
   public double getDriveY() {
     return applyDeadband(-controller.getLeftX())
         * Constants.DriveConstants.kControllerDriveMultiplier
@@ -111,7 +111,7 @@ public class Controller {
         * (isFieldRelative() ? 1 : flippedValue);
   }
 
-  /** Get rotation, with deadband applied */
+  /** Get rotation, with deadband applied. */
   public double getRotation() {
     return applyDeadband(-controller.getRightX())
         * Constants.DriveConstants.kControllerRotationMultiplier;

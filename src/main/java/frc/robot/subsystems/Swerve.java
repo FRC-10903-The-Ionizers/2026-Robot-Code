@@ -35,8 +35,8 @@ public class Swerve extends SubsystemBase {
   private boolean initialized = false;
   private Field2d field = new Field2d();
 
-  private final PIDController xController = Constants.DriveConstants.kXController;
-  private final PIDController yController = Constants.DriveConstants.kYController;
+  private final PIDController controllerX = Constants.DriveConstants.kXController;
+  private final PIDController controllerY = Constants.DriveConstants.kYController;
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
   private static boolean isLockedPosition = false;
@@ -76,7 +76,9 @@ public class Swerve extends SubsystemBase {
    * @since 2025-10
    */
   public void periodic() {
-    if (!initialized) return;
+    if (!initialized) {
+      return;
+    }
 
     field.setRobotPose(swerveDrive.getPose());
     SmartDashboard.putData(this);
@@ -90,7 +92,9 @@ public class Swerve extends SubsystemBase {
    * @since 2025-10
    */
   public Pose2d resetOdometry(Pose2d pose) {
-    if (!initialized) return new Pose2d();
+    if (!initialized) {
+      return new Pose2d();
+    }
     swerveDrive.resetOdometry(pose);
     return swerveDrive.getPose();
   }
@@ -112,7 +116,9 @@ public class Swerve extends SubsystemBase {
    * @since 2025-10
    */
   public Pose2d getPose() {
-    if (!initialized) return new Pose2d();
+    if (!initialized) {
+      return new Pose2d();
+    }
 
     return swerveDrive.getPose();
   }
@@ -130,16 +136,16 @@ public class Swerve extends SubsystemBase {
     // Generate the next speeds for the robot
     ChassisSpeeds speeds =
         new ChassisSpeeds(
-            sample.vx + xController.calculate(pose.getX(), sample.x),
-            sample.vy + yController.calculate(pose.getY(), sample.y),
+            sample.vx + controllerX.calculate(pose.getX(), sample.x),
+            sample.vy + controllerY.calculate(pose.getY(), sample.y),
             sample.omega
                 + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
-    double xSpeed = speeds.vxMetersPerSecond;
-    double ySpeed = speeds.vyMetersPerSecond;
+    double speedX = speeds.vxMetersPerSecond;
+    double speedY = speeds.vyMetersPerSecond;
     double rotation = speeds.omegaRadiansPerSecond;
 
-    swerveDrive.drive(new Translation2d(xSpeed, ySpeed), rotation, true, false);
+    swerveDrive.drive(new Translation2d(speedX, speedY), rotation, true, false);
   }
 
   /**
