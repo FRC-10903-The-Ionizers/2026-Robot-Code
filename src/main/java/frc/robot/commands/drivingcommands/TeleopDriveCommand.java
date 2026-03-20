@@ -11,6 +11,7 @@ import frc.robot.util.Controller;
  * @since 2026-01-15
  */
 public class TeleopDriveCommand extends Command {
+
   private final Swerve swerve;
   private final Controller controller;
 
@@ -23,6 +24,7 @@ public class TeleopDriveCommand extends Command {
   public TeleopDriveCommand(Swerve swerve, Controller controller) {
     this.swerve = swerve;
     this.controller = controller;
+
     addRequirements(swerve);
   }
 
@@ -32,22 +34,20 @@ public class TeleopDriveCommand extends Command {
    */
   @Override
   public void execute() {
+
+    Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
+
+    // field-relative forces true, otherwise pass whatever the controller says
     if (controller.isFieldRelative()) {
-      swerve.drive(
-          new Translation2d(controller.getDriveX(), controller.getDriveY()),
-          controller.getRotation(),
-          true);
+      swerve.drive(translation, controller.getRotation(), true);
     } else {
-      swerve.drive(
-          new Translation2d(controller.getDriveX(), controller.getDriveY()),
-          controller.getRotation(),
-          controller.isFieldRelative());
+      swerve.drive(translation, controller.getRotation(), controller.isFieldRelative());
     }
   }
 
   /** {@inheritDoc} This command runs continuously until interrupted. */
   @Override
   public boolean isFinished() {
-    return false; // Runs continuously
+    return false;
   }
 }

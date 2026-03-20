@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
   private final Timer timer = new Timer();
   private Auto auto;
   private RegionHandler regionHandler;
+
   private static final Logger logger = LogManager.getLogger(Robot.class);
 
   /**
@@ -39,35 +40,44 @@ public class Robot extends TimedRobot {
    * @since 2025-10
    */
   public Robot() {
-    // Save network tables data to disk
+
+    // start logging network tables to disk
     DataLogManager.start();
 
     logger.debug("Robot initializing");
 
+    // --- container and region setup ---
+
     robotContainer = new RobotContainer();
     regionHandler =
         new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
+
     Swerve swerve = robotContainer.getSwerve();
+
+    // --- auto factory ---
+    // choreo needs pose getter, odometry resetter, trajectory follower, and the swerve subsystem
 
     AutoFactory autoFactory =
         new AutoFactory(
-            swerve::getPose, // A function that returns the current robot pose
-            swerve
-                ::resetOdometry, // A function that resets the current robot pose to the provided
-            // Pose2d
-            swerve::followTrajectory, // The drive subsystem trajectory follower
-            true, // If alliance flipping should be enabled
-            swerve // The drive subsystem
-            );
+            swerve::getPose,
+            swerve::resetOdometry,
+            swerve::followTrajectory,
+            true, // alliance flipping enabled
+            swerve);
 
     autoFactory.bind("Yo", Commands.print("At Yo"));
 
     Constants.AutoConstants.kAutoFactory = autoFactory;
 
+    // --- auto command ---
+
     auto = new Auto(autoFactory, swerve, regionHandler);
+
     logger.debug("Auto initialized!");
+
     RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
-    // Optionally disable the joystick connection warning
+
+    // suppress missing joystick warnings during testing
     DriverStation.silenceJoystickConnectionWarning(true);
   }
 
@@ -84,7 +94,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+
     timer.restart();
+
     Command autoCommand = auto.getAutoCommand();
 
     if (autoCommand != null) {
@@ -107,8 +119,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopInit() {
+
     Swerve swerve = robotContainer.getSwerve();
     Controller controller = robotContainer.getController();
+
     TeleopDriveCommand teleopDriveCommand = new TeleopDriveCommand(swerve, controller);
 
     swerve.setDefaultCommand(teleopDriveCommand);
@@ -129,6 +143,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopExit() {
+
     Swerve swerve = robotContainer.getSwerve();
     swerve.removeDefaultCommand();
   }

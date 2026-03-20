@@ -30,6 +30,7 @@ public class DriveToObject extends Command {
    */
   public DriveToObject(Swerve swerve) {
     this.swerve = swerve;
+
     addRequirements(swerve);
   }
 
@@ -39,14 +40,19 @@ public class DriveToObject extends Command {
    */
   @Override
   public void execute() {
+
     try {
-      // see available cameras
+
+      // --- limelight data ---
 
       double[] dataFromPython =
           LimelightHelpers.getPythonScriptData(VisionConstants.kObjectCameraName);
 
       logger.info("Data from Python: {}", java.util.Arrays.toString(dataFromPython));
-      // index 0 is x value of brightest point, we want to center that
+
+      // --- angle offset calculation ---
+      // index 0 is x of brightest detected point - convert pixel offset to degrees then radians
+
       double angleDiff =
           (dataFromPython[0] - VisionConstants.kObjectCameraPixelsHorizontal / 2)
               / VisionConstants.kObjectCameraPixelsHorizontal
@@ -56,14 +62,21 @@ public class DriveToObject extends Command {
       angleDiff /= 180;
 
       logger.info("Angle difference: {}", angleDiff);
-      // feed into pid controller to get rotation output
+
+      // --- heading pid ---
+      // drive the angle error to zero
+
       double rotationOutput = headingController.calculate(angleDiff, 0);
+
+      // --- drive ---
+      // if detection confidence is high enough, drive toward it, otherwise spin to search
 
       if (dataFromPython[2] > VisionConstants.kObjectDetectionThreshold) {
         swerve.drive(new Translation2d(1, 0), rotationOutput, false);
       } else {
         swerve.drive(new Translation2d(0, 0), 1, false);
       }
+
     } catch (Exception e) {
       logger.error("Error in DriveToObject command: ", e.getMessage());
     }
@@ -72,6 +85,6 @@ public class DriveToObject extends Command {
   /** {@inheritDoc} This command runs continuously until interrupted. */
   @Override
   public boolean isFinished() {
-    return false; // Runs continuously
+    return false;
   }
 }

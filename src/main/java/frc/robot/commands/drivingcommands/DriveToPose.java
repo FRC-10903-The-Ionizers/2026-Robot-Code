@@ -13,13 +13,12 @@ import frc.robot.subsystems.Swerve;
  * @since 2026-01-20
  */
 public class DriveToPose extends Command {
+
   private final Swerve swerve;
   private final Pose2d targetPose;
 
   private final PIDController controllerX = Constants.DriveConstants.kXController;
-
   private final PIDController controllerY = Constants.DriveConstants.kYController;
-
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
   /**
@@ -42,9 +41,15 @@ public class DriveToPose extends Command {
    */
   @Override
   public void execute() {
+
     Pose2d currentPose = swerve.getPose();
+
+    // --- pid outputs ---
+    // each axis gets its own controller, heading separately
+
     double calcX = controllerX.calculate(currentPose.getX(), targetPose.getX());
     double calcY = controllerY.calculate(currentPose.getY(), targetPose.getY());
+
     double headingCalculated =
         headingController.calculate(
             currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
@@ -59,9 +64,11 @@ public class DriveToPose extends Command {
    */
   @Override
   public boolean isFinished() {
+
     Pose2d currentPose = swerve.getPose();
     double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
 
+    // done once we're close enough to the target
     if (distance < Constants.DriveConstants.kMinimumDistanceToStop) {
       return true;
     } else {

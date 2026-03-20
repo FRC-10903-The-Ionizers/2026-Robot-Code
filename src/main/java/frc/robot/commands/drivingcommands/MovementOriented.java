@@ -17,7 +17,8 @@ public class MovementOriented extends Command {
 
   private final Swerve swerve;
   private final Controller controller;
-  // heading controller
+
+  // heading pid - keeps robot pointed toward movement direction
   private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
   /**
@@ -30,6 +31,7 @@ public class MovementOriented extends Command {
   public MovementOriented(Swerve subsystem, Controller controller) {
     swerve = subsystem;
     this.controller = controller;
+
     addRequirements(swerve);
   }
 
@@ -48,16 +50,26 @@ public class MovementOriented extends Command {
    */
   @Override
   public void execute() {
-    // rotation oriented to movement direction
-    // get movement direction
+
+    // --- translation ---
+
     Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
+
+    // --- heading ---
+    // point the robot toward wherever the joystick is pointing
+
     double movementDirection = Math.atan2(translation.getY(), translation.getX());
-    // set the robot's target angle to the movement direction
+
     headingController.setSetpoint(movementDirection);
+
     double rotationOutput =
         headingController.calculate(swerve.getPose().getRotation().getRadians());
 
+    // --- drive ---
+    // scale translation by current gear before sending to swerve
+
     double currentGear = Swerve.getCurrentGear();
+
     swerve.drive(translation.times(currentGear), rotationOutput, true);
   }
 }
