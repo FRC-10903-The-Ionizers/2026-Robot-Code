@@ -29,7 +29,6 @@ public class DriveToPose extends Command {
      * GoToPoint constructor for the robot.
      * 
      * @args Swerve subsystem, Pose2d targetPose
-     * @author Justin Baratta - refactored from original code
      * @since 2026-01-21
      * @return void
      */

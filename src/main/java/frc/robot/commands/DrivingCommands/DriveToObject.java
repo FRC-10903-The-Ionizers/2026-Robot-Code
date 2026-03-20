@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.PIDController;
 public class DriveToObject extends Command {
     /**
     * 
-     * @author Max Clemetson
      * @since 2026-01-15
      */
 

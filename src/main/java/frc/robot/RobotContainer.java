@@ -38,7 +38,6 @@ public class RobotContainer {
     /**
      * RobotContainer class for the robot.
      * 
-     * @author Max Clemetson, Jake Xie, Justin Baratta, Siddhartha Hiremath
      * @since 2025-10
      */
 
@@ -61,7 +60,6 @@ public class RobotContainer {
          * RobotContainer constructor for the robot.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */
@@ -92,7 +90,6 @@ public class RobotContainer {
          * Gets the swerve subsystem.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return Swerve swerve
          */
@@ -104,7 +101,6 @@ public class RobotContainer {
          * Gets the controller.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return Controller controller
          */
@@ -117,7 +113,6 @@ public class RobotContainer {
          * that do stuff.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */

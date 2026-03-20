@@ -34,7 +34,6 @@ public class Auto {
      * Auto class for the robot.
      * Uses choreo library to create autonomous routines.
      * 
-     * @author Justin Baratta & Jake Xie
      * @since 2026-01-19
      * @todo Auto branching needs to be implemented.
      */
@@ -49,7 +48,6 @@ public class Auto {
          * Auto constructor for the robot.
          * 
          * @args AutoFactory factory, Swerve swerve
-         * @author Justin Baratta & Jake Xie
          * @since 2026-01-19
          * @return void
          */
@@ -283,7 +281,6 @@ public class Auto {
          * Gets the selected auto command from the auto chooser.
          * 
          * @args None
-         * @author Justin Baratta & Jake Xie
          * @since 2026-01-19
          * @return Command
          */
@@ -301,7 +298,6 @@ public class Auto {
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return boolean
          */
@@ -321,7 +317,6 @@ public class Auto {
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return boolean
          */
@@ -342,7 +337,6 @@ public class Auto {
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory
-         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return boolean
          */
@@ -361,7 +355,6 @@ public class Auto {
          * This code was inspired by Citrus Circuits' 2025 code.
          * 
          * @args AutoTrajectory trajectory, Time timeout, Distance epsilonDist
-         * @author Justin Baratta & Jake Xie, 2025 Citrus Circuits Team
          * @since 2026-01-19
          * @return Command
          */

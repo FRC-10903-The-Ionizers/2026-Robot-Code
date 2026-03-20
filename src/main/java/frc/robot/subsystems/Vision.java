@@ -52,7 +52,6 @@ public class Vision extends SubsystemBase {
      * Check out clickup knowledge base for more information on photonvision
      * debugging.
      * 
-     * @author Max Clemetson, Siddhartha Hiremath
      * @since 2025-11
      * 
      */
@@ -69,7 +68,6 @@ public class Vision extends SubsystemBase {
          * Vision constructor for the robot.
          * 
          * @args Swerve swerve
-         * @author Max Clemetson, Siddhartha Hiremath
          * @since 2025-11
          * @return void
          */
@@ -197,7 +195,6 @@ public class Vision extends SubsystemBase {
          * See docs from {@link #updateEstimationStdDevs()}
          * 
          * @args None
-         * @author Max Clemetson. Siddhartha Hiremath
          * @since 2025-11
          * @return Matrix<N3, N1> curStdDevs
          */

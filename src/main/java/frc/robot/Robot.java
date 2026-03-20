@@ -35,7 +35,6 @@ public class Robot extends TimedRobot {
          * Robot constructor for the robot.
          * 
          * @args None
-         * @author Max Clemetson, Jake Xie, Justin Baratta, Siddhartha Hiremath
          * @since 2025-10
          * @return void
          */
@@ -80,7 +79,6 @@ public class Robot extends TimedRobot {
          * autonomous mode.
          * 
          * @args None
-         * @author Jake Xie & Justin Baratta
          * @since 2026-01
          * @return void
          */
@@ -106,7 +104,6 @@ public class Robot extends TimedRobot {
          * Initializes the teleop mode.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */
@@ -130,7 +127,6 @@ public class Robot extends TimedRobot {
          * Exits the teleop mode, runs when the robot is no longer in teleop mode.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return void
          */
@@ -143,7 +139,6 @@ public class Robot extends TimedRobot {
          * Checks if the robot is on the red alliance.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return boolean
          */

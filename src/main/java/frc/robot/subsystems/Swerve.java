@@ -125,7 +125,6 @@ public class Swerve extends SubsystemBase {
          * Gets the pose of the robot.
          * 
          * @args None
-         * @author Max Clemetson & Jake Xie
          * @since 2025-10
          * @return Pose2d
          */

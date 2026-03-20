@@ -30,7 +30,6 @@ public class ShootAndDrive extends Command {
     /**
      * DriveWhileLocked command for the robot. Drives the robot while maintaining a locked orientation.
      * 
-     * @author Max Clemetson
      * @since 2026-01-15
      */
     private final Swerve swerve;

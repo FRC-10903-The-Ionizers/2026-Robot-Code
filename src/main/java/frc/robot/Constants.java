@@ -28,7 +28,6 @@ public class Constants {
     /**
      * Constants class for the robot.
      * 
-     * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
      * @since 2025-10
      */
 
@@ -39,7 +38,6 @@ public class Constants {
         /**
          * Drive constants for the robot.
          * 
-         * @author Max Clemetson, Jake Xie, Siddhartha Hiremath, Justin Baratta
          * @since 2025-10
          */
         public static final double kControllerDriveMultiplier = 1.0;
@@ -89,7 +87,6 @@ public class Constants {
          * Vision constants for the robot. Make sure to set the camera names in case u
          * have different cameras.
          * 
-         * @author Max Clemetson, Jake Xie, SIddhartha Hiremath
          * @since 2025-10
          */
         public static String kAprilCamera1Name = "ShooterCamera";
@@ -113,7 +110,6 @@ public class Constants {
         /**
          * Auto constants for the robot.
          * 
-         * @author Max Clementson, Jake Xie, Siddhartha Hiremath, Justin Baratta
          * @since 2026-01
          */
         public static AutoFactory kAutoFactory;

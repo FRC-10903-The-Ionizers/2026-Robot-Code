@@ -17,7 +17,6 @@ public class TeleopDriveCommand extends Command {
     /**
      * TeleopDriveCommand command for the robot. Literally just drives the robot.
      * 
-     * @author Max Clemetson
      * @since 2026-01-15
      */
     private final Swerve swerve;
