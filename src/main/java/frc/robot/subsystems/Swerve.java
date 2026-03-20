@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import java.io.File;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
@@ -21,8 +24,6 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Swerve subsystem for the robot.
@@ -159,8 +160,8 @@ public class Swerve extends SubsystemBase {
      * Adds a vision measurement to the swerve drive, uses standard
      * deviations to weight the measurement along with swerve drive's odometry.
      * 
-     * @param visionPose the vision-estimated pose
-     * @param timestamp the timestamp of the vision measurement
+     * @param visionPose        the vision-estimated pose
+     * @param timestamp         the timestamp of the vision measurement
      * @param estimationStdDevs the standard deviations for the measurement
      * @since 2025-10
      */
@@ -195,8 +196,8 @@ public class Swerve extends SubsystemBase {
     /**
      * Drives the robot.
      * 
-     * @param translation the translation vector
-     * @param rotation the rotation speed
+     * @param translation     the translation vector
+     * @param rotation        the rotation speed
      * @param isFieldRelative whether driving is field-relative
      * @since 2026-01
      */

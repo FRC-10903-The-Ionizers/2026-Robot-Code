@@ -8,7 +8,8 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Swerve;
 
 /**
- * DriveToPose command for the robot. Drives to a target pose using PID controllers.
+ * DriveToPose command for the robot. Drives to a target pose using PID
+ * controllers.
  * 
  * @since 2026-01-20
  */
@@ -25,7 +26,7 @@ public class DriveToPose extends Command {
   /**
    * DriveToPose constructor for the robot.
    * 
-   * @param subsystem the swerve subsystem
+   * @param subsystem  the swerve subsystem
    * @param targetPose the target pose to drive to
    * @since 2026-01-21
    */
@@ -47,13 +48,14 @@ public class DriveToPose extends Command {
     double xCalculated = xController.calculate(currentPose.getX(), targetPose.getX());
     double yCalculated = yController.calculate(currentPose.getY(), targetPose.getY());
     double headingCalculated = headingController.calculate(currentPose.getRotation().getRadians(),
-    targetPose.getRotation().getRadians());
+        targetPose.getRotation().getRadians());
 
     swerve.drive(new Translation2d(xCalculated, yCalculated), headingCalculated, true);
   }
 
   /**
-   * Checks if the DriveToPose command is finished based on the minimum distance to
+   * Checks if the DriveToPose command is finished based on the minimum distance
+   * to
    * stop.
    * 
    * @since 2026-01-21

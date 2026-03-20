@@ -24,14 +24,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +33,12 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.VisionConstants;
 
@@ -71,7 +69,7 @@ public class Vision extends SubsystemBase {
         this.swerve = swerve;
 
         shooterCamera = new PhotonCamera(Constants.VisionConstants.kAprilCamera1Name);
-        if(shooterCamera == null){
+        if (shooterCamera == null) {
             System.out.println("ur a dumbass");
         }
         intakeCamera = new PhotonCamera(Constants.VisionConstants.kAprilCamera2Name);
@@ -95,7 +93,7 @@ public class Vision extends SubsystemBase {
         Optional<EstimatedRobotPose> intakeEst = Optional.empty();
         List<PhotonTrackedTarget> shooterTargets = List.of();
         List<PhotonTrackedTarget> intakeTargets = List.of();
-        
+
         for (var change : shooterCamera.getAllUnreadResults()) {
             shooterEst = shooterPhotonEstimator.update(change);
             shooterTargets = change.getTargets();

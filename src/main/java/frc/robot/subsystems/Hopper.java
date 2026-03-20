@@ -17,7 +17,8 @@ import frc.robot.Constants;
 public class Hopper extends SubsystemBase {
 
     // ---- Motors ----
-    private final SparkMax spindexerMotor = new SparkMax(Constants.HopperConstants.kSpindexerMotorID, MotorType.kBrushless);
+    private final SparkMax spindexerMotor = new SparkMax(Constants.HopperConstants.kSpindexerMotorID,
+            MotorType.kBrushless);
     private final SparkMax bobMotor = new SparkMax(Constants.HopperConstants.kBobMotorID, MotorType.kBrushless);
 
     // ---- State ----
@@ -40,7 +41,8 @@ public class Hopper extends SubsystemBase {
      */
     public void periodic() {
         if (isSpindexerRunning) {
-            spindexerMotor.set(SmartDashboard.getNumber("Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
+            spindexerMotor
+                    .set(SmartDashboard.getNumber("Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
             bobMotor.set(SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
         } else {
             spindexerMotor.set(0);

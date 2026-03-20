@@ -17,7 +17,7 @@ public class TeleopDriveCommand extends Command {
     /**
      * Constructor which sets swerve and controller class variables.
      * 
-     * @param swerve the swerve drive
+     * @param swerve     the swerve drive
      * @param controller the controller
      */
     public TeleopDriveCommand(Swerve swerve, Controller controller) {
@@ -34,16 +34,14 @@ public class TeleopDriveCommand extends Command {
     public void execute() {
         if (controller.isFieldRelative()) {
             swerve.drive(
-                new Translation2d(controller.getDriveX(), controller.getDriveY()),
-                controller.getRotation(),
-                true
-            );
+                    new Translation2d(controller.getDriveX(), controller.getDriveY()),
+                    controller.getRotation(),
+                    true);
         } else {
             swerve.drive(
-                new Translation2d(controller.getDriveX(), controller.getDriveY()),
-                controller.getRotation(),
-                controller.isFieldRelative()
-            );
+                    new Translation2d(controller.getDriveX(), controller.getDriveY()),
+                    controller.getRotation(),
+                    controller.isFieldRelative());
         }
     }
 

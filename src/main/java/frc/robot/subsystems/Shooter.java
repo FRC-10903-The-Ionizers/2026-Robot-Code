@@ -88,7 +88,8 @@ public class Shooter extends SubsystemBase {
             hoodPID.setSetpoint(MathUtil.clamp(targetHoodAngle, 0, Constants.ShooterConstants.kHoodMaxAngleRad));
             double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
 
-            hoodOutput = MathUtil.clamp(hoodOutput, -Constants.ShooterConstants.kHoodClipping, Constants.ShooterConstants.kHoodClipping);
+            hoodOutput = MathUtil.clamp(hoodOutput, -Constants.ShooterConstants.kHoodClipping,
+                    Constants.ShooterConstants.kHoodClipping);
             hoodOutput = (prevHoodOutput * kHoodLPF) + (1 - kHoodLPF) * hoodOutput;
             prevHoodOutput = hoodOutput;
             hoodMotor.set(-hoodOutput);

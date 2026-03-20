@@ -1,16 +1,15 @@
 package frc.robot.commands.DrivingCommands;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.Swerve;
-import frc.robot.Constants.VisionConstants;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Swerve;
 
 /**
  * DriveToObject command for the robot. Uses limelight object detection to
@@ -45,7 +44,7 @@ public class DriveToObject extends Command {
             // see available cameras
 
             double[] dataFromPython = LimelightHelpers.getPythonScriptData(VisionConstants.kObjectCameraName);
-            
+
             logger.info("Data from Python: {}", java.util.Arrays.toString(dataFromPython));
             // index 0 is x value of brightest point, we want to center that
             double angleDiff = (dataFromPython[0] - VisionConstants.kObjectCameraPixelsHorizontal / 2)

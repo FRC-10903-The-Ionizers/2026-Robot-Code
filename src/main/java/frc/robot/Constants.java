@@ -103,13 +103,14 @@ public class Constants {
         public static final double kSingleTagDistanceThreshold = 4;
         public static final double kStdDevScalingFactor = 30;
 
-        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0,-0.61086524, -1.5707));
-        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
+        public static Transform3d kShooterCamPosition = new Transform3d(new Translation3d(-0.2894, -0.3429, 0.19685),
+                new Rotation3d(0, -0.61086524, -1.5707));
+        public static Transform3d kIntakeCamPosition = new Transform3d(new Translation3d(0.0454, 0.40195, 0.4953),
+                new Rotation3d(0, -0.10471976, 1.5707));
 
         public static Double kObjectDetectionThreshold = 40.0;
         public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-        
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
@@ -168,9 +169,9 @@ public class Constants {
 
         public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, kFieldMidlineY);
         public static final Translation2d kRedHubTranslation = new Translation2d(11.92, kFieldMidlineY);
-        public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000, 3.97, 5.67}; // In meters
-        public static final double[] kShooterSpeeds = {2900, 3150, 3210, 3500, 4253}; // In rotations per minute
-        public static final double[] kHoodAngles = {0, 0.13, 0.49, 0.63, 1.02}; // In radians
+        public static final double[] kDistancesToHub = { 1.6501, 2.1330, 3.000, 3.97, 5.67 }; // In meters
+        public static final double[] kShooterSpeeds = { 2900, 3150, 3210, 3500, 4253 }; // In rotations per minute
+        public static final double[] kHoodAngles = { 0, 0.13, 0.49, 0.63, 1.02 }; // In radians
         public static final double kHoodMaxRotation = 1.42857; // Hood gear ratio is 17.22 to 1
     }
 
@@ -202,7 +203,7 @@ public class Constants {
 
         /** Drive motor output when intake is in (retracted). */
         public static final double kDriveSpeedIn = 0.0;
-    
+
         /** Drive motor output when intake is out (running). */
         public static final double kDriveSpeedOut = 0.4;
 
