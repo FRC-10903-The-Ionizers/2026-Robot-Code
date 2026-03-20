@@ -97,16 +97,23 @@ public class Constants {
    */
   public static class VisionConstants {
 
+    // --- Camera Names ---
     public static String kAprilCamera1Name = "ShooterCamera";
     public static String kAprilCamera2Name = "NonShooterCamera";
     public static String kObjectCameraName = "limelight-obj";
 
+    // --- Object Detection Camera Properties ---
     public static Double kObjectCameraFovHorizontal = 70.0;
     public static Double kObjectCameraPixelsHorizontal = 320.0;
+    public static Double kObjectDetectionThreshold = 40.0;
 
+    // --- AprilTag Detection Thresholds ---
     public static final double kSingleTagDistanceThreshold = 4;
     public static final double kStdDevScalingFactor = 30;
+    public static AprilTagFieldLayout kTagLayout =
+        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
+    // --- Camera Poses on Robot (robot-relative) ---
     public static Transform3d kShooterCamPosition =
         new Transform3d(
             new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0, -0.61086524, -1.5707));
@@ -114,10 +121,7 @@ public class Constants {
         new Transform3d(
             new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
 
-    public static Double kObjectDetectionThreshold = 40.0;
-    public static AprilTagFieldLayout kTagLayout =
-        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-
+    // --- Pose Estimation Standard Deviations ---
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
