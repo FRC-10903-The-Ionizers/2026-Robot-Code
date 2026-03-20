@@ -1,5 +1,10 @@
 package frc.robot.statesensors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import edu.wpi.first.math.geometry.Pose2d;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,28 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import edu.wpi.first.math.geometry.Pose2d;
-
 /**
- * RegionHandler - manages geometric regions loaded from a JSON file.
- * Supports rectangle and circle regions for localization / state sensing.
- * <p>Example JSON:
- * {
- *   "region1": {
- *     "type": "rectangle",
- *     "minX": 3.0, "minY": 2.3, "maxX": 6.3, "maxY": 5.8
- *   },
- *   "region2": {
- *     "type": "circle",
- *     "center": [5, 5],
- *     "radius": 3
- *   }
- * }
+ * RegionHandler - manages geometric regions loaded from a JSON file. Supports rectangle and circle
+ * regions for localization / state sensing.
+ *
+ * <p>Example JSON: { "region1": { "type": "rectangle", "minX": 3.0, "minY": 2.3, "maxX": 6.3,
+ * "maxY": 5.8 }, "region2": { "type": "circle", "center": [5, 5], "radius": 3 } }
  */
 public class RegionHandler {
 
@@ -61,8 +50,10 @@ public class RegionHandler {
 
     @Override
     public boolean contains(double x, double y) {
-      return x >= minX - EPSILON && x <= maxX + EPSILON
-          && y >= minY - EPSILON && y <= maxY + EPSILON;
+      return x >= minX - EPSILON
+          && x <= maxX + EPSILON
+          && y >= minY - EPSILON
+          && y <= maxY + EPSILON;
     }
 
     @Override
@@ -70,10 +61,14 @@ public class RegionHandler {
       return String.format(
           "Rectangle[minX=%.4f, minY=%.4f, maxX=%.4f, maxY=%.4f]"
               + " | point=(%.4f, %.4f) | inX=%b inY=%b",
-          minX, minY, maxX, maxY, x, y,
+          minX,
+          minY,
+          maxX,
+          maxY,
+          x,
+          y,
           x >= minX - EPSILON && x <= maxX + EPSILON,
-          y >= minY - EPSILON && y <= maxY + EPSILON
-      );
+          y >= minY - EPSILON && y <= maxY + EPSILON);
     }
   }
 
@@ -104,8 +99,7 @@ public class RegionHandler {
       double dist = Math.sqrt(dx * dx + dy * dy);
       return String.format(
           "Circle[cx=%.4f, cy=%.4f, radius=%.4f] | point=(%.4f, %.4f) | dist=%.6f | inside=%b",
-          cx, cy, radius, x, y, dist, contains(x, y)
-      );
+          cx, cy, radius, x, y, dist, contains(x, y));
     }
   }
 
@@ -139,8 +133,7 @@ public class RegionHandler {
     try (FileReader reader = new FileReader(path)) {
       root = JsonParser.parseReader(reader).getAsJsonObject();
     } catch (IOException e) {
-      throw new RuntimeException(
-          "Failed to read regions JSON file: " + path.getAbsolutePath(), e);
+      throw new RuntimeException("Failed to read regions JSON file: " + path.getAbsolutePath(), e);
     }
 
     for (Map.Entry<String, JsonElement> entry : root.entrySet()) {
@@ -148,8 +141,7 @@ public class RegionHandler {
       JsonObject obj = entry.getValue().getAsJsonObject();
 
       if (!obj.has("type")) {
-        throw new IllegalArgumentException(
-            "Region '" + name + "' is missing a 'type' field.");
+        throw new IllegalArgumentException("Region '" + name + "' is missing a 'type' field.");
       }
 
       String type = obj.get("type").getAsString().toLowerCase().trim();
@@ -170,8 +162,7 @@ public class RegionHandler {
           JsonArray center = obj.getAsJsonArray("center");
           if (center.size() != 2) {
             throw new IllegalArgumentException(
-                "Circle region '" + name
-                    + "' center must have exactly 2 elements [x, y].");
+                "Circle region '" + name + "' center must have exactly 2 elements [x, y].");
           }
           double cx = center.get(0).getAsDouble();
           double cy = center.get(1).getAsDouble();
@@ -182,9 +173,14 @@ public class RegionHandler {
           }
           regions.put(name, new CircleRegion(cx, cy, radius));
         }
-        default -> throw new IllegalArgumentException(
-            "Unknown region type '" + type + "' in region '" + name + "'. "
-                + "Expected 'rectangle' or 'circle'.");
+        default ->
+            throw new IllegalArgumentException(
+                "Unknown region type '"
+                    + type
+                    + "' in region '"
+                    + name
+                    + "'. "
+                    + "Expected 'rectangle' or 'circle'.");
       }
     }
   }
@@ -247,8 +243,8 @@ public class RegionHandler {
   }
 
   /**
-   * Prints debug info for all regions against a given point.
-   * Useful for diagnosing why a point isn't matching a region.
+   * Prints debug info for all regions against a given point. Useful for diagnosing why a point
+   * isn't matching a region.
    *
    * @param x the x coordinate
    * @param y the y coordinate
@@ -258,8 +254,7 @@ public class RegionHandler {
     StringBuilder sb = new StringBuilder();
     sb.append(String.format("Debug for point (%.6f, %.6f):%n", x, y));
     for (Map.Entry<String, Region> entry : regions.entrySet()) {
-      sb.append(String.format("  [%s] %s%n",
-          entry.getKey(), entry.getValue().debugInfo(x, y)));
+      sb.append(String.format("  [%s] %s%n", entry.getKey(), entry.getValue().debugInfo(x, y)));
     }
     return sb.toString();
   }

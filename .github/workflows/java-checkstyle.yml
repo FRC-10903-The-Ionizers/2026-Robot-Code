@@ -13,6 +13,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_error: true
-          level: error 
+          level: error
           filter_mode: nofilter
+          checkstyle_config: checkstyle.xml
 
