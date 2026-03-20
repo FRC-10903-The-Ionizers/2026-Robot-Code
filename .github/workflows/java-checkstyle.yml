@@ -1,5 +1,5 @@
 name: Java Checkstyle
-on: [pull_request]
+on: [pull_request, push]
 
 jobs:
   checkstyle:
@@ -14,4 +14,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_error: true
           level: error
-          filter_mode: file
