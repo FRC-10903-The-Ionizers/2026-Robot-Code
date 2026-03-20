@@ -1,7 +1,5 @@
 package frc.robot.commands.drivingcommands;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
@@ -19,6 +17,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
+
+import java.util.Optional;
+
 
 /**
  * ShootAndDrive command for the robot. Drives the robot while maintaining a locked orientation
