@@ -16,11 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.SmartShoot; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.SmartShoot; // Assuming this command exists for aiming
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
+import frc.robot.commands.DrivingCommands.ShootAndDrive;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;

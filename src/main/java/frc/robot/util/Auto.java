@@ -27,6 +27,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DrivingCommands.ShootAndDrive;
+import frc.robot.commands.DrivingCommands.SmartShoot;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
@@ -54,7 +55,7 @@ public class Auto {
     private final Hopper hopper;
     private final Intake intake;
 
-    private final double timeout = 3.3;
+    private final double timeout = 4;
 
     public Auto(AutoFactory factory, RobotContainer container, RegionHandler regionHandler) {
         /**
@@ -74,7 +75,6 @@ public class Auto {
         this.hopper = container.getHopper();
         this.intake = container.getIntake();
 
-        autoFactory.bind("Shoot", new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout));
         autoFactory.bind("ToggleIntake", intake.toggleIntakeCommand());
 
         // I added the dummy command just to test things. For real autos, please make
@@ -107,28 +107,34 @@ public class Auto {
         return map;
     }
 
-    public AutoRoutine blueLeftAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("BlueLeft.traj");
-
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Blue Left Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
-
-        return routine;
-    }
-
     public AutoRoutine blueRightAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("BlueRight.traj");
+        AutoTrajectory trajectory1 = routine.trajectory("BlueRight.traj", 0);
+        AutoTrajectory trajectory2 = routine.trajectory("BlueRight.traj", 1);
 
         routine.active().onTrue(
                 Commands.sequence(
                         Commands.print("Blue Right Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
+                        cmdWithAccuracy(trajectory1),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
+                        cmdWithAccuracy(trajectory2),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, 30)));
+
+        return routine;
+    }
+
+    public AutoRoutine blueLeftAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory0 = routine.trajectory("BlueLeft.traj", 0);
+        AutoTrajectory trajectory1 = routine.trajectory("BlueLeft.traj", 1);
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Blue Left Auto Chosen"),
+                        cmdWithAccuracy(trajectory0),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
+                        cmdWithAccuracy(trajectory1),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, 30)));
 
         return routine;
     }
@@ -244,18 +250,14 @@ public class Auto {
          * @since 2026-01-19
          * @return Command
          */
-        return Commands.defer(
-                () -> {
-                    Command trajCmd = trajectory.cmd();
-                    return new FunctionalCommand(
-                            trajCmd::initialize,
-                            trajCmd::execute,
-                            trajCmd::end,
-                            () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist));
-                },
-                Set.of(swerve))
-                .withTimeout(trajectory.getRawTrajectory().getTotalTime()
-                        + Constants.AutoConstants.kTimeout.in(Units.Seconds))
-                .finallyDo(() -> swerve.drive(new Translation2d(), 0, false));
+
+        Command trajCmd = trajectory.cmd();
+
+        return new FunctionalCommand(
+                trajCmd::initialize,
+                trajCmd::execute,
+                trajCmd::end,
+                () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist),
+                swerve);
     }
 }

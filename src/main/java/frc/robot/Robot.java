@@ -62,7 +62,8 @@ public class Robot extends TimedRobot {
 
         auto = new Auto(autoFactory, robotContainer, regionHandler);
         logger.debug("Auto initialized!");
-        RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
+        //RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
+
         // Optionally disable the joystick connection warning
         DriverStation.silenceJoystickConnectionWarning(true);
     }
@@ -84,6 +85,12 @@ public class Robot extends TimedRobot {
          * @return void
          */
         timer.restart();
+        Command autoCommand = auto.getAutoCommand();
+
+        if (autoCommand != null) {
+            autoCommand.schedule();
+        }
+
     }
 
     @Override

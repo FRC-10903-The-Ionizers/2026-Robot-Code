@@ -28,7 +28,8 @@ import org.apache.logging.log4j.Logger;
 
 public class ShootAndDrive extends Command {
     /**
-     * DriveWhileLocked command for the robot. Drives the robot while maintaining a locked orientation.
+     * DriveWhileLocked command for the robot. Drives the robot while maintaining a
+     * locked orientation.
      * 
      * @author Max Clemetson
      * @since 2026-01-15
@@ -43,11 +44,12 @@ public class ShootAndDrive extends Command {
 
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
-    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller, InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix) {
+    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller,
+            InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix) {
         /**
          * Constructor which sets swerve and controller class variables
          * 
-         * @param swerve: the swerve drive
+         * @param swerve:     the swerve drive
          * @param controller: the PID controller
          */
         this.swerve = swerve;
@@ -59,11 +61,12 @@ public class ShootAndDrive extends Command {
         addRequirements(swerve, hopper, shooter);
     }
 
-    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller, InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix, double time) {
+    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller,
+            InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix, double time) {
         /**
          * Constructor which sets swerve and controller class variables
          * 
-         * @param swerve: the swerve drive
+         * @param swerve:     the swerve drive
          * @param controller: the PID controller
          */
         this.swerve = swerve;
@@ -73,7 +76,7 @@ public class ShootAndDrive extends Command {
         this.interpolationMatrix = interpolationMatrix;
         timer = new Timer();
         timer.reset();
-        
+
         this.time = time;
         addRequirements(swerve, hopper, shooter);
     }
@@ -84,8 +87,8 @@ public class ShootAndDrive extends Command {
          * Method that drives the swerves
          */
         // Get target translation
-        
-        if(timer != null && !timer.isRunning()){
+
+        if (timer != null && !timer.isRunning()) {
             timer.start();
         }
         Optional<Alliance> ally = DriverStation.getAlliance();
@@ -112,20 +115,21 @@ public class ShootAndDrive extends Command {
                 targetTranslation = new Translation2d(2.3, targetPoseY);
             }
         }
-        
+
         SmartDashboard.putNumber("Distance to Hub", (swerve.getPose().getTranslation().getDistance(targetTranslation)));
         double distanceToTarget = swerve.getPose().getTranslation().getDistance(targetTranslation);
 
-        // Drivetrain stuff 
+        // Drivetrain stuff
         Pose2d currentPose = swerve.getPose();
         double currentX = currentPose.getX();
         double currentY = currentPose.getY();
         Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
-        double target_angle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX) + Math.PI/2;
+        double target_angle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
+                + Math.PI / 2;
 
         double distance = currentPose.getTranslation().getDistance(targetTranslation);
 
-        double angleOffset = Math.asin(0.254/distance);
+        double angleOffset = Math.asin(0.254 / distance);
         target_angle = target_angle + angleOffset;
         headingController.setSetpoint(target_angle);
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
@@ -151,15 +155,20 @@ public class ShootAndDrive extends Command {
 
     @Override
     public boolean isFinished() {
-        if (timer != null && (time == 0 || timer.get() < time)){
+        if (timer != null && (time == 0 || timer.get() < time)) {
+            System.out.println(timer.get());
             return false;
         } else {
             return true;
-        } 
+        }
     }
 
-    public void end(){
-        if (timer != null){
+    @Override
+    public void end(boolean interrupted) {
+        shooter.setSpeedAndAngle(0, 0);
+        hopper.setIsHopperRunning(false);
+
+        if (timer != null) {
             timer.stop();
             timer.reset();
         }
