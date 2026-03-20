@@ -128,6 +128,7 @@ public class RobotContainer {
         xboxController.rightTrigger(0.1).whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
         xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
 
+        xboxController.a().whileTrue(new DriveToObject(swerve));
         xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
 
         xboxController.povUp().whileTrue(new DriveToObject(swerve));

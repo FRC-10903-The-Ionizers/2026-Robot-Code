@@ -22,6 +22,7 @@ public class DriveToObject extends Command {
      */
 
     private static final Logger logger = LogManager.getLogger(DriveToObject.class);
+    private double previousValue;
 
     private final Swerve swerve;
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
@@ -57,7 +58,7 @@ public class DriveToObject extends Command {
 
             logger.info("Angle difference: {}", angleDiff);
             // feed into pid controller to get rotation output
-            double rotationOutput = headingController.calculate(angleDiff, 0);
+            double rotationOutput = -headingController.calculate(angleDiff, 0);
 
             if (dataFromPython[2] > VisionConstants.kObjectDetectionThreshold) {
                 swerve.drive(new Translation2d(1, 0), rotationOutput, false);
