@@ -1,26 +1,19 @@
 package frc.robot;
 
 import java.io.File;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.InterpolatingMatrixTreeMap;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DrivingCommands.SmartShoot; // Assuming this command exists for aiming
-import frc.robot.commands.DrivingCommands.DriveToPose;
-import frc.robot.commands.DrivingCommands.SmartShoot; // Assuming this command exists for aiming
-import frc.robot.commands.DrivingCommands.DriveToObject;
-import frc.robot.commands.DrivingCommands.MovementOriented;
 import frc.robot.commands.DrivingCommands.ShootAndDrive;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
@@ -29,10 +22,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.InterpolatingMatrixTreeMap;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
 
 public class RobotContainer {
 
