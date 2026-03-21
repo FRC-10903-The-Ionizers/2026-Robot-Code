@@ -1,7 +1,5 @@
 package frc.robot;
 
-import org.apache.logging.log4j.Level;
-
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -18,6 +16,7 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
+import org.apache.logging.log4j.Level;
 
 /**
  * Constants class for the robot. Contains all robot-wide numeric constants
@@ -64,9 +63,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    private static final double kHeadingP = 3;
+    private static final double kHeadingP = 3.2;
     private static final double kHeadingI = 0.0;
-    private static final double kHeadingD = 0.25;
+    private static final double kHeadingD = 0.3;
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
@@ -137,8 +136,7 @@ public class Constants {
     public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);
 
     public static final Time kTimeout = Units.Seconds.of(5);
-    public static final double kAutoShooterTimeout = 4; // in seconds
-    public static final Distance kEpsilonDist = Units.Inches.of(18);
+    public static final Distance kEpsilonDist = Units.Inches.of(4);
   }
 
   /**
@@ -165,7 +163,7 @@ public class Constants {
     // --- Hood PID & Mechanics ---
     public static final double kHoodP = 0.5;
     public static final double kHoodI = 0.0;
-    public static final double kHoodD = 0.05;
+    public static final double kHoodD = 0.02;
     public static final double kHoodLpf = 0.9;
     public static final double kHoodClipping = 0.3;
     public static final double kHoodZeroingOutput = 0.2;
@@ -181,13 +179,30 @@ public class Constants {
     public static final double kRobotToShooterOffsetMeters = 0.254;
     public static final double kInterpolationLambda = 100;
 
-    public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, 4.035);
-    public static final Translation2d kRedHubTranslation = new Translation2d(11.92, 4.035);
+    // --- Field Geometry ---
+    public static final double kFieldMidlineY = 4.035;
+    public static final double kRedAllianceXBoundary = 11.8;
+    public static final double kBlueAllianceXBoundary = 4.6;
+    public static final double kRedPassingTargetX = 14.4;
+    public static final double kBluePassingTargetX = 2.3;
+    public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, kFieldMidlineY);
+    public static final Translation2d kRedHubTranslation = new Translation2d(11.92, kFieldMidlineY);
+
+    // --- Interpolation Tables (indexed by distance to hub) ---
     public static final double[] kDistancesToHub = { 1.6501, 2.1330, 3.000, 3.97, 5.67 }; // In meters
-    public static final double[] kShooterSpeeds = { 2700, 3250, 3650, 3930, 5003 }; // In rotations per minute
-    public static final double[] kHoodAngles = { 0, 0.2, 0.25, 0.4, 0.67 }; // In
+    public static final double[] kShooterSpeeds = {
+        2900, 3150, 3210, 3500, 4253
+    }; // In rotations per minute
+    public static final double[] kHoodAngles = { 0, 0.13, 0.49, 0.63, 1.02 }; // In radians
   }
 
+  /**
+   * Intake constants including motor IDs, PID gains, actuation setpoints, and
+   * jiggle mode
+   * parameters.
+   *
+   * @since 2025-10
+   */
   public static class IntakeConstants {
     public static final int kDriveMotorID = 7;
     public static final int kActuationMotorID = 6;
@@ -213,8 +228,9 @@ public class Constants {
 
     /** Drive motor output when intake is in (retracted). */
     public static final double kDriveSpeedIn = 0.0;
+
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.67;
+    public static final double kDriveSpeedOut = 0.4;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
