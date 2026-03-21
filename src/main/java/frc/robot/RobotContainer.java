@@ -14,9 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.drivingcommands.DriveToObject;
 import frc.robot.commands.drivingcommands.MovementOriented;
+import frc.robot.commands.drivingcommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.drivingcommands.TrenchWarfare;
 import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
@@ -26,8 +26,6 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
 
-public class RobotContainer {
-
 /**
  * RobotContainer class for the robot.
  *
@@ -35,21 +33,19 @@ public class RobotContainer {
  */
 public class RobotContainer {
 
-  private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix =
-      buildInterpolationMatrix();
+  private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
   private static final Logger logger = LogManager.getLogger(RobotContainer.class);
 
   private final Swerve swerve = new Swerve();
   private final Controller controller = new Controller(Constants.kXboxControllerPort);
-  private final RegionHandler regionHandler =
-      new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
+  private final RegionHandler regionHandler = new RegionHandler(
+      new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
   private final Vision vision = new Vision(swerve);
   private final Shooter shooter = new Shooter();
   // private final Vision vision = new Vision(swerve);
   private final Intake intake = new Intake(swerve);
   private final Hopper hopper = new Hopper();
-  private final CommandXboxController xboxController =
-      new CommandXboxController(Constants.kXboxControllerPort);
+  private final CommandXboxController xboxController = new CommandXboxController(Constants.kXboxControllerPort);
 
   /**
    * RobotContainer constructor for the robot.
@@ -66,7 +62,8 @@ public class RobotContainer {
   }
 
   /**
-   * Builds the interpolation matrix that maps distance-to-hub to shooter speed and hood angle pairs
+   * Builds the interpolation matrix that maps distance-to-hub to shooter speed
+   * and hood angle pairs
    * for automatic shot adjustment.
    *
    * @return the populated interpolation matrix
@@ -83,31 +80,31 @@ public class RobotContainer {
     return map;
   }
 
-    // Remove controllerDrive() as it's replaced by commands
+  // Remove controllerDrive() as it's replaced by commands
 
-    public Swerve getSwerve() {
-        /**
-         * Gets the swerve subsystem.
-         * 
-         * @args None
-         * @author Max Clemetson & Jake Xie
-         * @since 2025-10
-         * @return Swerve swerve
-         */
-        return swerve;
-    }
+  public Swerve getSwerve() {
+    /**
+     * Gets the swerve subsystem.
+     * 
+     * @args None
+     * @author Max Clemetson & Jake Xie
+     * @since 2025-10
+     * @return Swerve swerve
+     */
+    return swerve;
+  }
 
-    public Shooter getShooter() {
-        return shooter;
-    }
+  public Shooter getShooter() {
+    return shooter;
+  }
 
-    public Hopper getHopper() {
-        return hopper;
-    }
+  public Hopper getHopper() {
+    return hopper;
+  }
 
-    public Intake getIntake() {
-        return intake;
-    }
+  public Intake getIntake() {
+    return intake;
+  }
 
   /**
    * Gets the controller.
@@ -134,14 +131,8 @@ public class RobotContainer {
         .leftTrigger(Constants.DriveConstants.kLeftTriggerThreshold)
         .onChange(new InstantCommand(() -> controller.toggleFieldRelative()));
     xboxController
-        .rightTrigger(Constants.DriveConstants.kRightTriggerThreshold)
-        .whileTrue(
-            new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
-    xboxController
         .b()
-        .whileTrue(
-            new ShootAndDrive(
-                swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example:
+        .whileTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix)); // Example:
     // Lock
     // to
     // 90
@@ -157,15 +148,15 @@ public class RobotContainer {
     xboxController.povRight().whileTrue(new TrenchWarfare(swerve, controller));
 
     // Bind aligning command to another button (e.g., B button)
-    
+
     // change gear commands
     xboxController
         .rightBumper()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  if (Swerve.getCurrentGear() + Constants.DriveConstants.kGearStep
-                      < Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER) {
+                  if (Swerve.getCurrentGear()
+                      + Constants.DriveConstants.kGearStep < Constants.DriveConstants.kHIGH_GEAR_MULTIPLIER) {
                     Swerve.setCurrentGear(
                         Swerve.getCurrentGear() + Constants.DriveConstants.kGearStep);
                     logger.info("Shifted to HIGH gear: {}", Swerve.getCurrentGear());
@@ -181,8 +172,8 @@ public class RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  if (Swerve.getCurrentGear() - Constants.DriveConstants.kGearStep
-                      > Constants.DriveConstants.kLOW_GEAR_MULTIPLIER) {
+                  if (Swerve.getCurrentGear()
+                      - Constants.DriveConstants.kGearStep > Constants.DriveConstants.kLOW_GEAR_MULTIPLIER) {
                     Swerve.setCurrentGear(
                         Swerve.getCurrentGear() - Constants.DriveConstants.kGearStep);
                     logger.info("Shifted to LOW gear: {}", Swerve.getCurrentGear());

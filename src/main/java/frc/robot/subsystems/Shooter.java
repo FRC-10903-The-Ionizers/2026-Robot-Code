@@ -119,7 +119,7 @@ public class Shooter extends SubsystemBase {
    */
   public void setSpeedAndAngle(double speed, double angle) {
     this.targetSpeed = speed + SmartDashboard.getNumber("Target Shooter Speed Offset", 0);
-    shooterSpeedPid.setSetpoint(-this.targetSpeed);
+    shooterSpeedPID.setSetpoint(-this.targetSpeed);
     this.targetHoodAngle = angle + SmartDashboard.getNumber("Target Hood Angle Offset", 0);
   }
 
@@ -131,7 +131,7 @@ public class Shooter extends SubsystemBase {
    * @return true if the shooter speed is within tolerance
    */
   public boolean getIsReadyToShoot() {
-    if (Math.abs(shooterSpeedPid.getError()) < Constants.ShooterConstants.kShooterSpeedToleranceRPM) {
+    if (Math.abs(shooterSpeedPID.getError()) < Constants.ShooterConstants.kShooterSpeedToleranceRPM) {
       isRunning = true;
     }
     return isRunning;

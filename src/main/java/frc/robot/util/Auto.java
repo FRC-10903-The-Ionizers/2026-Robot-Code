@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.RobotContainer;
+import frc.robot.commands.drivingcommands.ShootAndDrive;
 import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
