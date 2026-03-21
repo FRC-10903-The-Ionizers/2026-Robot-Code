@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import static frc.robot.trajectories.ChoreoTraj.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -112,8 +114,8 @@ public class Auto {
 
     public AutoRoutine outpost() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = routine.trajectory("Outpost", 0);
-        AutoTrajectory trajectory2 = routine.trajectory("Outpost", 1);
+        AutoTrajectory trajectory1 = Outpost$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = Outpost$1.asAutoTraj(routine);
 
         routine.active().onTrue(Commands.sequence(
                 cmdWithAccuracy(trajectory1),
@@ -126,8 +128,8 @@ public class Auto {
 
     public AutoRoutine blueRightAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = routine.trajectory("BlueRight.traj", 0);
-        AutoTrajectory trajectory2 = routine.trajectory("BlueRight.traj", 1);
+        AutoTrajectory trajectory1 = BlueRight$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = BlueRight$1.asAutoTraj(routine);
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -142,8 +144,8 @@ public class Auto {
 
     public AutoRoutine blueLeftAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = routine.trajectory("BlueLeft.traj", 0);
-        AutoTrajectory trajectory2 = routine.trajectory("BlueLeft.traj", 1);
+        AutoTrajectory trajectory1 = BlueLeft$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = BlueLeft$1.asAutoTraj(routine);
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -158,8 +160,8 @@ public class Auto {
 
     public AutoRoutine cheesyPoofsBlueRight() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = routine.trajectory("CheesyPoofsBlueRight.traj", 0);
-        AutoTrajectory trajectory2 = routine.trajectory("CheesyPoofsBlueRight.traj", 1);
+        AutoTrajectory trajectory1 = CheesyPoofsBlueRight$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = CheesyPoofsBlueRight$1.asAutoTraj(routine);
 
         routine.active().onTrue(
                 Commands.sequence(
@@ -174,8 +176,8 @@ public class Auto {
 
     public AutoRoutine cheesyPoofsBlueLeft() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = routine.trajectory("CheesyPoofsBlueLeft.traj", 0);
-        AutoTrajectory trajectory2 = routine.trajectory("CheesyPoofsBlueLeft.traj", 1);
+        AutoTrajectory trajectory1 = CheesyPoofsBlueLeft$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = CheesyPoofsBlueLeft$1.asAutoTraj(routine);
 
         routine.active().onTrue(
                 Commands.sequence(
