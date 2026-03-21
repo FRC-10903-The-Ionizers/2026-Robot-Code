@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
@@ -31,14 +32,15 @@ public class ShootAndDrive extends Command {
     private final Swerve swerve;
     private final Controller controller;
     private final Shooter shooter;
-    private Hopper hopper;
+    private final Intake intake;
+    private final Hopper hopper;
     private Timer timer;
     private final double time;
     private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix;
 
     private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
-    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller,
+    public ShootAndDrive(Swerve swerve, Shooter shooter, Intake intake, Hopper hopper, Controller controller,
             InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix) {
         /**
          * Constructor which sets swerve and controller class variables
@@ -48,6 +50,7 @@ public class ShootAndDrive extends Command {
          */
         this.swerve = swerve;
         this.shooter = shooter;
+        this.intake = intake;
         this.hopper = hopper;
         this.controller = controller;
         this.interpolationMatrix = interpolationMatrix;
@@ -55,7 +58,7 @@ public class ShootAndDrive extends Command {
         addRequirements(swerve, hopper, shooter);
     }
 
-    public ShootAndDrive(Swerve swerve, Shooter shooter, Hopper hopper, Controller controller,
+    public ShootAndDrive(Swerve swerve, Shooter shooter, Intake intake, Hopper hopper, Controller controller,
             InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix, double time) {
         /**
          * Constructor which sets swerve and controller class variables
@@ -65,6 +68,7 @@ public class ShootAndDrive extends Command {
          */
         this.swerve = swerve;
         this.shooter = shooter;
+        this.intake = intake;
         this.hopper = hopper;
         this.controller = controller;
         this.interpolationMatrix = interpolationMatrix;
@@ -145,6 +149,8 @@ public class ShootAndDrive extends Command {
         } else {
             hopper.setIsHopperRunning(false);
         }
+
+        intake.setJiggly(true);
     }
 
     @Override
@@ -163,6 +169,7 @@ public class ShootAndDrive extends Command {
     public void end(boolean interrupted) {
         shooter.setSpeedAndAngle(0, 0);
         hopper.setIsHopperRunning(false);
+        intake.setJiggly(false);
 
         if (timer != null) {
             timer.stop();
