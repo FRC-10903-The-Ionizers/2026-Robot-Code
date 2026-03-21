@@ -58,9 +58,9 @@ public class Constants {
         private static final double kYI = 0.0;
         private static final double kYD = 0.1;
 
-        private static final double kHeadingP = 4.0;
+        private static final double kHeadingP = 3;
         private static final double kHeadingI = 0.0;
-        private static final double kHeadingD = 0.0;
+        private static final double kHeadingD = 0.25;
 
         public static final PIDController kXController = new PIDController(
                 Constants.DriveConstants.kXP,
@@ -122,7 +122,7 @@ public class Constants {
         public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);
 
         public static final Time kTimeout = Units.Seconds.of(5);
-        public static final Distance kEpsilonDist = Units.Inches.of(4);
+        public static final Distance kEpsilonDist = Units.Inches.of(18);
     }
 
     public static class ShooterConstants {
@@ -167,7 +167,7 @@ public class Constants {
         /** Drive motor output when intake is in (retracted). */
         public static final double kDriveSpeedIn = 0.0;
         /** Drive motor output when intake is out (running). */
-        public static final double kDriveSpeedOut = 0.4;
+        public static final double kDriveSpeedOut = 0.67;
 
         public static final double kIntakeActuationP = 0.0;
         public static final double kIntakeActuationI = 0.0;
