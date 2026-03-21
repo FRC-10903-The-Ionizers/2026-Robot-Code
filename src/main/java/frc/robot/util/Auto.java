@@ -40,258 +40,268 @@ import frc.robot.subsystems.Swerve;
  */
 public class Auto {
 
-    private final AutoChooser autoChooser;
-    private final Swerve swerve;
-    private final RegionHandler regionHandler;
-    private static final Logger logger = LogManager.getLogger(Auto.class);
-    private final AutoFactory autoFactory = Constants.AutoConstants.kAutoFactory;
-    private final Controller controller = new Controller(Constants.kXboxControllerPort);
-    private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
-    private final Shooter shooter;
-    private final Hopper hopper;
-    private final Intake intake;
+        private final AutoChooser autoChooser;
+        private final Swerve swerve;
+        private final RegionHandler regionHandler;
+        private static final Logger logger = LogManager.getLogger(Auto.class);
+        private final AutoFactory autoFactory = Constants.AutoConstants.kAutoFactory;
+        private final Controller controller = new Controller(Constants.kXboxControllerPort);
+        private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
+        private final Shooter shooter;
+        private final Hopper hopper;
+        private final Intake intake;
 
-    public Auto(AutoFactory factory, RobotContainer container, RegionHandler regionHandler) {
-        /**
-         * Auto constructor for the robot.
-         * 
-         * @args AutoFactory factory, Swerve swerve
-         * @author Justin Baratta & Jake Xie
-         * @since 2026-01-19
-         * @return void
-         */
-        // Make something to display on the GUI that allows the user to select the
-        // autonomous they want to run
-        autoChooser = new AutoChooser();
-        this.regionHandler = regionHandler;
-        this.swerve = container.getSwerve();
-        this.shooter = container.getShooter();
-        this.hopper = container.getHopper();
-        this.intake = container.getIntake();
+        public Auto(AutoFactory factory, RobotContainer container, RegionHandler regionHandler) {
+                /**
+                 * Auto constructor for the robot.
+                 * 
+                 * @args AutoFactory factory, Swerve swerve
+                 * @author Justin Baratta & Jake Xie
+                 * @since 2026-01-19
+                 * @return void
+                 */
+                // Make something to display on the GUI that allows the user to select the
+                // autonomous they want to run
+                autoChooser = new AutoChooser();
+                this.regionHandler = regionHandler;
+                this.swerve = container.getSwerve();
+                this.shooter = container.getShooter();
+                this.hopper = container.getHopper();
+                this.intake = container.getIntake();
 
-        autoFactory.bind("ToggleIntake", intake.toggleIntakeCommand());
+                autoFactory.bind("ToggleIntake", intake.toggleIntakeCommand());
 
-        // I added the dummy command just to test things. For real autos, please make
-        // routines and use their commands.
-        // NEVER SET "getAutoCommand()" AS AN OPTION FOR AN AUTONOMOUS
+                // I added the dummy command just to test things. For real autos, please make
+                // routines and use their commands.
+                // NEVER SET "getAutoCommand()" AS AN OPTION FOR AN AUTONOMOUS
 
-        autoChooser.addRoutine("Red Left", this::blueRightAutoRoutine);
-        autoChooser.addRoutine("Red Right", this::blueLeftAutoRoutine);
-        // Uh this code should just work...
-        autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
-        autoChooser.addRoutine("Blue Left", this::blueLeftAutoRoutine);
+                autoChooser.addRoutine("Red Left", this::blueRightAutoRoutine);
+                autoChooser.addRoutine("Red Right", this::blueLeftAutoRoutine);
+                // Uh this code should just work...
+                autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
+                autoChooser.addRoutine("Blue Left", this::blueLeftAutoRoutine);
 
-        autoChooser.addRoutine("Safe Auto", this::safeAutoRoutine);
-        autoChooser.addRoutine("Outpost", this::outpost);
+                autoChooser.addRoutine("Safe Auto", this::safeAutoRoutine);
+                autoChooser.addRoutine("Outpost", this::outpost);
 
-        autoChooser.addRoutine("Cheesy Poofs Blue Right", this::cheesyPoofsBlueRight);
-        autoChooser.addRoutine("Cheesy Poofs Blue Left", this::cheesyPoofsBlueLeft);
-        // Put the auto chooser on the dashboard
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+                autoChooser.addRoutine("Cheesy Poofs Blue Right", this::cheesyPoofsBlueRight);
+                autoChooser.addRoutine("Cheesy Poofs Blue Left", this::cheesyPoofsBlueLeft);
+                // Put the auto chooser on the dashboard
+                SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    }
-
-    private static InterpolatingMatrixTreeMap<Double, N2, N1> buildInterpolationMatrix() {
-        InterpolatingMatrixTreeMap<Double, N2, N1> map = new InterpolatingMatrixTreeMap<>();
-        double[] dists = Constants.ShooterConstants.kDistancesToHub;
-        double[] speeds = Constants.ShooterConstants.kShooterSpeeds;
-        double[] angles = Constants.ShooterConstants.kHoodAngles;
-        int len = Math.min(dists.length, Math.min(speeds.length, angles.length));
-        for (int i = 0; i < len; i++) {
-            map.put(dists[i], VecBuilder.fill(speeds[i], angles[i]));
         }
-        return map;
-    }
 
-    public AutoRoutine safeAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        routine.active().onTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, 20));
+        private static InterpolatingMatrixTreeMap<Double, N2, N1> buildInterpolationMatrix() {
+                InterpolatingMatrixTreeMap<Double, N2, N1> map = new InterpolatingMatrixTreeMap<>();
+                double[] dists = Constants.ShooterConstants.kDistancesToHub;
+                double[] speeds = Constants.ShooterConstants.kShooterSpeeds;
+                double[] angles = Constants.ShooterConstants.kHoodAngles;
+                int len = Math.min(dists.length, Math.min(speeds.length, angles.length));
+                for (int i = 0; i < len; i++) {
+                        map.put(dists[i], VecBuilder.fill(speeds[i], angles[i]));
+                }
+                return map;
+        }
 
-        return routine;
-    }
+        public AutoRoutine safeAutoRoutine() {
+                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+                routine.active().onTrue(
+                                new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
+                                                20));
 
-    public AutoRoutine outpost() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = Outpost$0.asAutoTraj(routine);
-        AutoTrajectory trajectory2 = Outpost$1.asAutoTraj(routine);
+                return routine;
+        }
 
-        routine.active().onTrue(Commands.sequence(
-                cmdWithAccuracy(trajectory1),
-                Commands.waitSeconds(Constants.AutoConstants.kAutoShooterTimeout),
-                cmdWithAccuracy(trajectory2),
-                new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                        Constants.AutoConstants.kAutoShooterTimeout)));
+        public AutoRoutine outpost() {
+                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+                AutoTrajectory trajectory1 = Outpost$0.asAutoTraj(routine);
+                AutoTrajectory trajectory2 = Outpost$1.asAutoTraj(routine);
 
-        return routine;
-    }
+                routine.active().onTrue(Commands.sequence(
+                                cmdWithAccuracy(trajectory1),
+                                Commands.waitSeconds(Constants.AutoConstants.kAutoShooterTimeout),
+                                cmdWithAccuracy(trajectory2),
+                                new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
+                                                Constants.AutoConstants.kAutoShooterTimeout)));
 
-    public AutoRoutine blueRightAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = BlueRight$0.asAutoTraj(routine);
-        AutoTrajectory trajectory2 = BlueRight$1.asAutoTraj(routine);
+                return routine;
+        }
 
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Right Auto Chosen"),
-                        cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout),
-                        cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout)));
+        public AutoRoutine blueRightAutoRoutine() {
+                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+                AutoTrajectory trajectory1 = BlueRight$0.asAutoTraj(routine);
+                AutoTrajectory trajectory2 = BlueRight$1.asAutoTraj(routine);
 
-        return routine;
-    }
+                routine.active().onTrue(
+                                Commands.sequence(
+                                                Commands.print("Right Auto Chosen"),
+                                                cmdWithAccuracy(trajectory1),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout),
+                                                cmdWithAccuracy(trajectory2),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout)));
 
-    public AutoRoutine blueLeftAutoRoutine() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = BlueLeft$0.asAutoTraj(routine);
-        AutoTrajectory trajectory2 = BlueLeft$1.asAutoTraj(routine);
+                return routine;
+        }
 
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Left Auto Chosen"),
-                        cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout),
-                        cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout)));
+        public AutoRoutine blueLeftAutoRoutine() {
+                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+                AutoTrajectory trajectory1 = BlueLeft$0.asAutoTraj(routine);
+                AutoTrajectory trajectory2 = BlueLeft$1.asAutoTraj(routine);
 
-        return routine;
-    }
+                routine.active().onTrue(
+                                Commands.sequence(
+                                                Commands.print("Left Auto Chosen"),
+                                                cmdWithAccuracy(trajectory1),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout),
+                                                cmdWithAccuracy(trajectory2),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout)));
 
-    public AutoRoutine cheesyPoofsBlueRight() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = CheesyPoofsBlueRight$0.asAutoTraj(routine);
-        AutoTrajectory trajectory2 = CheesyPoofsBlueRight$1.asAutoTraj(routine);
+                return routine;
+        }
 
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Cheesy Poofs Right Auto Chosen"),
-                        cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout),
-                        cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout)));
+        public AutoRoutine cheesyPoofsBlueRight() {
+                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+                AutoTrajectory trajectory1 = CheesyPoofsBlueRight$0.asAutoTraj(routine);
+                AutoTrajectory trajectory2 = CheesyPoofsBlueRight$1.asAutoTraj(routine);
 
-        return routine;
-    }
+                routine.active().onTrue(
+                                Commands.sequence(
+                                                Commands.print("Cheesy Poofs Right Auto Chosen"),
+                                                cmdWithAccuracy(trajectory1),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout),
+                                                cmdWithAccuracy(trajectory2),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout)));
 
-    public AutoRoutine cheesyPoofsBlueLeft() {
-        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory1 = CheesyPoofsBlueLeft$0.asAutoTraj(routine);
-        AutoTrajectory trajectory2 = CheesyPoofsBlueLeft$1.asAutoTraj(routine);
+                return routine;
+        }
 
-        routine.active().onTrue(
-                Commands.sequence(
-                        Commands.print("Cheesy Poofs Left Auto Chosen"),
-                        cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout),
-                        cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
-                                Constants.AutoConstants.kAutoShooterTimeout)));
+        public AutoRoutine cheesyPoofsBlueLeft() {
+                AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+                AutoTrajectory trajectory1 = CheesyPoofsBlueLeft$0.asAutoTraj(routine);
+                AutoTrajectory trajectory2 = CheesyPoofsBlueLeft$1.asAutoTraj(routine);
 
-        return routine;
-    }
+                routine.active().onTrue(
+                                Commands.sequence(
+                                                Commands.print("Cheesy Poofs Left Auto Chosen"),
+                                                cmdWithAccuracy(trajectory1),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout),
+                                                cmdWithAccuracy(trajectory2),
+                                                new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                                                interpolationMatrix,
+                                                                Constants.AutoConstants.kAutoShooterTimeout)));
 
-    public Command getAutoCommand() {
-        /**
-         * Gets the selected auto command from the auto chooser.
-         * 
-         * @args None
-         * @author Justin Baratta & Jake Xie
-         * @since 2026-01-19
-         * @return Command
-         */
+                return routine;
+        }
 
-        return autoChooser.selectedCommand();
-    }
+        public Command getAutoCommand() {
+                /**
+                 * Gets the selected auto command from the auto chooser.
+                 * 
+                 * @args None
+                 * @author Justin Baratta & Jake Xie
+                 * @since 2026-01-19
+                 * @return Command
+                 */
 
-    private boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
-        /**
-         * Checks if the trajectory is finished, based on whether translation and
-         * rotation are finished.
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
-         * @since 2026-01-19
-         * @return boolean
-         */
-        boolean translationCompleted = translationIsFinished(trajectory, epsilonDist);
-        boolean rotationCompleted = rotationIsFinished(trajectory);
+                return autoChooser.selectedCommand();
+        }
 
-        SmartDashboard.putBoolean("Choreo/Translation Completed", translationCompleted);
-        SmartDashboard.putBoolean("Choreo/Rotation Completed", rotationCompleted);
+        private boolean isFinished(AutoTrajectory trajectory, Distance epsilonDist) {
+                /**
+                 * Checks if the trajectory is finished, based on whether translation and
+                 * rotation are finished.
+                 * This code was inspired by Citrus Circuits' 2025 code.
+                 * 
+                 * @args AutoTrajectory trajectory, Distance epsilonDist
+                 * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
+                 * @since 2026-01-19
+                 * @return boolean
+                 */
+                boolean translationCompleted = translationIsFinished(trajectory, epsilonDist);
+                boolean rotationCompleted = rotationIsFinished(trajectory);
 
-        return translationCompleted && rotationCompleted;
-    }
+                SmartDashboard.putBoolean("Choreo/Translation Completed", translationCompleted);
+                SmartDashboard.putBoolean("Choreo/Rotation Completed", rotationCompleted);
 
-    private boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
-        /**
-         * Checks if the translation is finished. Used in
-         * {@link #isFinished(AutoTrajectory, Distance)}
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory, Distance epsilonDist
-         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
-         * @since 2026-01-19
-         * @return boolean
-         */
-        Pose2d currentPose = swerve.getPose();
-        Pose2d finalPose = trajectory.getFinalPose().get();
+                return translationCompleted && rotationCompleted;
+        }
 
-        SmartDashboard.putNumber(
-                "Choreo/Distance Away Inches",
-                currentPose.getTranslation().getDistance(finalPose.getTranslation())
-                        * Constants.kMetersToInches);
+        private boolean translationIsFinished(AutoTrajectory trajectory, Distance epsilonDist) {
+                /**
+                 * Checks if the translation is finished. Used in
+                 * {@link #isFinished(AutoTrajectory, Distance)}
+                 * This code was inspired by Citrus Circuits' 2025 code.
+                 * 
+                 * @args AutoTrajectory trajectory, Distance epsilonDist
+                 * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
+                 * @since 2026-01-19
+                 * @return boolean
+                 */
+                Pose2d currentPose = swerve.getPose();
+                Pose2d finalPose = trajectory.getFinalPose().get();
 
-        return currentPose.getTranslation().getDistance(finalPose.getTranslation()) < epsilonDist
-                .in(Units.Meters);
-    }
+                SmartDashboard.putNumber(
+                                "Choreo/Distance Away Inches",
+                                currentPose.getTranslation().getDistance(finalPose.getTranslation())
+                                                * Constants.kMetersToInches);
 
-    private boolean rotationIsFinished(AutoTrajectory trajectory) {
-        /**
-         * Checks if the rotation is finished. Used in
-         * {@link #isFinished(AutoTrajectory, Distance)}
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory
-         * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
-         * @since 2026-01-19
-         * @return boolean
-         */
-        Pose2d currentPose = swerve.getPose();
-        Pose2d finalPose = trajectory.getFinalPose().get();
-        Angle epsilonAngle = AutoConstants.kAutoAngleEpsilon;
+                return currentPose.getTranslation().getDistance(finalPose.getTranslation()) < epsilonDist
+                                .in(Units.Meters);
+        }
 
-        return MathUtil.angleModulus(
-                Math.abs(currentPose.getRotation().minus(finalPose.getRotation())
-                        .getRadians())) < epsilonAngle
-                                .in(Units.Radians);
-    }
+        private boolean rotationIsFinished(AutoTrajectory trajectory) {
+                /**
+                 * Checks if the rotation is finished. Used in
+                 * {@link #isFinished(AutoTrajectory, Distance)}
+                 * This code was inspired by Citrus Circuits' 2025 code.
+                 * 
+                 * @args AutoTrajectory trajectory
+                 * @author Justin Baratta & Jake Xie, From 2025 Citrus Circuits Team
+                 * @since 2026-01-19
+                 * @return boolean
+                 */
+                Pose2d currentPose = swerve.getPose();
+                Pose2d finalPose = trajectory.getFinalPose().get();
+                Angle epsilonAngle = AutoConstants.kAutoAngleEpsilon;
 
-    public Command cmdWithAccuracy(AutoTrajectory trajectory) {
-        /**
-         * Creates a command with accuracy. Used in basically all the routines.
-         * This code was inspired by Citrus Circuits' 2025 code.
-         * 
-         * @args AutoTrajectory trajectory, Time timeout, Distance epsilonDist
-         * @author Justin Baratta & Jake Xie, 2025 Citrus Circuits Team
-         * @since 2026-01-19
-         * @return Command
-         */
+                return MathUtil.angleModulus(
+                                Math.abs(currentPose.getRotation().minus(finalPose.getRotation())
+                                                .getRadians())) < epsilonAngle
+                                                                .in(Units.Radians);
+        }
 
-        Command trajCmd = trajectory.cmd();
+        public Command cmdWithAccuracy(AutoTrajectory trajectory) {
+                /**
+                 * Creates a command with accuracy. Used in basically all the routines.
+                 * This code was inspired by Citrus Circuits' 2025 code.
+                 * 
+                 * @args AutoTrajectory trajectory, Time timeout, Distance epsilonDist
+                 * @author Justin Baratta & Jake Xie, 2025 Citrus Circuits Team
+                 * @since 2026-01-19
+                 * @return Command
+                 */
 
-        return new FunctionalCommand(
-                trajCmd::initialize,
-                trajCmd::execute,
-                trajCmd::end,
-                () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist),
-                swerve);
-    }
+                Command trajCmd = trajectory.cmd();
+
+                return new FunctionalCommand(
+                                trajCmd::initialize,
+                                trajCmd::execute,
+                                trajCmd::end,
+                                () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist),
+                                swerve);
+        }
 }

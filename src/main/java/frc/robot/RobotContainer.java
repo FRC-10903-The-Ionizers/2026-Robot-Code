@@ -132,7 +132,7 @@ public class RobotContainer {
         .onChange(new InstantCommand(() -> controller.toggleFieldRelative()));
     xboxController
         .b()
-        .whileTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix)); // Example:
+        .whileTrue(new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix)); // Example:
     // Lock
     // to
     // 90
