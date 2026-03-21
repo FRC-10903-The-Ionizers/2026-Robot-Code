@@ -21,13 +21,15 @@ import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
+import frc.robot.util.HubTimer;
 
 public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
+    private final HubTimer hubTimer;
     private final Timer timer = new Timer();
     private Auto auto;
-    private RegionHandler regionHandler;
+    private final RegionHandler regionHandler;
     private final static Logger logger = LogManager.getLogger(Robot.class);
 
     public Robot() {
@@ -66,6 +68,8 @@ public class Robot extends TimedRobot {
         RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
         // Optionally disable the joystick connection warning
         DriverStation.silenceJoystickConnectionWarning(true);
+
+        hubTimer = new HubTimer();
     }
 
     @Override
@@ -84,6 +88,9 @@ public class Robot extends TimedRobot {
          * @since 2026-01
          * @return void
          */
+        hubTimer.updateAlliance();
+        Commands.repeatingSequence(Commands.runOnce(() -> hubTimer.updateElastic()), Commands.waitSeconds(1));
+
         timer.restart();
         Command autoCommand = auto.getAutoCommand();
 

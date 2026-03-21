@@ -1,26 +1,23 @@
 package frc.robot;
 
 import java.io.File;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.math.InterpolatingMatrixTreeMap;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
-import frc.robot.commands.DrivingCommands.TrenchWarfare;
-import frc.robot.commands.DrivingCommands.DriveToPose;
 import frc.robot.commands.DrivingCommands.DriveToObject;
 import frc.robot.commands.DrivingCommands.MovementOriented;
+import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
+import frc.robot.commands.DrivingCommands.TrenchWarfare;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
@@ -28,10 +25,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.InterpolatingMatrixTreeMap;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N2;
 
 public class RobotContainer {
 
@@ -122,18 +115,27 @@ public class RobotContainer {
          * @return void
          */
         // Bind aiming command to a button (e.g., A button)
-        //xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter for aim drive)
+        // xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new
+        // Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter
+        // for aim drive)
         xboxController.x().onTrue(intake.toggleIntakeCommand());
-        xboxController.leftTrigger(0.25).onChange(new InstantCommand(()->controller.toggleFieldRelative()));
-        xboxController.rightTrigger(0.1).whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
-        xboxController.b().whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example: Lock to 90 degrees while driving
+        xboxController.leftTrigger(0.25).onChange(new InstantCommand(() -> controller.toggleFieldRelative()));
+        xboxController.rightTrigger(0.1)
+                .whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
+        xboxController.b()
+                .whileTrue(new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example:
+                                                                                                                 // Lock
+                                                                                                                 // to
+                                                                                                                 // 90
+                                                                                                                 // degrees
+                                                                                                                 // while
+                                                                                                                 // driving
 
         xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
 
         xboxController.povUp().whileTrue(new DriveToObject(swerve));
 
         xboxController.povRight().whileTrue(new TrenchWarfare(swerve, controller));
-
 
         // Bind aligning command to another button (e.g., B button)
 
@@ -144,11 +146,15 @@ public class RobotContainer {
         // xboxController.y().onTrue(Commands.runOnce(() ->
         // Swerve.toggleIsLockedPosition(), swerve));
 
-        // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2), shooter));
+        // xboxController.a().onTrue(new InstantCommand(() -> shooter.setHoodAngle(2),
+        // shooter));
         // Bind go to point test command to the D pad
-        //xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0, Rotation2d.kZero)));
-        //xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0, Rotation2d.kZero)));
-        //xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5, Rotation2d.kZero)));
+        // xboxController.povLeft().onTrue(new DriveToPose(swerve, new Pose2d(-1.5, 0,
+        // Rotation2d.kZero)));
+        // xboxController.povRight().onTrue(new DriveToPose(swerve, new Pose2d(1.5, 0,
+        // Rotation2d.kZero)));
+        // xboxController.povDown().onTrue(new DriveToPose(swerve, new Pose2d(0, -1.5,
+        // Rotation2d.kZero)));
 
         // change gear commands
         xboxController.rightBumper().onTrue(Commands.runOnce(() -> {
@@ -171,6 +177,5 @@ public class RobotContainer {
             }
         }, swerve));
 
-        
     }
 }
