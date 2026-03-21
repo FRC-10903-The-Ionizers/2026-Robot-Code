@@ -1,5 +1,10 @@
 package frc.robot;
 
+import java.io.File;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
@@ -9,9 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DrivingCommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.drivingcommands.DriveToObject;
 import frc.robot.commands.drivingcommands.MovementOriented;
-import frc.robot.commands.drivingcommands.ShootAndDrive;
 import frc.robot.commands.drivingcommands.TrenchWarfare;
 import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
@@ -20,9 +25,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.Controller;
-import java.io.File;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+public class RobotContainer {
 
 /**
  * RobotContainer class for the robot.
@@ -79,15 +83,31 @@ public class RobotContainer {
     return map;
   }
 
-  /**
-   * Gets the swerve subsystem.
-   *
-   * @return the swerve subsystem
-   * @since 2025-10
-   */
-  public Swerve getSwerve() {
-    return swerve;
-  }
+    // Remove controllerDrive() as it's replaced by commands
+
+    public Swerve getSwerve() {
+        /**
+         * Gets the swerve subsystem.
+         * 
+         * @args None
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
+         * @return Swerve swerve
+         */
+        return swerve;
+    }
+
+    public Shooter getShooter() {
+        return shooter;
+    }
+
+    public Hopper getHopper() {
+        return hopper;
+    }
+
+    public Intake getIntake() {
+        return intake;
+    }
 
   /**
    * Gets the controller.

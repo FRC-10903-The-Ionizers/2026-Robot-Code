@@ -1,5 +1,11 @@
 package frc.robot;
 
+import java.io.File;
+import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -9,16 +15,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.drivingcommands.TeleopDriveCommand;
 import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Swerve;
 import frc.robot.util.Auto;
 import frc.robot.util.Controller;
-import java.io.File;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Robot class for the robot.
@@ -49,35 +50,28 @@ public class Robot extends TimedRobot {
     // --- container and region setup ---
 
     robotContainer = new RobotContainer();
-    regionHandler =
-        new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
+    regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
 
     Swerve swerve = robotContainer.getSwerve();
 
-    // --- auto factory ---
-    // choreo needs pose getter, odometry resetter, trajectory follower, and the swerve subsystem
-
-    AutoFactory autoFactory =
-        new AutoFactory(
-            swerve::getPose,
-            swerve::resetOdometry,
-            swerve::followTrajectory,
-            true, // alliance flipping enabled
-            swerve);
-
-    autoFactory.bind("Yo", Commands.print("At Yo"));
+    AutoFactory autoFactory = new AutoFactory(
+        swerve::getPose, // A function that returns the current robot pose
+        swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+        swerve::followTrajectory, // The drive subsystem trajectory follower
+        true, // If alliance flipping should be enabled (all paths on blue side are reflected
+              // about y axis when red alliance selected in DS)
+        swerve // The drive subsystem
+    );
 
     Constants.AutoConstants.kAutoFactory = autoFactory;
 
     // --- auto command ---
 
-    auto = new Auto(autoFactory, swerve, regionHandler);
-
+    auto = new Auto(autoFactory, robotContainer, regionHandler);
     logger.debug("Auto initialized!");
+    // RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
 
-    RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
-
-    // suppress missing joystick warnings during testing
+    // Optionally disable the joystick connection warning
     DriverStation.silenceJoystickConnectionWarning(true);
   }
 
@@ -88,7 +82,8 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * Schedules the autonomous command, runs automatically when the robot is in autonomous mode.
+   * Schedules the autonomous command, runs automatically when the robot is in
+   * autonomous mode.
    *
    * @since 2026-01
    */
@@ -110,7 +105,8 @@ public class Robot extends TimedRobot {
    * @todo Remove this unless needed
    */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   /**
    * Initializes the teleop mode.
@@ -134,7 +130,8 @@ public class Robot extends TimedRobot {
    * @todo Remove this unless needed
    */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   /**
    * Exits the teleop mode, runs when the robot is no longer in teleop mode.
@@ -148,13 +145,21 @@ public class Robot extends TimedRobot {
     swerve.removeDefaultCommand();
   }
 
-  /**
-   * Checks if the robot is on the red alliance.
-   *
-   * @return true if the robot is on the red alliance
-   * @since 2025-10
-   */
   private boolean isRedAlliance() {
-    return DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red);
+    /**
+     * Checks if the robot is on the red alliance.
+     * 
+     * @args None
+     * @author Max Clemetson & Jake Xie
+     * @since 2025-10
+     * @return boolean
+     */
+
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      return (alliance.get() == Alliance.Red) ? true : false;
+    } else {
+      throw new Error("Set Alliance is DS pls");
+    }
   }
 }
