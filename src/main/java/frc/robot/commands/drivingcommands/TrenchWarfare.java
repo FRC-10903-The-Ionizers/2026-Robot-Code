@@ -33,11 +33,7 @@ public class TrenchWarfare extends Command {
   public TrenchWarfare(Swerve subsystem, Controller controller) {
     swerve = subsystem;
     this.controller = controller;
-    if (swerve.getPose().getY() > Constants.TrenchConstants.kFieldMidlineY) {
-      targetY = Constants.TrenchConstants.kUpperTargetY;
-    } else {
-      targetY = Constants.TrenchConstants.kLowerTargetY;
-    }
+
   }
 
   /**
@@ -48,11 +44,14 @@ public class TrenchWarfare extends Command {
    */
   @Override
   public void execute() {
+    if (swerve.getPose().getY() > Constants.TrenchConstants.kFieldMidlineY) {
+      targetY = Constants.TrenchConstants.kUpperTargetY;
+    } else {
+      targetY = Constants.TrenchConstants.kLowerTargetY;
+    }
     Pose2d currentPose = swerve.getPose();
     double calcY = controllerY.calculate(currentPose.getY(), targetY);
-    double headingCalculated =
-        headingController.calculate(currentPose.getRotation().getRadians(), targetHeading);
 
-    swerve.drive(new Translation2d(controller.getDriveX(), calcY), headingCalculated, true);
+    swerve.drive(new Translation2d(controller.getDriveX(), calcY), controller.getRotation(), true);
   }
 }

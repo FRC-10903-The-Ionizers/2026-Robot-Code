@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.apache.logging.log4j.Level;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -16,10 +18,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
-import org.apache.logging.log4j.Level;
 
 /**
- * Constants class for the robot. Contains all robot-wide numeric constants organized into inner
+ * Constants class for the robot. Contains all robot-wide numeric constants
+ * organized into inner
  * classes by subsystem.
  *
  * @since 2025-10
@@ -30,7 +32,8 @@ public class Constants {
   public static int kXboxControllerPort = 0;
 
   /**
-   * Drive constants for the robot, including controller multipliers, gear ratios, deadband, and PID
+   * Drive constants for the robot, including controller multipliers, gear ratios,
+   * deadband, and PID
    * controllers.
    *
    * @since 2025-10
@@ -66,23 +69,20 @@ public class Constants {
     private static final double kHeadingD = 0.0;
 
     // --- PID Controllers ---
-    public static final PIDController kXController =
-        new PIDController(
-            Constants.DriveConstants.kXP,
-            Constants.DriveConstants.kXI,
-            Constants.DriveConstants.kXD);
+    public static final PIDController kXController = new PIDController(
+        Constants.DriveConstants.kXP,
+        Constants.DriveConstants.kXI,
+        Constants.DriveConstants.kXD);
 
-    public static final PIDController kYController =
-        new PIDController(
-            Constants.DriveConstants.kYP,
-            Constants.DriveConstants.kYI,
-            Constants.DriveConstants.kYD);
+    public static final PIDController kYController = new PIDController(
+        Constants.DriveConstants.kYP,
+        Constants.DriveConstants.kYI,
+        Constants.DriveConstants.kYD);
 
-    public static final PIDController kHeadingController =
-        new PIDController(
-            Constants.DriveConstants.kHeadingP,
-            Constants.DriveConstants.kHeadingI,
-            Constants.DriveConstants.kHeadingD);
+    public static final PIDController kHeadingController = new PIDController(
+        Constants.DriveConstants.kHeadingP,
+        Constants.DriveConstants.kHeadingI,
+        Constants.DriveConstants.kHeadingD);
 
     static {
       kHeadingController.enableContinuousInput(-Math.PI, Math.PI);
@@ -90,7 +90,8 @@ public class Constants {
   }
 
   /**
-   * Vision constants for the robot. Make sure to set the camera names in case you have different
+   * Vision constants for the robot. Make sure to set the camera names in case you
+   * have different
    * cameras.
    *
    * @since 2025-10
@@ -110,16 +111,13 @@ public class Constants {
     // --- AprilTag Detection Thresholds ---
     public static final double kSingleTagDistanceThreshold = 4;
     public static final double kStdDevScalingFactor = 30;
-    public static AprilTagFieldLayout kTagLayout =
-        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    public static AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     // --- Camera Poses on Robot (robot-relative) ---
-    public static Transform3d kShooterCamPosition =
-        new Transform3d(
-            new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0, -0.61086524, -1.5707));
-    public static Transform3d kIntakeCamPosition =
-        new Transform3d(
-            new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
+    public static Transform3d kShooterCamPosition = new Transform3d(
+        new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0, -0.61086524, -1.5707));
+    public static Transform3d kIntakeCamPosition = new Transform3d(
+        new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
 
     // --- Pose Estimation Standard Deviations ---
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
@@ -127,7 +125,8 @@ public class Constants {
   }
 
   /**
-   * Auto constants for the robot, including trajectory tolerances and timeout values.
+   * Auto constants for the robot, including trajectory tolerances and timeout
+   * values.
    *
    * @since 2026-01
    */
@@ -142,7 +141,8 @@ public class Constants {
   }
 
   /**
-   * Shooter constants including motor IDs, PID gains, interpolation data, and field coordinate
+   * Shooter constants including motor IDs, PID gains, interpolation data, and
+   * field coordinate
    * targets.
    *
    * @since 2025-10
@@ -164,11 +164,11 @@ public class Constants {
     // --- Hood PID & Mechanics ---
     public static final double kHoodP = 0.5;
     public static final double kHoodI = 0.0;
-    public static final double kHoodD = 0.05;
+    public static final double kHoodD = 0.02;
     public static final double kHoodLpf = 0.9;
     public static final double kHoodClipping = 0.3;
-    public static final double kHoodZeroingOutput = 0.2;
-    public static final double kHoodStallCurrentAmps = 45;
+    public static final double kHoodZeroingOutput = 0.3;
+    public static final double kHoodStallCurrentAmps = 60;
     public static final double kHoodMaxAngleRad = 1.4;
     public static final double kHoodMaxRotation = 1.42857; // Hood gear ratio is 17.22 to 1
 
@@ -190,15 +190,16 @@ public class Constants {
     public static final Translation2d kRedHubTranslation = new Translation2d(11.92, kFieldMidlineY);
 
     // --- Interpolation Tables (indexed by distance to hub) ---
-    public static final double[] kDistancesToHub = {1.6501, 2.1330, 3.000, 3.97, 5.67}; // In meters
+    public static final double[] kDistancesToHub = { 1.6501, 2.1330, 3.000, 3.97, 5.67 }; // In meters
     public static final double[] kShooterSpeeds = {
-      2900, 3150, 3210, 3500, 4253
+        2900, 3150, 3210, 3500, 4253
     }; // In rotations per minute
-    public static final double[] kHoodAngles = {0, 0.13, 0.49, 0.63, 1.02}; // In radians
+    public static final double[] kHoodAngles = { 0, 0.13, 0.49, 0.63, 1.02 }; // In radians
   }
 
   /**
-   * Intake constants including motor IDs, PID gains, actuation setpoints, and jiggle mode
+   * Intake constants including motor IDs, PID gains, actuation setpoints, and
+   * jiggle mode
    * parameters.
    *
    * @since 2025-10
@@ -222,7 +223,7 @@ public class Constants {
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 0.4;
+    public static final double kInJigglyPercentage = 0.8;
     public static final double kOutJigglyPercentage = 0.8;
     public static final double kJiggleIntervalSeconds = 0.5;
 
@@ -238,19 +239,21 @@ public class Constants {
   }
 
   /**
-   * Hopper constants including motor IDs and default speeds for the spindexer and bob motors.
+   * Hopper constants including motor IDs and default speeds for the spindexer and
+   * bob motors.
    *
    * @since 2025-10
    */
   public static class HopperConstants {
     public static final int kSpindexerMotorID = 1;
     public static final int kBobMotorID = 5;
-    public static final double kSpindexerSpeed = -0.55;
+    public static final double kSpindexerSpeed = -0.4;
     public static final double kBobSpeed = 0.6;
   }
 
   /**
-   * Trench warfare constants including field Y-coordinate targets for trench driving mode.
+   * Trench warfare constants including field Y-coordinate targets for trench
+   * driving mode.
    *
    * @since 2026-01
    */

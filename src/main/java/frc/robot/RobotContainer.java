@@ -116,7 +116,7 @@ public class RobotContainer {
     xboxController
         .rightTrigger(Constants.DriveConstants.kRightTriggerThreshold)
         .whileTrue(
-            new ShootAndDrive(swerve, shooter, hopper, intake, controller, interpolationMatrix));
+            new TrenchWarfare(swerve, controller));
     xboxController
         .b()
         .whileTrue(
@@ -129,12 +129,9 @@ public class RobotContainer {
     // while
     // driving
 
-    xboxController.povDown().whileTrue(new MovementOriented(swerve, controller));
-    xboxController.a().whileTrue(new DriveToObject(swerve));
-
+    xboxController.y().whileTrue(new MovementOriented(swerve, controller));
     xboxController.povUp().whileTrue(new DriveToObject(swerve));
 
-    xboxController.povRight().whileTrue(new TrenchWarfare(swerve, controller));
 
     // Bind aligning command to another button (e.g., B button)
     
