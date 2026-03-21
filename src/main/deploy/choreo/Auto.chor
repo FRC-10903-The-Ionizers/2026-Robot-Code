@@ -105,7 +105,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"../../java/frc/robot/trajectories",
+  "root":"..\\..\\java\\frc\\robot\\trajectories",
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true

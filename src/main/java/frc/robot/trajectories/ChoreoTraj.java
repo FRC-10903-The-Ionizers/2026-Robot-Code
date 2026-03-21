@@ -1,4 +1,4 @@
-// spotless:off
+
 package frc.robot.trajectories;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -6,10 +6,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import java.util.Map;
 import java.util.OptionalInt;
 
+// If these imports cause errors because you're not using ChoreoLib,
+// turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-// If the 2 imports above cause errors because you're not using ChoreoLib,
-// turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
 
 /**
  * A class containing the name, start pose, end pose, and total time of every Choreo trajectory.
@@ -24,142 +24,180 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj Outpost = new ChoreoTraj(
-        "Outpost",
-        OptionalInt.empty(),
-        3.72768,
-        new Pose2d(3.5, 4.035, Rotation2d.fromRadians(0)),
-        new Pose2d(2.0288, 1.88639, Rotation2d.fromRadians(2.26893))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj Outpost$0 = new ChoreoTraj(
-        "Outpost",
-        OptionalInt.of(0),
-        2.4931,
-        new Pose2d(3.5, 4.035, Rotation2d.fromRadians(0)),
-        new Pose2d(0.45516, 0.64211, Rotation2d.fromRadians(1.5708))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj Outpost$1 = new ChoreoTraj(
-        "Outpost",
-        OptionalInt.of(1),
-        1.2345799999999998,
-        new Pose2d(0.45516, 0.64211, Rotation2d.fromRadians(1.5708)),
-        new Pose2d(2.0288, 1.88639, Rotation2d.fromRadians(2.26893))
-    );
-    public static final ChoreoTraj BlueLeft = new ChoreoTraj(
-        "BlueLeft",
-        OptionalInt.empty(),
-        11.95651,
-        new Pose2d(3.61502, 7.41151, Rotation2d.fromRadians(0)),
-        new Pose2d(2.09114, 2.97367, Rotation2d.fromRadians(2.26893))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj BlueLeft$0 = new ChoreoTraj(
-        "BlueLeft",
-        OptionalInt.of(0),
-        6.26648,
-        new Pose2d(3.61502, 7.41151, Rotation2d.fromRadians(0)),
-        new Pose2d(2.58903, 5.67414, Rotation2d.fromRadians(0.61087))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj BlueLeft$1 = new ChoreoTraj(
-        "BlueLeft",
-        OptionalInt.of(1),
-        5.69003,
-        new Pose2d(2.58903, 5.67414, Rotation2d.fromRadians(0.61087)),
-        new Pose2d(2.09114, 2.97367, Rotation2d.fromRadians(2.26893))
-    );
-    public static final ChoreoTraj CheesyPoofsBlueRight = new ChoreoTraj(
-        "CheesyPoofsBlueRight",
-        OptionalInt.empty(),
-        14.03578,
-        new Pose2d(4.23915, 0.6, Rotation2d.fromRadians(0)),
-        new Pose2d(2.10097, 0.67839, Rotation2d.fromRadians(2.18166))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj CheesyPoofsBlueRight$0 = new ChoreoTraj(
-        "CheesyPoofsBlueRight",
-        OptionalInt.of(0),
-        7.13323,
-        new Pose2d(4.23915, 0.6, Rotation2d.fromRadians(0)),
-        new Pose2d(2.59275, 0.68767, Rotation2d.fromRadians(2.18166))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj CheesyPoofsBlueRight$1 = new ChoreoTraj(
-        "CheesyPoofsBlueRight",
-        OptionalInt.of(1),
-        6.902550000000001,
-        new Pose2d(2.59275, 0.68767, Rotation2d.fromRadians(2.18166)),
-        new Pose2d(2.10097, 0.67839, Rotation2d.fromRadians(2.18166))
-    );
-    public static final ChoreoTraj CheesyPoofsBlueLeft = new ChoreoTraj(
-        "CheesyPoofsBlueLeft",
-        OptionalInt.empty(),
-        13.36639,
-        new Pose2d(4.23915, 7.47, Rotation2d.fromRadians(0)),
-        new Pose2d(3.01311, 7.39407, Rotation2d.fromRadians(0.61087))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj CheesyPoofsBlueLeft$0 = new ChoreoTraj(
-        "CheesyPoofsBlueLeft",
-        OptionalInt.of(0),
-        6.9519,
-        new Pose2d(4.23915, 7.47, Rotation2d.fromRadians(0)),
-        new Pose2d(3, 7.42, Rotation2d.fromRadians(0.61087))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj CheesyPoofsBlueLeft$1 = new ChoreoTraj(
-        "CheesyPoofsBlueLeft",
-        OptionalInt.of(1),
-        6.414490000000001,
-        new Pose2d(3, 7.42, Rotation2d.fromRadians(0.61087)),
-        new Pose2d(3.01311, 7.39407, Rotation2d.fromRadians(0.61087))
-    );
-    public static final ChoreoTraj BlueRight = new ChoreoTraj(
-        "BlueRight",
-        OptionalInt.empty(),
-        11.65041,
-        new Pose2d(3.54755, 0.62381, Rotation2d.fromRadians(0)),
-        new Pose2d(2.66254, 5.13986, Rotation2d.fromRadians(1.0472))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj BlueRight$0 = new ChoreoTraj(
-        "BlueRight",
-        OptionalInt.of(0),
-        6.16108,
-        new Pose2d(3.54755, 0.62381, Rotation2d.fromRadians(0)),
-        new Pose2d(2.58903, 2.39586, Rotation2d.fromRadians(2.44346))
-    );
-    /** ERROR: Can only use letters, 0-9, and _. Can't use $. Rename it in the Choreo app to fix this error. */
-    public static final ChoreoTraj BlueRight$1 = new ChoreoTraj(
-        "BlueRight",
-        OptionalInt.of(1),
-        5.489330000000001,
-        new Pose2d(2.58903, 2.39586, Rotation2d.fromRadians(2.44346)),
-        new Pose2d(2.66254, 5.13986, Rotation2d.fromRadians(1.0472))
-    );
+    public static final ChoreoTraj Left = new ChoreoTraj(
+	    "Left",
+	    OptionalInt.empty(),
+	    11.95651,
+	    new Pose2d(3.615, 7.412, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.091, 2.974, Rotation2d.fromRadians(2.269))
+	);
+	public static final ChoreoTraj Left$0 = new ChoreoTraj(
+	    "Left",
+	    OptionalInt.of(0),
+	    6.26648,
+	    new Pose2d(3.615, 7.412, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.589, 5.674, Rotation2d.fromRadians(0.611))
+	);
+	public static final ChoreoTraj Left$1 = new ChoreoTraj(
+	    "Left",
+	    OptionalInt.of(1),
+	    5.69003,
+	    new Pose2d(2.589, 5.674, Rotation2d.fromRadians(0.611)),
+	    new Pose2d(2.091, 2.974, Rotation2d.fromRadians(2.269))
+	);
+	public static final ChoreoTraj Right = new ChoreoTraj(
+	    "Right",
+	    OptionalInt.empty(),
+	    11.65041,
+	    new Pose2d(3.548, 0.624, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.663, 5.14, Rotation2d.fromRadians(1.047))
+	);
+	public static final ChoreoTraj Right$0 = new ChoreoTraj(
+	    "Right",
+	    OptionalInt.of(0),
+	    6.16108,
+	    new Pose2d(3.548, 0.624, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.589, 2.396, Rotation2d.fromRadians(2.443))
+	);
+	public static final ChoreoTraj Right$1 = new ChoreoTraj(
+	    "Right",
+	    OptionalInt.of(1),
+	    5.489330000000001,
+	    new Pose2d(2.589, 2.396, Rotation2d.fromRadians(2.443)),
+	    new Pose2d(2.663, 5.14, Rotation2d.fromRadians(1.047))
+	);
+	public static final ChoreoTraj CheesyPoofsLeft = new ChoreoTraj(
+	    "CheesyPoofsLeft",
+	    OptionalInt.empty(),
+	    13.36639,
+	    new Pose2d(4.239, 7.47, Rotation2d.fromRadians(0)),
+	    new Pose2d(3.013, 7.394, Rotation2d.fromRadians(0.611))
+	);
+	public static final ChoreoTraj CheesyPoofsLeft$0 = new ChoreoTraj(
+	    "CheesyPoofsLeft",
+	    OptionalInt.of(0),
+	    6.9519,
+	    new Pose2d(4.239, 7.47, Rotation2d.fromRadians(0)),
+	    new Pose2d(3, 7.42, Rotation2d.fromRadians(0.611))
+	);
+	public static final ChoreoTraj CheesyPoofsLeft$1 = new ChoreoTraj(
+	    "CheesyPoofsLeft",
+	    OptionalInt.of(1),
+	    6.414490000000001,
+	    new Pose2d(3, 7.42, Rotation2d.fromRadians(0.611)),
+	    new Pose2d(3.013, 7.394, Rotation2d.fromRadians(0.611))
+	);
+	public static final ChoreoTraj CheesyPoofsRight = new ChoreoTraj(
+	    "CheesyPoofsRight",
+	    OptionalInt.empty(),
+	    17.06224,
+	    new Pose2d(4.239, 0.6, Rotation2d.fromRadians(0)),
+	    new Pose2d(10.123, 2.036, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj CheesyPoofsRight$0 = new ChoreoTraj(
+	    "CheesyPoofsRight",
+	    OptionalInt.of(0),
+	    7.13543,
+	    new Pose2d(4.239, 0.6, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.593, 0.688, Rotation2d.fromRadians(2.182))
+	);
+	public static final ChoreoTraj CheesyPoofsRight$1 = new ChoreoTraj(
+	    "CheesyPoofsRight",
+	    OptionalInt.of(1),
+	    9.92681,
+	    new Pose2d(2.593, 0.688, Rotation2d.fromRadians(2.182)),
+	    new Pose2d(10.123, 2.036, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj Outpost = new ChoreoTraj(
+	    "Outpost",
+	    OptionalInt.empty(),
+	    3.72768,
+	    new Pose2d(3.5, 4.035, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.029, 1.886, Rotation2d.fromRadians(2.269))
+	);
+	public static final ChoreoTraj Outpost$0 = new ChoreoTraj(
+	    "Outpost",
+	    OptionalInt.of(0),
+	    2.4931,
+	    new Pose2d(3.5, 4.035, Rotation2d.fromRadians(0)),
+	    new Pose2d(0.455, 0.642, Rotation2d.fromRadians(1.571))
+	);
+	public static final ChoreoTraj Outpost$1 = new ChoreoTraj(
+	    "Outpost",
+	    OptionalInt.of(1),
+	    1.2345799999999998,
+	    new Pose2d(0.455, 0.642, Rotation2d.fromRadians(1.571)),
+	    new Pose2d(2.029, 1.886, Rotation2d.fromRadians(2.269))
+	);
+	public static final ChoreoTraj CitrusRight = new ChoreoTraj(
+	    "CitrusRight",
+	    OptionalInt.empty(),
+	    10.90131,
+	    new Pose2d(4.1, 0.63, Rotation2d.fromRadians(0)),
+	    new Pose2d(3, 2.5, Rotation2d.fromRadians(2.356))
+	);
+	public static final ChoreoTraj CitrusRight$0 = new ChoreoTraj(
+	    "CitrusRight",
+	    OptionalInt.of(0),
+	    5.11489,
+	    new Pose2d(4.1, 0.63, Rotation2d.fromRadians(0)),
+	    new Pose2d(3, 2.5, Rotation2d.fromRadians(2.356))
+	);
+	public static final ChoreoTraj CitrusRight$1 = new ChoreoTraj(
+	    "CitrusRight",
+	    OptionalInt.of(1),
+	    5.786420000000001,
+	    new Pose2d(3, 2.5, Rotation2d.fromRadians(2.356)),
+	    new Pose2d(3, 2.5, Rotation2d.fromRadians(2.356))
+	);
+	public static final ChoreoTraj CitrusLeft = new ChoreoTraj(
+	    "CitrusLeft",
+	    OptionalInt.empty(),
+	    10.9366,
+	    new Pose2d(4.1, 7.44, Rotation2d.fromRadians(0)),
+	    new Pose2d(3, 5.57, Rotation2d.fromRadians(0.785))
+	);
+	public static final ChoreoTraj CitrusLeft$0 = new ChoreoTraj(
+	    "CitrusLeft",
+	    OptionalInt.of(0),
+	    5.11149,
+	    new Pose2d(4.1, 7.44, Rotation2d.fromRadians(0)),
+	    new Pose2d(3, 5.57, Rotation2d.fromRadians(0.785))
+	);
+	public static final ChoreoTraj CitrusLeft$1 = new ChoreoTraj(
+	    "CitrusLeft",
+	    OptionalInt.of(1),
+	    5.8251100000000005,
+	    new Pose2d(3, 5.57, Rotation2d.fromRadians(0.785)),
+	    new Pose2d(3, 5.57, Rotation2d.fromRadians(0.785))
+	);
 
     /**
      * A map between trajectory names and their corresponding data.
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-        Map.entry("Outpost", Outpost),
-        Map.entry("Outpost$0", Outpost$0),
-        Map.entry("Outpost$1", Outpost$1),
-        Map.entry("BlueLeft", BlueLeft),
-        Map.entry("BlueLeft$0", BlueLeft$0),
-        Map.entry("BlueLeft$1", BlueLeft$1),
-        Map.entry("CheesyPoofsBlueRight", CheesyPoofsBlueRight),
-        Map.entry("CheesyPoofsBlueRight$0", CheesyPoofsBlueRight$0),
-        Map.entry("CheesyPoofsBlueRight$1", CheesyPoofsBlueRight$1),
-        Map.entry("CheesyPoofsBlueLeft", CheesyPoofsBlueLeft),
-        Map.entry("CheesyPoofsBlueLeft$0", CheesyPoofsBlueLeft$0),
-        Map.entry("CheesyPoofsBlueLeft$1", CheesyPoofsBlueLeft$1),
-        Map.entry("BlueRight", BlueRight),
-        Map.entry("BlueRight$0", BlueRight$0),
-        Map.entry("BlueRight$1", BlueRight$1)
+    	Map.entry("Left", Left),
+		Map.entry("Left$0", Left$0),
+		Map.entry("Left$1", Left$1),
+		Map.entry("Right", Right),
+		Map.entry("Right$0", Right$0),
+		Map.entry("Right$1", Right$1),
+		Map.entry("CheesyPoofsLeft", CheesyPoofsLeft),
+		Map.entry("CheesyPoofsLeft$0", CheesyPoofsLeft$0),
+		Map.entry("CheesyPoofsLeft$1", CheesyPoofsLeft$1),
+		Map.entry("CheesyPoofsRight", CheesyPoofsRight),
+		Map.entry("CheesyPoofsRight$0", CheesyPoofsRight$0),
+		Map.entry("CheesyPoofsRight$1", CheesyPoofsRight$1),
+		Map.entry("Outpost", Outpost),
+		Map.entry("Outpost$0", Outpost$0),
+		Map.entry("Outpost$1", Outpost$1),
+		Map.entry("CitrusRight", CitrusRight),
+		Map.entry("CitrusRight$0", CitrusRight$0),
+		Map.entry("CitrusRight$1", CitrusRight$1),
+		Map.entry("CitrusLeft", CitrusLeft),
+		Map.entry("CitrusLeft$0", CitrusLeft$0),
+		Map.entry("CitrusLeft$1", CitrusLeft$1)
     );
 
     /**
@@ -186,4 +224,3 @@ public record ChoreoTraj(
         return routine.trajectory(this.name);
     }
 }
-// spotless:on
