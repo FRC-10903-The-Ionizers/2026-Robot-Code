@@ -27,7 +27,6 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.DrivingCommands.ShootAndDrive;
-import frc.robot.commands.DrivingCommands.SmartShoot;
 import frc.robot.stateSensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
@@ -83,16 +82,18 @@ public class Auto {
 
         autoChooser.addRoutine("Red Left", this::blueRightAutoRoutine);
         autoChooser.addRoutine("Red Right", this::blueLeftAutoRoutine);
-        autoChooser.addRoutine("Red Middle Top", this::blueMiddleTopAutoRoutine);
-        autoChooser.addRoutine("Red Middle Bottom", this::blueMiddleBottomAutoRoutine);
         // Uh this code should just work...
         autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
         autoChooser.addRoutine("Blue Left", this::blueLeftAutoRoutine);
-        autoChooser.addRoutine("Blue Middle Top", this::blueMiddleTopAutoRoutine);
-        autoChooser.addRoutine("Blue Middle Bottom", this::blueMiddleBottomAutoRoutine);
+
+        autoChooser.addRoutine("Safe Auto", this::safeAutoRoutine);
+        autoChooser.addRoutine("Outpost", this::outpost);
+
+        autoChooser.addRoutine("Cheesy Poofs Blue Right", this::cheesyPoofsBlueRight);
+        autoChooser.addRoutine("Cheesy Poofs Blue Left", this::cheesyPoofsBlueLeft);
         // Put the auto chooser on the dashboard
         SmartDashboard.putData("Auto Chooser", autoChooser);
-        // SmartDashboard.getBoolean("Go Under Trench", false);
+
     }
 
     private static InterpolatingMatrixTreeMap<Double, N2, N1> buildInterpolationMatrix() {
@@ -107,6 +108,27 @@ public class Auto {
         return map;
     }
 
+    public AutoRoutine safeAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        routine.active().onTrue(new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, 20));
+
+        return routine;
+    }
+
+    public AutoRoutine outpost() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = routine.trajectory("Outpost", 0);
+        AutoTrajectory trajectory2 = routine.trajectory("Outpost", 1);
+
+        routine.active().onTrue(Commands.sequence(
+                cmdWithAccuracy(trajectory1),
+                Commands.waitSeconds(timeout),
+                cmdWithAccuracy(trajectory2),
+                new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout)));
+
+        return routine;
+    }
+
     public AutoRoutine blueRightAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
         AutoTrajectory trajectory1 = routine.trajectory("BlueRight.traj", 0);
@@ -114,53 +136,59 @@ public class Auto {
 
         routine.active().onTrue(
                 Commands.sequence(
-                        Commands.print("Blue Right Auto Chosen"),
+                        Commands.print("Right Auto Chosen"),
                         cmdWithAccuracy(trajectory1),
                         new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
                         cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, 30)));
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout)));
 
         return routine;
     }
 
     public AutoRoutine blueLeftAutoRoutine() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory0 = routine.trajectory("BlueLeft.traj", 0);
-        AutoTrajectory trajectory1 = routine.trajectory("BlueLeft.traj", 1);
+        AutoTrajectory trajectory1 = routine.trajectory("BlueLeft.traj", 0);
+        AutoTrajectory trajectory2 = routine.trajectory("BlueLeft.traj", 1);
 
         routine.active().onTrue(
                 Commands.sequence(
-                        Commands.print("Blue Left Auto Chosen"),
-                        cmdWithAccuracy(trajectory0),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
+                        Commands.print("Left Auto Chosen"),
                         cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, 30)));
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
+                        cmdWithAccuracy(trajectory2),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout)));
 
         return routine;
     }
 
-    public AutoRoutine blueMiddleTopAutoRoutine() {
+    public AutoRoutine cheesyPoofsBlueRight() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("BlueMiddleTop.traj");
+        AutoTrajectory trajectory1 = routine.trajectory("CheesyPoofsBlueRight.traj", 0);
+        AutoTrajectory trajectory2 = routine.trajectory("CheesyPoofsBlueRight.traj", 1);
 
         routine.active().onTrue(
                 Commands.sequence(
-                        Commands.print("Blue Middle Top Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
+                        Commands.print("Cheesy Poofs Right Auto Chosen"),
+                        cmdWithAccuracy(trajectory1),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
+                        cmdWithAccuracy(trajectory2),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout)));
 
         return routine;
     }
 
-    public AutoRoutine blueMiddleBottomAutoRoutine() {
+    public AutoRoutine cheesyPoofsBlueLeft() {
         AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
-        AutoTrajectory trajectory = routine.trajectory("BlueMiddleBottom.traj");
+        AutoTrajectory trajectory1 = routine.trajectory("CheesyPoofsBlueLeft.traj", 0);
+        AutoTrajectory trajectory2 = routine.trajectory("CheesyPoofsBlueLeft.traj", 1);
 
         routine.active().onTrue(
                 Commands.sequence(
-                        Commands.print("Blue Middle Bottom Auto Chosen"),
-                        trajectory.resetOdometry(),
-                        cmdWithAccuracy(trajectory)));
+                        Commands.print("Cheesy Poofs Left Auto Chosen"),
+                        cmdWithAccuracy(trajectory1),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout),
+                        cmdWithAccuracy(trajectory2),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix, timeout)));
 
         return routine;
     }
@@ -174,6 +202,7 @@ public class Auto {
          * @since 2026-01-19
          * @return Command
          */
+
         return autoChooser.selectedCommand();
     }
 
