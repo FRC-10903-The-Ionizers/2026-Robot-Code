@@ -137,6 +137,7 @@ public class Constants {
     public static final Angle kAutoAngleEpsilon = Units.Degrees.of(1.0);
 
     public static final Time kTimeout = Units.Seconds.of(5);
+    public static final double kAutoShooterTimeout = 4; // in seconds
     public static final Distance kEpsilonDist = Units.Inches.of(18);
   }
 
