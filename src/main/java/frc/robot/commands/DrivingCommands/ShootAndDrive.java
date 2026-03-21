@@ -155,8 +155,10 @@ public class ShootAndDrive extends Command {
 
     @Override
     public boolean isFinished() {
-        if (timer != null && (time == 0 || timer.get() < time)) {
-            System.out.println(timer.get());
+        if (timer == null) {
+            return false;
+        }
+        if (time == 0 || timer.get() < time) {
             return false;
         } else {
             return true;
