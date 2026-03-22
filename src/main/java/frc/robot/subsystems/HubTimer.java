@@ -48,7 +48,7 @@ public class HubTimer extends SubsystemBase {
         double matchTime = DriverStation.getMatchTime();
         String gameData = DriverStation.getGameSpecificMessage();
 
-        if(String.valueOf(gameData.charAt(0)) == ourAlliance){
+        if(gameData.length() > 0 && String.valueOf(gameData.charAt(0)) == ourAlliance){
             //If we win auto, the gameData will be equal to ourAlliance and so we will NOT be active first
             weActiveFirst = false;
         } else {

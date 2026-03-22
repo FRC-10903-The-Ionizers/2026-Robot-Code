@@ -158,14 +158,14 @@ public class Constants {
     public static final double kShooterP = 0.00002;
     public static final double kShooterI = 0.0;
     public static final double kShooterD = 0.0;
-    public static final double kShooterLPF = 0.9;
+    public static final double kShooterLPF = 0.87;
     public static final double kShooterKV = 0.000181;
 
     // --- Hood PID & Mechanics ---
     public static final double kHoodP = 0.5;
     public static final double kHoodI = 0.0;
     public static final double kHoodD = 0.02;
-    public static final double kHoodLpf = 0.9;
+    public static final double kHoodLpf = 0.87;
     public static final double kHoodClipping = 0.3;
     public static final double kHoodZeroingOutput = 0.3;
     public static final double kHoodStallCurrentAmps = 60;
@@ -215,7 +215,7 @@ public class Constants {
     public static final double kInD = 0.0;
 
     /** PID gains for intake actuation when moving out (extended). */
-    public static final double kOutP = 0.08;
+    public static final double kOutP = 0.12;
 
     public static final double kOutI = 0.0;
     public static final double kOutD = 0.0;
@@ -231,7 +231,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.4;
+    public static final double kDriveSpeedOut = 0; // 0.4;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
