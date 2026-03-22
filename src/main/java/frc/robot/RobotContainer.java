@@ -5,6 +5,11 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
@@ -16,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.drivingcommands.DriveToObject;
 import frc.robot.commands.drivingcommands.MovementOriented;
-import frc.robot.commands.drivingcommands.ShootAndDrive;
+import frc.robot.commands.drivingcommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.drivingcommands.TrenchWarfare;
 import frc.robot.statesensors.RegionHandler;
 import frc.robot.subsystems.Hopper;
@@ -36,9 +41,8 @@ public class RobotContainer {
 
     private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
     private static final Logger logger = LogManager.getLogger(RobotContainer.class);
-
-    private final Swerve swerve = new Swerve();
     private final HubTimer hubTimer = new HubTimer();
+    private final Swerve swerve = new Swerve();
     private final Controller controller = new Controller(Constants.kXboxControllerPort);
     private final RegionHandler regionHandler = new RegionHandler(
             new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
@@ -82,14 +86,30 @@ public class RobotContainer {
         return map;
     }
 
-    /**
-     * Gets the swerve subsystem.
-     *
-     * @return the swerve subsystem
-     * @since 2025-10
-     */
+    // Remove controllerDrive() as it's replaced by commands
+
     public Swerve getSwerve() {
+        /**
+         * Gets the swerve subsystem.
+         * 
+         * @args None
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
+         * @return Swerve swerve
+         */
         return swerve;
+    }
+
+    public Shooter getShooter() {
+        return shooter;
+    }
+
+    public Hopper getHopper() {
+        return hopper;
+    }
+
+    public Intake getIntake() {
+        return intake;
     }
 
     /**
@@ -124,7 +144,7 @@ public class RobotContainer {
                 .b()
                 .whileTrue(
                         new ShootAndDrive(
-                                swerve, shooter, hopper, intake, controller, interpolationMatrix)); // Example:
+                                swerve, shooter, intake, hopper, controller, interpolationMatrix)); // Example:
         // Lock
         // to
         // 90
@@ -136,7 +156,6 @@ public class RobotContainer {
         xboxController.povUp().whileTrue(new DriveToObject(swerve));
         xboxController.povLeft().onTrue(new InstantCommand(() -> hopper.setSpindexerBackwards(true)))
                 .onFalse(new InstantCommand(() -> hopper.setSpindexerBackwards(false)));
-
         // Bind aligning command to another button (e.g., B button)
 
         // change gear commands

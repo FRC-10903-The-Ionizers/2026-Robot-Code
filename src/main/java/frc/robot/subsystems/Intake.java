@@ -60,7 +60,6 @@ public class Intake extends SubsystemBase {
     this.swerve = swerve;
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);
-    this.setDefaultCommand(setJigglyCommand(false));
     SmartDashboard.putBoolean("Intake Jiggly", false);
     timer = new Timer();
     timer.reset();
@@ -111,10 +110,10 @@ public class Intake extends SubsystemBase {
     }
 
     // Drive motor control
-    if (jiggly) {
-      driveMotor.set(Constants.IntakeConstants.kDriveSpeedOut);
-    } else if (intakeIn) {
+    if (intakeIn && !jiggly) {
       driveMotor.set(0);
+    } else {
+      driveMotor.set(Constants.IntakeConstants.kDriveSpeedOut);
     }
   }
 

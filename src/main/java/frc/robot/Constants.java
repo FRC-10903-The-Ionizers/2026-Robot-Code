@@ -64,9 +64,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    private static final double kHeadingP = 4.0;
+    private static final double kHeadingP = 3.2;
     private static final double kHeadingI = 0.0;
-    private static final double kHeadingD = 0.0;
+    private static final double kHeadingD = 0.3;
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
@@ -138,6 +138,8 @@ public class Constants {
 
     public static final Time kTimeout = Units.Seconds.of(5);
     public static final Distance kEpsilonDist = Units.Inches.of(4);
+
+    public static final double kAutoShooterTimeout = 4;
   }
 
   /**
@@ -215,8 +217,7 @@ public class Constants {
     public static final double kInD = 0.0;
 
     /** PID gains for intake actuation when moving out (extended). */
-    public static final double kOutP = 0.12;
-
+    public static final double kOutP = 0.15;
     public static final double kOutI = 0.0;
     public static final double kOutD = 0.0;
 
@@ -231,7 +232,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0; // 0.4;
+    public static final double kDriveSpeedOut = 0.65;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
@@ -247,7 +248,7 @@ public class Constants {
   public static class HopperConstants {
     public static final int kSpindexerMotorID = 1;
     public static final int kBobMotorID = 5;
-    public static final double kSpindexerSpeed = -0.4;
+    public static final double kSpindexerSpeed = -0.5;
     public static final double kBobSpeed = 0.6;
   }
 

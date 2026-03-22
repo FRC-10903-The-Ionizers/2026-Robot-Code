@@ -9,7 +9,8 @@ import frc.robot.subsystems.Swerve;
 import frc.robot.util.Controller;
 
 /**
- * TrenchWarfare command for the robot. Drives the robot toward the nearest trench Y-coordinate
+ * TrenchWarfare command for the robot. Drives the robot toward the nearest
+ * trench Y-coordinate
  * while allowing driver X-axis control.
  *
  * @since 2026-01-20
@@ -26,7 +27,7 @@ public class TrenchWarfare extends Command {
   /**
    * TrenchWarfare constructor for the robot.
    *
-   * @param subsystem the swerve subsystem
+   * @param subsystem  the swerve subsystem
    * @param controller the controller
    * @since 2026-01-21
    */
@@ -37,7 +38,8 @@ public class TrenchWarfare extends Command {
   }
 
   /**
-   * Executes the TrenchWarfare command. Periodically updates the translation and heading distance
+   * Executes the TrenchWarfare command. Periodically updates the translation and
+   * heading distance
    * to the target pose by subtracting the current pose from the target pose.
    *
    * @since 2026-01-21
