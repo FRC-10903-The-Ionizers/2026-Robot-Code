@@ -1,5 +1,7 @@
 package frc.robot;
 
+import org.apache.logging.log4j.Level;
+
 import choreo.auto.AutoFactory;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -16,7 +18,6 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Time;
-import org.apache.logging.log4j.Level;
 
 /**
  * Constants class for the robot. Contains all robot-wide numeric constants
@@ -137,6 +138,8 @@ public class Constants {
 
     public static final Time kTimeout = Units.Seconds.of(5);
     public static final Distance kEpsilonDist = Units.Inches.of(4);
+
+    public static final double kAutoShooterTimeout = 4;
   }
 
   /**
@@ -157,14 +160,14 @@ public class Constants {
     public static final double kShooterP = 0.00002;
     public static final double kShooterI = 0.0;
     public static final double kShooterD = 0.0;
-    public static final double kShooterLPF = 0.9;
+    public static final double kShooterLPF = 0.87;
     public static final double kShooterKV = 0.000181;
 
     // --- Hood PID & Mechanics ---
     public static final double kHoodP = 0.5;
     public static final double kHoodI = 0.0;
     public static final double kHoodD = 0.02;
-    public static final double kHoodLpf = 0.9;
+    public static final double kHoodLpf = 0.87;
     public static final double kHoodClipping = 0.3;
     public static final double kHoodZeroingOutput = 0.2;
     public static final double kHoodStallCurrentAmps = 45;
@@ -214,15 +217,14 @@ public class Constants {
     public static final double kInD = 0.0;
 
     /** PID gains for intake actuation when moving out (extended). */
-    public static final double kOutP = 0.08;
-
+    public static final double kOutP = 0.15;
     public static final double kOutI = 0.0;
     public static final double kOutD = 0.0;
 
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 0.4;
+    public static final double kInJigglyPercentage = 0.8;
     public static final double kOutJigglyPercentage = 0.8;
     public static final double kJiggleIntervalSeconds = 0.5;
 
@@ -230,7 +232,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.4;
+    public static final double kDriveSpeedOut = 0.65;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
@@ -246,7 +248,7 @@ public class Constants {
   public static class HopperConstants {
     public static final int kSpindexerMotorID = 1;
     public static final int kBobMotorID = 5;
-    public static final double kSpindexerSpeed = -0.55;
+    public static final double kSpindexerSpeed = -0.5;
     public static final double kBobSpeed = 0.6;
   }
 
