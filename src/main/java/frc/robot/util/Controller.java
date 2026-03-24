@@ -7,7 +7,8 @@ import frc.robot.Constants;
 import java.util.Optional;
 
 /**
- * Controller class for the robot. Wraps an Xbox controller and provides drive inputs with deadband,
+ * Controller class for the robot. Wraps an Xbox controller and provides drive
+ * inputs with deadband,
  * field-relative toggle, and alliance-aware axis flipping.
  *
  * @since 2026-01-19
@@ -18,7 +19,8 @@ public class Controller {
   private int flippedValue;
 
   /**
-   * Constructs the Controller on the specified port. Determines the alliance color to set the axis
+   * Constructs the Controller on the specified port. Determines the alliance
+   * color to set the axis
    * flipping direction.
    *
    * @param port the USB port of the Xbox controller
@@ -64,8 +66,9 @@ public class Controller {
   private boolean fieldRelative = true;
 
   /** Toggles field-relative driving on or off. */
-  public void toggleFieldRelative() {
-    fieldRelative = !fieldRelative;
+
+  public void setFieldRelative(boolean fieldRelative) {
+    this.fieldRelative = fieldRelative;
   }
 
   /**
@@ -78,7 +81,8 @@ public class Controller {
   }
 
   /**
-   * Returns whether the X button is pressed, indicating the driver wants to align to a target.
+   * Returns whether the X button is pressed, indicating the driver wants to align
+   * to a target.
    *
    * @return true if the X button is held
    */
@@ -118,7 +122,8 @@ public class Controller {
   }
 
   /**
-   * Applies a deadband to the given value. Returns 0 if the absolute value is within the deadband
+   * Applies a deadband to the given value. Returns 0 if the absolute value is
+   * within the deadband
    * threshold.
    *
    * @param value the raw axis value

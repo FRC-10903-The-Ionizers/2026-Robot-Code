@@ -135,7 +135,8 @@ public class RobotContainer {
         xboxController.x().onTrue(intake.toggleIntakeCommand());
         xboxController
                 .leftTrigger(Constants.DriveConstants.kLeftTriggerThreshold)
-                .onChange(new InstantCommand(() -> controller.toggleFieldRelative()));
+                .onTrue(new InstantCommand(() -> controller.setFieldRelative(true)))
+                .onFalse(new InstantCommand(() -> controller.setFieldRelative(false)));
         xboxController
                 .rightTrigger(Constants.DriveConstants.kRightTriggerThreshold)
                 .whileTrue(

@@ -116,10 +116,12 @@ public class Auto {
 
         routine.active().onTrue(Commands.sequence(
                 cmdWithAccuracy(trajectory1),
-                Commands.waitSeconds(Constants.AutoConstants.kAutoShooterTimeout),
+                Commands.print("First traj completed"),
+                Commands.waitSeconds(5),
+                Commands.print("finished waiting"),
                 cmdWithAccuracy(trajectory2),
-                new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
-                        Constants.AutoConstants.kAutoShooterTimeout)));
+                new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix, 10)));
+
         return routine;
     }
 
@@ -209,10 +211,12 @@ public class Auto {
                 Commands.sequence(
                         Commands.print("Citrus Right Auto Chosen"),
                         cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
+                        new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                interpolationMatrix,
                                 Constants.AutoConstants.kAutoShooterTimeout),
                         cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
+                        new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                interpolationMatrix,
                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
         return routine;
@@ -227,10 +231,12 @@ public class Auto {
                 Commands.sequence(
                         Commands.print("Citrus Left Auto Chosen"),
                         cmdWithAccuracy(trajectory1),
-                        new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
+                        new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                interpolationMatrix,
                                 Constants.AutoConstants.kAutoShooterTimeout),
                         cmdWithAccuracy(trajectory2),
-                        new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
+                        new ShootAndDrive(swerve, shooter, intake, hopper, controller,
+                                interpolationMatrix,
                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
         return routine;

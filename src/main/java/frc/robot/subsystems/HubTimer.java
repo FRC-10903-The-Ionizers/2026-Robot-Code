@@ -13,7 +13,7 @@ public class HubTimer extends SubsystemBase {
 
     public HubTimer() {
         SmartDashboard.putBoolean("isHubActive", true);
-        SmartDashboard.putString("Seconds Till Active", "Hub Active");
+        SmartDashboard.putNumber("Seconds Till Active", 0);
         setAlliance();
     }
 
@@ -41,7 +41,7 @@ public class HubTimer extends SubsystemBase {
         if (DriverStation.isAutonomousEnabled()) {
             //Hub is always active in autonomous
             SmartDashboard.putBoolean("isHubActive", true);
-            SmartDashboard.putString("Seconds Till Active", "Hub Active");
+            SmartDashboard.putNumber("Seconds Till Active", 0);
         }
 
         boolean weActiveFirst; //Match time is number of seconds till game ends (not including auto, including endgame)
@@ -61,43 +61,43 @@ public class HubTimer extends SubsystemBase {
         if (matchTime > 130){
             //First 10 seconds is transition, hub active
             SmartDashboard.putBoolean("isHubActive", true);
-            SmartDashboard.putString("Seconds Till Active", "Hub Active");
+            SmartDashboard.putNumber("Seconds Till Active", 0);
         } else if(matchTime > 105){
             //Next 25 seconds First phase/shift. Won auto, inactive. Lost auto, active.
             SmartDashboard.putBoolean("isHubActive", weActiveFirst);
             if(weActiveFirst){
-                SmartDashboard.putString("Seconds Till Active", "Hub Active");
+                SmartDashboard.putNumber("Seconds Till Active", 0);
             } else {
-                SmartDashboard.putString("Seconds Till Active", "Hub Active in " + (int)(matchTime - 105) + " Seconds");
+                SmartDashboard.putNumber("Seconds Till Active", (int)(matchTime - 105));
             }
         } else if(matchTime > 80){
             //Next 25 seconds. Second phase/shift. Won auto, active. Lost auto, inactive.
             SmartDashboard.putBoolean("isHubActive", !weActiveFirst);
             if(!weActiveFirst){
-                SmartDashboard.putString("Seconds Till Active", "Hub Active");
+                SmartDashboard.putNumber("Seconds Till Active", 0);
             } else {
-                SmartDashboard.putString("Seconds Till Active", "Hub Active in " + (int)(matchTime - 80) + " Seconds");
+                SmartDashboard.putNumber("Seconds Till Active", (int)(matchTime - 80));
             }
         } else if(matchTime > 55){
             //Next 25 seconds. Third phase/shift. Won auto, inactive. Lost auto, active.
             SmartDashboard.putBoolean("isHubActive", weActiveFirst);
             if(weActiveFirst){
-                SmartDashboard.putString("Seconds Till Active", "Hub Active");
+                SmartDashboard.putNumber("Seconds Till Active", 0);
             } else {
-                SmartDashboard.putString("Seconds Till Active", "Hub Active in " + (int)(matchTime - 55) + " Seconds");
+                SmartDashboard.putNumber("Seconds Till Active", (int)(matchTime - 55));
             }
         } else if(matchTime > 30){
             //Next 25 seconds. Fourth phase/shift. Won auto, active. Lost auto, inactive.
             SmartDashboard.putBoolean("isHubActive", !weActiveFirst);
             if(!weActiveFirst){
-                SmartDashboard.putString("Seconds Till Active", "Hub Active");
+                SmartDashboard.putNumber("Seconds Till Active", 0);
             } else {
-                SmartDashboard.putString("Seconds Till Active", "Hub Active in " + (int)(matchTime - 30) + " Seconds");
+                SmartDashboard.putNumber("Seconds Till Active", (int)(matchTime - 30));
             }
         } else {
             //Last 30 seconds is endgame, hub is active.
             SmartDashboard.putBoolean("isHubActive", true);
-            SmartDashboard.putString("Seconds Till Active", "Hub Active");
+            SmartDashboard.putNumber("Seconds Till Active", 0);
         }
     }
 }
