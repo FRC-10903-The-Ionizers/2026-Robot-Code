@@ -134,10 +134,6 @@ public class RobotContainer {
         // for aim drive)
         xboxController.x().onTrue(intake.toggleIntakeCommand());
         xboxController
-                .leftTrigger(Constants.DriveConstants.kLeftTriggerThreshold)
-                .onTrue(new InstantCommand(() -> controller.setFieldRelative(true)))
-                .onFalse(new InstantCommand(() -> controller.setFieldRelative(false)));
-        xboxController
                 .rightTrigger(Constants.DriveConstants.kRightTriggerThreshold)
                 .whileTrue(
                         new TrenchWarfare(swerve, controller));

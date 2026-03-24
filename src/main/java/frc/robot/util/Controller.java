@@ -63,13 +63,7 @@ public class Controller {
   }
 
   // ---- Swerve control state ----
-  private boolean fieldRelative = true;
 
-  /** Toggles field-relative driving on or off. */
-
-  public void setFieldRelative(boolean fieldRelative) {
-    this.fieldRelative = fieldRelative;
-  }
 
   /**
    * Returns whether the controller is in field-relative mode.
@@ -77,7 +71,8 @@ public class Controller {
    * @return true if field-relative mode is active
    */
   public boolean isFieldRelative() {
-    return fieldRelative;
+
+    return controller.getLeftTriggerAxis() >= Constants.DriveConstants.kLeftTriggerThreshold;
   }
 
   /**
