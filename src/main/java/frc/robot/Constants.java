@@ -50,7 +50,7 @@ public class Constants {
 
     // --- Speed Limits & Input Thresholds ---
     public static final double kMinimumDistanceToStop = 0.1;
-    public static final double kDeadband = 0.1;
+    public static final double kDeadband = 0.02;
     public static final double kMaxSpeedFeetPerSecond = 20;
     public static final double kLeftTriggerThreshold = 0.25;
     public static final double kRightTriggerThreshold = 0.1;
@@ -214,12 +214,12 @@ public class Constants {
     public static final double kInP = 0.15;
 
     public static final double kInI = 0.0;
-    public static final double kInD = 0.0;
+    public static final double kInD = 0.001;
 
     /** PID gains for intake actuation when moving out (extended). */
-    public static final double kOutP = 0.15;
+    public static final double kOutP = 0.08;
     public static final double kOutI = 0.0;
-    public static final double kOutD = 0.0;
+    public static final double kOutD = 0.001;
 
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
@@ -232,7 +232,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.65;
+    public static final double kDriveSpeedOut = 0.85;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
