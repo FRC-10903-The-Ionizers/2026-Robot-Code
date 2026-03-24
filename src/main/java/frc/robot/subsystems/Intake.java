@@ -146,6 +146,7 @@ public class Intake extends SubsystemBase {
 
     /** Toggles jiggle mode on or off. */
     public void toggleJiggly() {
+        
         jiggly = !jiggly;
     }
 

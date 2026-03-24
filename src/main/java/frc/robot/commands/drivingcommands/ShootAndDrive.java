@@ -55,7 +55,7 @@ public class ShootAndDrive extends Command {
         this.controller = controller;
         this.interpolationMatrix = interpolationMatrix;
         time = 0;
-        addRequirements(swerve, hopper, shooter);
+        addRequirements(swerve, hopper, shooter, intake);
     }
 
     public ShootAndDrive(Swerve swerve, Shooter shooter, Intake intake, Hopper hopper, Controller controller,
