@@ -30,7 +30,6 @@ public class Shooter extends SubsystemBase {
     private final PIDController hoodPID = new PIDController(Constants.ShooterConstants.kHoodP,
             Constants.ShooterConstants.kHoodI, Constants.ShooterConstants.kHoodD);
     private double prevHoodOutput = 0; // Tune these values
-    private double kHoodLPF = 0.95; // Feedforward for hood motor, tune this value
     private final double kHoodClipping = 0.3;
     private boolean hoodIsZeroed = false;
     private boolean isRunning = false;
@@ -57,7 +56,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Hood P", Constants.ShooterConstants.kHoodP);
         SmartDashboard.putNumber("Hood I", Constants.ShooterConstants.kHoodI);
         SmartDashboard.putNumber("Hood D", Constants.ShooterConstants.kHoodD);
-        SmartDashboard.putNumber("Hood LPF", Constants.ShooterConstants.kHoodLpf);
+        SmartDashboard.putNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
     }
 
     /**
@@ -81,7 +80,8 @@ public class Shooter extends SubsystemBase {
             double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
 
             hoodOutput = MathUtil.clamp(hoodOutput, -kHoodClipping, kHoodClipping);
-            hoodOutput = (prevHoodOutput * kHoodLPF) + (1 - kHoodLPF) * hoodOutput;
+            hoodOutput = (prevHoodOutput * Constants.ShooterConstants.kHoodLPF)
+                    + (1 - Constants.ShooterConstants.kHoodLPF) * hoodOutput;
             prevHoodOutput = hoodOutput;
             hoodMotor.set(-hoodOutput);
         }
