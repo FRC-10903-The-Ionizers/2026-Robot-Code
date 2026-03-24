@@ -2,9 +2,6 @@ package frc.robot.util;
 
 import static frc.robot.trajectories.ChoreoTraj.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -40,34 +37,34 @@ import frc.robot.subsystems.Swerve;
  */
 public class Auto {
 
-        private final AutoChooser autoChooser;
-        private final Swerve swerve;
-        private final RegionHandler regionHandler;
-        private static final Logger logger = LogManager.getLogger(Auto.class);
-        private final AutoFactory autoFactory = Constants.AutoConstants.kAutoFactory;
-        private final Controller controller = new Controller(Constants.kXboxControllerPort);
-        private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
-        private final Shooter shooter;
-        private final Hopper hopper;
-        private final Intake intake;
+    private final AutoChooser autoChooser;
+    private final Swerve swerve;
 
-        public Auto(AutoFactory factory, RobotContainer container, RegionHandler regionHandler) {
-                /**
-                 * Auto constructor for the robot.
-                 * 
-                 * @args AutoFactory factory, Swerve swerve
-                 * @author Justin Baratta & Jake Xie
-                 * @since 2026-01-19
-                 * @return void
-                 */
-                // Make something to display on the GUI that allows the user to select the
-                // autonomous they want to run
-                autoChooser = new AutoChooser();
-                this.regionHandler = regionHandler;
-                this.swerve = container.getSwerve();
-                this.shooter = container.getShooter();
-                this.hopper = container.getHopper();
-                this.intake = container.getIntake();
+    // private static final Logger logger = LogManager.getLogger(Auto.class);
+
+    private final AutoFactory autoFactory = Constants.AutoConstants.kAutoFactory;
+    private final Controller controller = new Controller(Constants.kXboxControllerPort);
+    private final InterpolatingMatrixTreeMap<Double, N2, N1> interpolationMatrix = buildInterpolationMatrix();
+    private final Shooter shooter;
+    private final Hopper hopper;
+    private final Intake intake;
+
+    public Auto(AutoFactory factory, RobotContainer container, RegionHandler regionHandler) {
+        /**
+         * Auto constructor for the robot.
+         * 
+         * @args AutoFactory factory, Swerve swerve
+         * @author Justin Baratta & Jake Xie
+         * @since 2026-01-19
+         * @return void
+         */
+        // Make something to display on the GUI that allows the user to select the
+        // autonomous they want to run
+        autoChooser = new AutoChooser();
+        this.swerve = container.getSwerve();
+        this.shooter = container.getShooter();
+        this.hopper = container.getHopper();
+        this.intake = container.getIntake();
 
                 autoFactory.bind("ToggleIntake", intake.toggleIntakeCommand());
 
@@ -75,19 +72,19 @@ public class Auto {
                 // routines and use their commands.
                 // NEVER SET "getAutoCommand()" AS AN OPTION FOR AN AUTONOMOUS
 
-                autoChooser.addRoutine("Red Left", this::blueRightAutoRoutine);
-                autoChooser.addRoutine("Red Right", this::blueLeftAutoRoutine);
-                // Uh this code should just work...
-                autoChooser.addRoutine("Blue Right", this::blueRightAutoRoutine);
-                autoChooser.addRoutine("Blue Left", this::blueLeftAutoRoutine);
+        autoChooser.addRoutine("Right", this::rightAutoRoutine);
+        autoChooser.addRoutine("Left", this::leftAutoRoutine);
 
                 autoChooser.addRoutine("Safe Auto", this::safeAutoRoutine);
                 autoChooser.addRoutine("Outpost", this::outpost);
 
-                autoChooser.addRoutine("Cheesy Poofs Blue Right", this::cheesyPoofsBlueRight);
-                autoChooser.addRoutine("Cheesy Poofs Blue Left", this::cheesyPoofsBlueLeft);
-                // Put the auto chooser on the dashboard
-                SmartDashboard.putData("Auto Chooser", autoChooser);
+        autoChooser.addRoutine("Cheesy Poofs Right", this::cheesyPoofsRight);
+        autoChooser.addRoutine("Cheesy Poofs Left", this::cheesyPoofsLeft);
+
+        autoChooser.addRoutine("Citrus Right", this::citrusRight);
+        autoChooser.addRoutine("Citrus Left", this::citrusLeft);
+        // Put the auto chooser on the dashboard
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         }
 
@@ -124,8 +121,10 @@ public class Auto {
                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
                                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
-                return routine;
-        }
+    public AutoRoutine rightAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = Right$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = Right$1.asAutoTraj(routine);
 
         public AutoRoutine blueRightAutoRoutine() {
                 AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
@@ -144,8 +143,10 @@ public class Auto {
                                                                 interpolationMatrix,
                                                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
-                return routine;
-        }
+    public AutoRoutine leftAutoRoutine() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = Left$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = Left$1.asAutoTraj(routine);
 
         public AutoRoutine blueLeftAutoRoutine() {
                 AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
@@ -164,8 +165,10 @@ public class Auto {
                                                                 interpolationMatrix,
                                                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
-                return routine;
-        }
+    public AutoRoutine cheesyPoofsRight() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = CheesyPoofsRight$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = CheesyPoofsRight$1.asAutoTraj(routine);
 
         public AutoRoutine cheesyPoofsBlueRight() {
                 AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
@@ -184,8 +187,10 @@ public class Auto {
                                                                 interpolationMatrix,
                                                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
-                return routine;
-        }
+    public AutoRoutine cheesyPoofsLeft() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = CheesyPoofsLeft$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = CheesyPoofsLeft$1.asAutoTraj(routine);
 
         public AutoRoutine cheesyPoofsBlueLeft() {
                 AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
@@ -204,8 +209,51 @@ public class Auto {
                                                                 interpolationMatrix,
                                                                 Constants.AutoConstants.kAutoShooterTimeout)));
 
-                return routine;
-        }
+    public AutoRoutine citrusRight() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = CitrusRight$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = CitrusRight$1.asAutoTraj(routine);
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Citrus Right Auto Chosen"),
+                        cmdWithAccuracy(trajectory1),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
+                                Constants.AutoConstants.kAutoShooterTimeout),
+                        cmdWithAccuracy(trajectory2),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
+                                Constants.AutoConstants.kAutoShooterTimeout)));
+
+        return routine;
+    }
+
+    public AutoRoutine citrusLeft() {
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory1 = CitrusLeft$0.asAutoTraj(routine);
+        AutoTrajectory trajectory2 = CitrusLeft$1.asAutoTraj(routine);
+
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Citrus Left Auto Chosen"),
+                        cmdWithAccuracy(trajectory1),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
+                                Constants.AutoConstants.kAutoShooterTimeout),
+                        cmdWithAccuracy(trajectory2),
+                        new ShootAndDrive(swerve, shooter, hopper, controller, interpolationMatrix,
+                                Constants.AutoConstants.kAutoShooterTimeout)));
+
+        return routine;
+    }
+
+    public Command getAutoCommand() {
+        /**
+         * Gets the selected auto command from the auto chooser.
+         * 
+         * @args None
+         * @author Justin Baratta & Jake Xie
+         * @since 2026-01-19
+         * @return Command
+         */
 
         public Command getAutoCommand() {
                 /**
