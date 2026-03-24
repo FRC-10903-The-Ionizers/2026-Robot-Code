@@ -232,7 +232,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.65;
+    public static final double kDriveSpeedOut = 0.55;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;

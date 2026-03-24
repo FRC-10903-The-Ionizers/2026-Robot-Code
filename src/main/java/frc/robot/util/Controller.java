@@ -72,7 +72,7 @@ public class Controller {
    */
   public boolean isFieldRelative() {
 
-    return controller.getLeftTriggerAxis() >= Constants.DriveConstants.kLeftTriggerThreshold;
+    return !(controller.getLeftTriggerAxis() >= Constants.DriveConstants.kLeftTriggerThreshold);
   }
 
   /**
