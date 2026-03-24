@@ -27,14 +27,14 @@ public class TrenchWarfare extends Command {
   /**
    * TrenchWarfare constructor for the robot.
    *
-   * @param subsystem  the swerve subsystem
+   * @param swerve     the swerve subsystem
    * @param controller the controller
    * @since 2026-01-21
    */
-  public TrenchWarfare(Swerve subsystem, Controller controller) {
-    swerve = subsystem;
+  public TrenchWarfare(Swerve swerve, Controller controller) {
+    this.swerve = swerve;
     this.controller = controller;
-
+    addRequirements(swerve);
   }
 
   /**
