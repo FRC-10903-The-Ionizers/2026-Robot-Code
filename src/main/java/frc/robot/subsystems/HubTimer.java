@@ -62,7 +62,8 @@ public class HubTimer extends SubsystemBase {
 
         SmartDashboard.putBoolean("Won Auto", !weActiveFirst);
         SmartDashboard.putBoolean("Our Hub First", weActiveFirst);
-
+        SmartDashboard.putNumber("Time Left In Game", matchTime);
+        
         // NOTE: All of teleop is 140 seconds
         if (matchTime > 130) {
             // First 10 seconds is transition, hub active
