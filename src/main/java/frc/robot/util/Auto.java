@@ -335,7 +335,7 @@ public class Auto {
                 trajCmd::initialize,
                 trajCmd::execute,
                 trajCmd::end,
-                () -> isFinished(trajectory, Constants.AutoConstants.kEpsilonDist),
+                () -> trajCmd.isFinished(),
                 swerve);
     }
 }
