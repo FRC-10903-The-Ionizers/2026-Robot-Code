@@ -76,7 +76,7 @@ public class ShootAndDrive extends Command {
         timer.reset();
 
         this.time = time;
-        addRequirements(swerve, hopper, shooter);
+        addRequirements(swerve, hopper, shooter, intake);
     }
 
     @Override
