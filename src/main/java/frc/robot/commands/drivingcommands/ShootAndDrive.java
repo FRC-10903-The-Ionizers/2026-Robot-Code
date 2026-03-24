@@ -93,7 +93,9 @@ public class ShootAndDrive extends Command {
 
         if (!ally.isPresent()) {
             System.out.println("Alliance not detected!");
+            return;
         }
+
         Translation2d targetTranslation;
         if (ally.get() == Alliance.Red && swerve.getPose().getTranslation().getX() > 11.8) {
             targetTranslation = Constants.ShooterConstants.kRedHubTranslation;
