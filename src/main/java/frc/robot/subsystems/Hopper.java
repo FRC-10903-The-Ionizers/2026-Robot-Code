@@ -23,6 +23,7 @@ public class Hopper extends SubsystemBase {
 
   // ---- State ----
   private boolean isSpindexerRunning = false;
+  private boolean isSpindexerBackwards = false;
 
   /**
    * Constructs the Hopper subsystem. Sets the default command to stop the hopper and publishes
@@ -40,11 +41,19 @@ public class Hopper extends SubsystemBase {
    */
   public void periodic() {
     if (isSpindexerRunning) {
-      spindexerMotor.set(
-          SmartDashboard.getNumber(
-              "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
-      bobMotor.set(
-          SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
+      if (!isSpindexerBackwards){
+        spindexerMotor.set(
+            SmartDashboard.getNumber(
+                "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
+        bobMotor.set(
+            SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
+      } else {
+        spindexerMotor.set(
+            -SmartDashboard.getNumber(
+                "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
+        bobMotor.set(
+            SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
+      }
     } else {
       spindexerMotor.set(0);
       bobMotor.set(0);
@@ -72,5 +81,9 @@ public class Hopper extends SubsystemBase {
   /** Toggles the spindexer between running and stopped. */
   public void toggleIsSpindexerRunning() {
     isSpindexerRunning = !isSpindexerRunning;
+  }
+  
+  public void setSpindexerBackwards(boolean isBackwards){
+    isSpindexerBackwards = isBackwards;
   }
 }
