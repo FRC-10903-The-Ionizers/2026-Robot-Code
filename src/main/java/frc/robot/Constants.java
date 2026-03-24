@@ -64,9 +64,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    private static final double kHeadingP = 3.2;
+    private static final double kHeadingP = 4;
     private static final double kHeadingI = 0.0;
-    private static final double kHeadingD = 0.3;
+    private static final double kHeadingD = 0.5;
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
@@ -164,13 +164,13 @@ public class Constants {
     public static final double kShooterKV = 0.000181;
 
     // --- Hood PID & Mechanics ---
-    public static final double kHoodP = 0.5;
+    public static final double kHoodP = 0.4;
     public static final double kHoodI = 0.0;
-    public static final double kHoodD = 0.02;
-    public static final double kHoodLPF = 0.87;
-    public static final double kHoodClipping = 0.3;
-    public static final double kHoodZeroingOutput = 0.3;
-    public static final double kHoodStallCurrentAmps = 60;
+    public static final double kHoodD = 0.017;
+    public static final double kHoodLPF = 0.85;
+    public static final double kHoodClipping = 0.355;
+    public static final double kHoodZeroingOutput = 0.2;
+    public static final double kHoodStallCurrentAmps = 50;
     public static final double kHoodMaxAngleRad = 1.4;
     public static final double kHoodMaxRotation = 1.42857; // Hood gear ratio is 17.22 to 1
 
@@ -192,12 +192,14 @@ public class Constants {
     public static final Translation2d kRedHubTranslation = new Translation2d(11.92, kFieldMidlineY);
 
     // --- Interpolation Tables (indexed by distance to hub) ---
-    public static final double[] kDistancesToHub = { 1.6501, 2.1330, 3.000, 3.97, 5.67 }; // In meters
-    public static final double[] kShooterSpeeds = {
-        2900, 3150, 3210, 3500, 4253
-    }; // In rotations per minute
-    public static final double[] kHoodAngles = { 0, 0.13, 0.49, 0.63, 1.02 }; // In radians
-  }
+    public static final double[] kDistancesToHub = { 1.47, 1.96, 2.31, 2.5, 3.000, 3.21, 3.63, 3.97, 4.5, 5.67, 6 }; // In
+    // meters
+    public static final double[] kShooterSpeeds = { 2900, 2910, 3028, 3088, 3285, 3390, 3550, 3670, 3800, 4253, 7000 }; // In
+    // rotations
+    // per minute
+    public static final double[] kHoodAngles = { 0, 0.2, 0.315, 0.36, 0.44, 0.42, 0.57, 0.63, 0.75, 1.02, 0.8 }; // In
+    // radians
+  } // X V V V V V X X
 
   /**
    * Intake constants including motor IDs, PID gains, actuation setpoints, and
@@ -211,20 +213,20 @@ public class Constants {
     public static final int kActuationMotorID = 6;
 
     /** PID gains for intake actuation when moving in (retracted). */
-    public static final double kInP = 0.15;
+    public static final double kInP = 0.11;
 
     public static final double kInI = 0.0;
     public static final double kInD = 0.001;
 
     /** PID gains for intake actuation when moving out (extended). */
-    public static final double kOutP = 0.08;
+    public static final double kOutP = 0.12;
     public static final double kOutI = 0.0;
-    public static final double kOutD = 0.001;
+    public static final double kOutD = 0.01;
 
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 0.8;
+    public static final double kInJigglyPercentage = 0.6;
     public static final double kOutJigglyPercentage = 0.8;
     public static final double kJiggleIntervalSeconds = 0.5;
 

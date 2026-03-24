@@ -53,6 +53,9 @@ public class Shooter extends SubsystemBase {
         hoodEncoder.setPosition(0);
         SmartDashboard.putNumber("Target Shooter Speed Offset", 0);
         SmartDashboard.putNumber("Target Hood Angle Offset", 0);
+
+        SmartDashboard.putNumber("Target Shooter Speed", 0);
+        SmartDashboard.putNumber("Target Hood Angle", 0);
         SmartDashboard.putNumber("Hood P", Constants.ShooterConstants.kHoodP);
         SmartDashboard.putNumber("Hood I", Constants.ShooterConstants.kHoodI);
         SmartDashboard.putNumber("Hood D", Constants.ShooterConstants.kHoodD);
@@ -65,6 +68,11 @@ public class Shooter extends SubsystemBase {
      * low-pass filtering and battery voltage compensation to motor outputs.
      */
     public void periodic() {
+
+        hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
+        hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
+        hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
+        double hoodLPF = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
 
         if (!hoodIsZeroed) {
             hoodMotor.set(0.2);
@@ -80,13 +88,15 @@ public class Shooter extends SubsystemBase {
             double hoodOutput = hoodPID.calculate(hoodEncoder.getPosition());
 
             hoodOutput = MathUtil.clamp(hoodOutput, -kHoodClipping, kHoodClipping);
-            hoodOutput = (prevHoodOutput * Constants.ShooterConstants.kHoodLPF)
-                    + (1 - Constants.ShooterConstants.kHoodLPF) * hoodOutput;
+            hoodOutput = (prevHoodOutput * hoodLPF)
+                    + (1 - hoodLPF) * hoodOutput;
             prevHoodOutput = hoodOutput;
             hoodMotor.set(-hoodOutput);
+            SmartDashboard.putNumber("Target Hood Angle", targetHoodAngle);
         }
 
         shooterSpeedPID.setSetpoint(-targetSpeed);
+        SmartDashboard.putNumber("Target Shooter Speed", targetSpeed);
         double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
         output = MathUtil.clamp(output, -1, 0);
