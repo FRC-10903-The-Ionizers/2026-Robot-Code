@@ -15,31 +15,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * Intake subsystem for the robot. Controls the drive motor and actuation motor for
- * deploying/retracting the intake, and supports a "jiggle" mode for dislodging stuck game pieces.
+ * Intake subsystem for the robot. Controls the drive motor and actuation motor
+ * for
+ * deploying/retracting the intake, and supports a "jiggle" mode for dislodging
+ * stuck game pieces.
  *
  * @since 2025-10
  */
 public class Intake extends SubsystemBase {
 
   // ---- Motors and PID ----
-  private final SparkMax driveMotor =
-      new SparkMax(Constants.IntakeConstants.kDriveMotorID, MotorType.kBrushless);
+  private final SparkMax driveMotor = new SparkMax(Constants.IntakeConstants.kDriveMotorID, MotorType.kBrushless);
   // private final SparkMax actuationMotor = new
   // SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
   private final Swerve swerve;
-  public final PIDController inPid =
-      new PIDController(
-          Constants.IntakeConstants.kInP,
-          Constants.IntakeConstants.kInI,
-          Constants.IntakeConstants.kInD);
-  public final PIDController outPid =
-      new PIDController(
-          Constants.IntakeConstants.kOutP,
-          Constants.IntakeConstants.kOutI,
-          Constants.IntakeConstants.kOutD);
-  private final SparkMax actuationMotor =
-      new SparkMax(Constants.IntakeConstants.kActuationMotorID, MotorType.kBrushless);
+  public final PIDController inPid = new PIDController(
+      Constants.IntakeConstants.kInP,
+      Constants.IntakeConstants.kInI,
+      Constants.IntakeConstants.kInD);
+  public final PIDController outPid = new PIDController(
+      Constants.IntakeConstants.kOutP,
+      Constants.IntakeConstants.kOutI,
+      Constants.IntakeConstants.kOutD);
+  private final SparkMax actuationMotor = new SparkMax(Constants.IntakeConstants.kActuationMotorID,
+      MotorType.kBrushless);
 
   private final Timer timer;
 
@@ -51,7 +50,8 @@ public class Intake extends SubsystemBase {
   private double lastToggleTime = 0;
 
   /**
-   * Constructs the Intake subsystem. Configures the actuation motor for brake mode, starts the
+   * Constructs the Intake subsystem. Configures the actuation motor for brake
+   * mode, starts the
    * jiggle timer, and sets the default command.
    *
    * @param swerve the swerve subsystem (used for pose-aware intake logic)
@@ -72,7 +72,8 @@ public class Intake extends SubsystemBase {
   }
 
   /**
-   * Periodically updates the intake actuation PID and drive motor output. Handles jiggle mode
+   * Periodically updates the intake actuation PID and drive motor output. Handles
+   * jiggle mode
    * toggling based on a configurable time interval.
    */
   @Override
@@ -108,7 +109,7 @@ public class Intake extends SubsystemBase {
       double output = outPid.calculate(actuationMotor.getEncoder().getPosition());
       actuationMotor.set(output);
     }
-
+    SmartDashboard.putNumber("Intake Position", actuationMotor.getEncoder().getPosition());
     // Drive motor control
     if (intakeIn && !jiggly) {
       driveMotor.set(0);
