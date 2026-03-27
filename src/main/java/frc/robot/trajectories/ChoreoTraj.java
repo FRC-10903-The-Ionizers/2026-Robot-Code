@@ -27,21 +27,21 @@ public record ChoreoTraj(
     public static final ChoreoTraj CheesyPoofsLeft = new ChoreoTraj(
 	    "CheesyPoofsLeft",
 	    OptionalInt.empty(),
-	    16.90766,
+	    16.09679,
 	    new Pose2d(4.239, 7.47, Rotation2d.fromRadians(0)),
 	    new Pose2d(3.013, 7.394, Rotation2d.fromRadians(0.611))
 	);
 	public static final ChoreoTraj CheesyPoofsLeft$0 = new ChoreoTraj(
 	    "CheesyPoofsLeft",
 	    OptionalInt.of(0),
-	    8.82889,
+	    8.41316,
 	    new Pose2d(4.239, 7.47, Rotation2d.fromRadians(0)),
 	    new Pose2d(2.5, 7.42, Rotation2d.fromRadians(0.611))
 	);
 	public static final ChoreoTraj CheesyPoofsLeft$1 = new ChoreoTraj(
 	    "CheesyPoofsLeft",
 	    OptionalInt.of(1),
-	    8.07877,
+	    7.683629999999999,
 	    new Pose2d(2.5, 7.42, Rotation2d.fromRadians(0.611)),
 	    new Pose2d(3.013, 7.394, Rotation2d.fromRadians(0.611))
 	);
