@@ -227,7 +227,6 @@ public class Intake extends SubsystemBase {
                     } else {
                         intakeIn();
                     }
-                },
-                this);
+                });
     }
 }

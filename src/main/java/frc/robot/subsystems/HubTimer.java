@@ -19,6 +19,9 @@ public class HubTimer extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (ourAlliance == "") {
+            setAlliance();
+        }
         updateElastic();
     }
 
@@ -31,8 +34,6 @@ public class HubTimer extends SubsystemBase {
             } else {
                 ourAlliance = "B";
             }
-        } else {
-            throw new Error("NO ALLIANCE SELECTED IN DS!");
         }
     }
 

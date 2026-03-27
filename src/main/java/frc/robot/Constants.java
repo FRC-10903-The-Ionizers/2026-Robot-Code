@@ -117,8 +117,8 @@ public class Constants {
     public static Transform3d kShooterCamPosition = new Transform3d(
         new Translation3d(-0.2894, -0.3429, 0.19685), new Rotation3d(0, -0.61086524, -1.5707));
     public static Transform3d kIntakeCamPosition = new Transform3d(
-        new Translation3d(0.0454, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
-
+        new Translation3d(-0.0254, 0.40195, 0.4953), new Rotation3d(0, -0.10471976, 1.5707));
+    // 0.0254
     // --- Pose Estimation Standard Deviations ---
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
