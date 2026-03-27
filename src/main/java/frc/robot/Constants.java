@@ -64,9 +64,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    private static final double kHeadingP = 4;
+    private static final double kHeadingP = 6;
     private static final double kHeadingI = 0.0;
-    private static final double kHeadingD = 0.5;
+    private static final double kHeadingD = 0.1;
 
     public static final double kShootAndDriveTollerance = 0.25;
 
@@ -141,7 +141,7 @@ public class Constants {
     public static final Time kTimeout = Units.Seconds.of(5);
     public static final Distance kEpsilonDist = Units.Inches.of(4);
 
-    public static final double kAutoShooterTimeout = 4;
+    public static final double kAutoShooterTimeout = 5;
   }
 
   /**
@@ -166,11 +166,12 @@ public class Constants {
     public static final double kShooterKV = 0.000181;
 
     // --- Hood PID & Mechanics ---
-    public static final double kHoodP = 0.4;
+    public static final double kHoodP = 0.27;
     public static final double kHoodI = 0.0;
-    public static final double kHoodD = 0.017;
-    public static final double kHoodLPF = 0.85;
-    public static final double kHoodClipping = 0.355;
+    public static final double kHoodD = 0.007;
+    public static final double kHoodLPF = 0.6;
+
+    public static final double kHoodClipping = 0.5;
     public static final double kHoodZeroingOutput = 0.2;
     public static final double kHoodStallCurrentAmps = 50;
     public static final double kHoodMaxAngleRad = 1.4;
@@ -229,7 +230,7 @@ public class Constants {
     public static final double kActuationOutSetpoint = 4.6;
 
     public static final double kInJigglyPercentage = 0.7;
-    public static final double kOutJigglyPercentage = 0.8;
+    public static final double kOutJigglyPercentage = 1;
     public static final double kJiggleIntervalSeconds = 0.5;
 
     /** Drive motor output when intake is in (retracted). */
