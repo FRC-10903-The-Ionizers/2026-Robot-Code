@@ -123,6 +123,7 @@ public class Auto {
                 AutoTrajectory trajectory2 = Outpost$1.asAutoTraj(routine);
 
                 routine.active().onTrue(Commands.sequence(
+                                trajectory1.resetOdometry(),
                                 cmdWithAccuracy(trajectory1),
                                 Commands.print("First traj completed"),
                                 Commands.waitSeconds(5),
@@ -142,6 +143,7 @@ public class Auto {
                 routine.active().onTrue(
                                 Commands.sequence(
                                                 Commands.print("Right Auto Chosen"),
+                                                trajectory1.resetOdometry(),
                                                 cmdWithAccuracy(trajectory1),
                                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller,
                                                                 interpolationMatrix,
@@ -161,6 +163,7 @@ public class Auto {
                 routine.active().onTrue(
                                 Commands.sequence(
                                                 Commands.print("Left Auto Chosen"),
+                                                trajectory1.resetOdometry(),
                                                 cmdWithAccuracy(trajectory1),
                                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller,
                                                                 interpolationMatrix,
@@ -180,6 +183,7 @@ public class Auto {
                 routine.active().onTrue(
                                 Commands.sequence(
                                                 Commands.print("Cheesy Poofs Right Auto Chosen"),
+                                                trajectory1.resetOdometry(),
                                                 cmdWithAccuracy(trajectory1),
                                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller,
                                                                 interpolationMatrix,
@@ -199,6 +203,7 @@ public class Auto {
                 routine.active().onTrue(
                                 Commands.sequence(
                                                 Commands.print("Cheesy Poofs Left Auto Chosen"),
+                                                trajectory1.resetOdometry(),
                                                 cmdWithAccuracy(trajectory1),
                                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller,
                                                                 interpolationMatrix,
@@ -218,6 +223,7 @@ public class Auto {
 
                 routine.active().onTrue(
                                 Commands.sequence(
+                                                trajectory1.resetOdometry(),
                                                 Commands.print("Citrus Right Auto Chosen"),
                                                 cmdWithAccuracy(trajectory1),
                                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller,
@@ -239,6 +245,7 @@ public class Auto {
                 routine.active().onTrue(
                                 Commands.sequence(
                                                 Commands.print("Citrus Left Auto Chosen"),
+                                                trajectory1.resetOdometry(),
                                                 cmdWithAccuracy(trajectory1),
                                                 new ShootAndDrive(swerve, shooter, intake, hopper, controller,
                                                                 interpolationMatrix,

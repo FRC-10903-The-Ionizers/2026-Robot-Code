@@ -146,7 +146,7 @@ public class ShootAndDrive extends Command {
         }
 
         this.shooter.setSpeedAndAngle(interpolatedShooterSpeed, interpolatedHoodAngle);
-        if ((this.shooter.getIsReadyToShoot()) && Math.abs(rotation) < 0.3) {
+        if ((this.shooter.getIsReadyToShoot()) && Math.abs(rotation) < Constants.DriveConstants.kShootAndDriveTollerance) {
             hopper.setIsHopperRunning(true);
         } else {
             hopper.setIsHopperRunning(false);

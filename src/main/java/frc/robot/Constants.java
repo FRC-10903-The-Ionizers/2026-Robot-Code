@@ -68,6 +68,8 @@ public class Constants {
     private static final double kHeadingI = 0.0;
     private static final double kHeadingD = 0.5;
 
+    public static final double kShootAndDriveTollerance = 0.25;
+
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
         Constants.DriveConstants.kXP,
@@ -226,7 +228,7 @@ public class Constants {
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 0.6;
+    public static final double kInJigglyPercentage = 0.7;
     public static final double kOutJigglyPercentage = 0.8;
     public static final double kJiggleIntervalSeconds = 0.5;
 
@@ -234,7 +236,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.55;
+    public static final double kDriveSpeedOut = 0.65;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
