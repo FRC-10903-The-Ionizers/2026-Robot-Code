@@ -98,9 +98,9 @@ public class ShootAndDrive extends Command {
 
         Translation2d targetTranslation;
         if (ally.get() == Alliance.Red && swerve.getPose().getTranslation().getX() > 11.8) {
-            targetTranslation = Constants.ShooterConstants.kRedHubTranslation;
+            targetTranslation = Constants.ShooterConstants.kRedHubTranslation.plus(new Translation2d(0, SmartDashboard.getNumber("ShootOffset", -0.4)));
         } else if (ally.get() == Alliance.Blue && swerve.getPose().getTranslation().getX() < 4.6) {
-            targetTranslation = Constants.ShooterConstants.kBlueHubTranslation;
+            targetTranslation = Constants.ShooterConstants.kBlueHubTranslation.minus(new Translation2d(0, SmartDashboard.getNumber("ShootOffset", -0.4)));
         } else {
             double targetPoseY;
             if (this.swerve.getPose().getY() >= 4.035) {

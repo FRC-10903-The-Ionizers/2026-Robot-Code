@@ -42,11 +42,11 @@ public class Constants {
 
     // --- Controller Multipliers ---
     public static final double kControllerDriveMultiplier = 1.0;
-    public static final double kControllerRotationMultiplier = 2.0;
+    public static final double kControllerRotationMultiplier = 3.0;
     public static final double kAutoDriveMultiplier = 4.5;
-    public static final double kLOW_GEAR_MULTIPLIER = 1.0;
-    public static final double kHIGH_GEAR_MULTIPLIER = 3.0;
-    public static final double kGearStep = 1.0;
+    public static final double kLOW_GEAR_MULTIPLIER = 2.0;
+    public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
+    public static final double kGearStep = 2.0;
 
     // --- Speed Limits & Input Thresholds ---
     public static final double kMinimumDistanceToStop = 0.1;
@@ -64,7 +64,7 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    private static final double kHeadingP = 6;
+    private static final double kHeadingP = 5;
     private static final double kHeadingI = 0.0;
     private static final double kHeadingD = 0.1;
 
@@ -166,7 +166,7 @@ public class Constants {
     public static final double kShooterKV = 0.000181;
 
     // --- Hood PID & Mechanics ---
-    public static final double kHoodP = 0.27;
+    public static final double kHoodP = 0.24;
     public static final double kHoodI = 0.0;
     public static final double kHoodD = 0.007;
     public static final double kHoodLPF = 0.6;
@@ -180,6 +180,7 @@ public class Constants {
     // --- Shooter Operating Parameters ---
     public static final double kNominalBatteryVoltage = 12.1;
     public static final double kShooterSpeedToleranceRPM = 25;
+    public static final double kShooterMultiplier = 0.95;
     public static final double kShooterIdleSpeed = 2700;
     public static final double kAimRotationTolerance = 0.32; // In radians, tune this value
     public static final double kRobotToShooterOffsetMeters = 0.254;
@@ -191,6 +192,8 @@ public class Constants {
     public static final double kBlueAllianceXBoundary = 4.6;
     public static final double kRedPassingTargetX = 14.4;
     public static final double kBluePassingTargetX = 2.3;
+
+    public static final double kSideToSideOffset = 0.25;
     public static final Translation2d kBlueHubTranslation = new Translation2d(4.62, kFieldMidlineY);
     public static final Translation2d kRedHubTranslation = new Translation2d(11.92, kFieldMidlineY);
 

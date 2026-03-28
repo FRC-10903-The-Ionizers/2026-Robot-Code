@@ -51,7 +51,7 @@ public class Shooter extends SubsystemBase {
         }, this));
 
         hoodEncoder.setPosition(0);
-        SmartDashboard.putNumber("Target Shooter Speed Offset", 0);
+        SmartDashboard.putNumber("Target Shooter Speed Multiplier", Constants.ShooterConstants.kShooterMultiplier);
         SmartDashboard.putNumber("Target Hood Angle Offset", 0);
 
         SmartDashboard.putNumber("Target Shooter Speed", 0);
@@ -128,7 +128,7 @@ public class Shooter extends SubsystemBase {
      * @param angle the target hood angle in radians
      */
     public void setSpeedAndAngle(double speed, double angle) {
-        this.targetSpeed = speed + SmartDashboard.getNumber("Target Shooter Speed Offset", 0);
+        this.targetSpeed = speed * SmartDashboard.getNumber("Target Shooter Speed Multiplier", Constants.ShooterConstants.kShooterMultiplier);
         shooterSpeedPID.setSetpoint(-this.targetSpeed);
         this.targetHoodAngle = angle + SmartDashboard.getNumber("Target Hood Angle Offset", 0);
     }

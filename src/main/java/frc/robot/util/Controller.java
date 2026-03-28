@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants;
 import java.util.Optional;
@@ -17,6 +18,7 @@ public class Controller {
 
   private final XboxController controller;
   private int flippedValue;
+  private int safetyFlippedValue = 1;
 
   /**
    * Constructs the Controller on the specified port. Determines the alliance
@@ -28,11 +30,12 @@ public class Controller {
   public Controller(int port) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      this.flippedValue = 1;
+      this.flippedValue = -1;
     } else {
       this.flippedValue = -1;
     }
     controller = new XboxController(port);
+    SmartDashboard.putBoolean("Flipped", false);
   }
 
   /**
@@ -96,17 +99,21 @@ public class Controller {
 
   /** Get forward/backward, with deadband applied. */
   public double getDriveX() {
+    safetyFlippedValue = (SmartDashboard.getBoolean("Flipped", false) ? -1: 1);
     return applyDeadband(-controller.getLeftY())
         * Constants.DriveConstants.kControllerDriveMultiplier
         * flippedValue
+        * safetyFlippedValue
         * (isFieldRelative() ? 1 : flippedValue);
   }
 
   /** Get strafe, with deadband applied. */
   public double getDriveY() {
+    safetyFlippedValue = (SmartDashboard.getBoolean("Flipped", false) ? -1: 1);
     return applyDeadband(-controller.getLeftX())
         * Constants.DriveConstants.kControllerDriveMultiplier
         * flippedValue
+        * safetyFlippedValue
         * (isFieldRelative() ? 1 : flippedValue);
   }
 

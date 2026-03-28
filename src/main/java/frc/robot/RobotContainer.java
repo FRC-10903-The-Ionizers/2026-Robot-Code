@@ -64,6 +64,7 @@ public class RobotContainer {
 
         // send data to Elastic
         SmartDashboard.putData("SwerveField", swerve.getField());
+        SmartDashboard.putNumber("ShootOffset", 0);
         SmartDashboard.putData(swerve);
     }
 
