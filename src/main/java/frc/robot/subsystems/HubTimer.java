@@ -34,11 +34,12 @@ public class HubTimer extends SubsystemBase {
             } else {
                 ourAlliance = "B";
             }
+        } else {
+            System.out.println("NO ALLIANCE SELECTED IN DS!");
         }
     }
 
     public void updateElastic() {
-
         if (DriverStation.isAutonomousEnabled()) {
             // Hub is always active in autonomous
             SmartDashboard.putBoolean("isHubActive", true);
