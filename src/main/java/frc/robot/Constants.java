@@ -219,20 +219,19 @@ public class Constants {
     public static final int kActuationMotorID = 6;
 
     /** PID gains for intake actuation when moving in (retracted). */
-    public static final double kInP = 0.11;
-
+    public static final double kInP = 0.17;
     public static final double kInI = 0.0;
     public static final double kInD = 0.001;
 
     /** PID gains for intake actuation when moving out (extended). */
-    public static final double kOutP = 0.12;
+    public static final double kOutP = 0.13;
     public static final double kOutI = 0.0;
     public static final double kOutD = 0.01;
 
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 0.7;
+    public static final double kInJigglyPercentage = 1;
     public static final double kOutJigglyPercentage = 1;
     public static final double kJiggleIntervalSeconds = 0.5;
 

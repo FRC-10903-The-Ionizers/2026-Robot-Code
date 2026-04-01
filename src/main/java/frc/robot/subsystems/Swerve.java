@@ -71,7 +71,8 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Periodic method for the swerve subsystem. Updates the field position of the robot.
+   * Periodic method for the swerve subsystem. Updates the field position of the
+   * robot.
    *
    * @since 2025-10
    */
@@ -134,12 +135,11 @@ public class Swerve extends SubsystemBase {
     Pose2d pose = swerveDrive.getPose();
 
     // Generate the next speeds for the robot
-    ChassisSpeeds speeds =
-        new ChassisSpeeds(
-            sample.vx + controllerX.calculate(pose.getX(), sample.x),
-            sample.vy + controllerY.calculate(pose.getY(), sample.y),
-            sample.omega
-                + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
+    ChassisSpeeds speeds = new ChassisSpeeds(
+        sample.vx + controllerX.calculate(pose.getX(), sample.x),
+        sample.vy + controllerY.calculate(pose.getY(), sample.y),
+        sample.omega
+            + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
     double speedX = speeds.vxMetersPerSecond;
     double speedY = speeds.vyMetersPerSecond;
@@ -159,11 +159,12 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Adds a vision measurement to the swerve drive, uses standard deviations to weight the
+   * Adds a vision measurement to the swerve drive, uses standard deviations to
+   * weight the
    * measurement along with swerve drive's odometry.
    *
-   * @param visionPose the vision-estimated pose
-   * @param timestamp the timestamp of the vision measurement
+   * @param visionPose        the vision-estimated pose
+   * @param timestamp         the timestamp of the vision measurement
    * @param estimationStdDevs the standard deviations for the measurement
    * @since 2025-10
    */
@@ -199,8 +200,8 @@ public class Swerve extends SubsystemBase {
   /**
    * Drives the robot.
    *
-   * @param translation the translation vector
-   * @param rotation the rotation speed
+   * @param translation     the translation vector
+   * @param rotation        the rotation speed
    * @param isFieldRelative whether driving is field-relative
    * @since 2026-01
    */

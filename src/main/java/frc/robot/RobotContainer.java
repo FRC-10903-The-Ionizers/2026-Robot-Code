@@ -56,7 +56,7 @@ public class RobotContainer {
     /**
      * RobotContainer constructor for the robot.
      *
-     * @since 2025-10
+     * @since 2025-109866
      */
     public RobotContainer() {
         // configure all triggers
@@ -64,7 +64,7 @@ public class RobotContainer {
 
         // send data to Elastic
         SmartDashboard.putData("SwerveField", swerve.getField());
-        SmartDashboard.putNumber("ShootOffset", 0);
+        SmartDashboard.putNumber("ShootOffset", -0.3);
         SmartDashboard.putData(swerve);
     }
 
