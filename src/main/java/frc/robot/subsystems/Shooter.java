@@ -60,6 +60,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Hood I", Constants.ShooterConstants.kHoodI);
         SmartDashboard.putNumber("Hood D", Constants.ShooterConstants.kHoodD);
         SmartDashboard.putNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
+
     }
 
     /**
@@ -67,9 +68,26 @@ public class Shooter extends SubsystemBase {
      * speed PID. Applies
      * low-pass filtering and battery voltage compensation to motor outputs.
      */
+
     public void periodic() {
 
-        hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
+        shooterSpeedPID.setSetpoint(-targetSpeed);
+        SmartDashboard.putNumber("Target Shooter Speed", targetSpeed);
+        double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
+        output = MathUtil.clamp(output, -1, 0);
+        SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPID.getPositionError());
+        output = ((prevOutput * Constants.ShooterConstants.kShooterLPF) + (1 - Constants.ShooterConstants.kShooterLPF) *
+                (output - (targetSpeed * Constants.ShooterConstants.kShooterKV)));
+        prevOutput = output;
+        output *= (12.1 / RobotController.getBatteryVoltage());
+        topMotor.set(output);
+        bottomMotor.set(-output);
+
+    }
+
+    public void updateHoodMotorPeriodic(){
+                hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
         hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
         hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
         double hoodLPF = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
@@ -94,20 +112,6 @@ public class Shooter extends SubsystemBase {
             hoodMotor.set(-hoodOutput);
             SmartDashboard.putNumber("Target Hood Angle", targetHoodAngle);
         }
-
-        shooterSpeedPID.setSetpoint(-targetSpeed);
-        SmartDashboard.putNumber("Target Shooter Speed", targetSpeed);
-        double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
-        SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
-        output = MathUtil.clamp(output, -1, 0);
-        SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPID.getPositionError());
-        output = ((prevOutput * Constants.ShooterConstants.kShooterLPF) + (1 - Constants.ShooterConstants.kShooterLPF) *
-                (output - (targetSpeed * Constants.ShooterConstants.kShooterKV)));
-        prevOutput = output;
-        output *= (12.1 / RobotController.getBatteryVoltage());
-        topMotor.set(output);
-        bottomMotor.set(-output);
-
     }
 
     /**

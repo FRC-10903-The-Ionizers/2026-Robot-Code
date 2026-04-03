@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -116,23 +117,31 @@ public class ShootAndDrive extends Command {
             }
         }
 
+        ChassisSpeeds speeds = swerve.getRobotVelocity();
+        double vx = speeds.vxMetersPerSecond;
+        double vy = speeds.vyMetersPerSecond;
+
+        Translation2d robotVelocity = new Translation2d(vx * Constants.ShooterConstants.kFlightTime, vy * Constants.ShooterConstants.kFlightTime);
+        targetTranslation = targetTranslation.minus(robotVelocity);
+
+        Pose2d currentPose = swerve.getPose();
+
         SmartDashboard.putNumber("Distance to Hub", (swerve.getPose().getTranslation().getDistance(targetTranslation)));
-        double distanceToTarget = swerve.getPose().getTranslation().getDistance(targetTranslation);
+        double distanceToTarget = currentPose.getTranslation().getDistance(targetTranslation);
 
         // Drivetrain stuff
-        Pose2d currentPose = swerve.getPose();
         double currentX = currentPose.getX();
         double currentY = currentPose.getY();
         Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
         double target_angle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
                 + Math.PI / 2;
 
-        double distance = currentPose.getTranslation().getDistance(targetTranslation);
-
-        double angleOffset = Math.asin(0.254 / distance);
+        double angleOffset = Math.asin(0.254 / distanceToTarget);
         target_angle = target_angle + angleOffset;
         headingController.setSetpoint(target_angle);
+
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
+
         swerve.drive(translation, rotation, controller.isFieldRelative());
 
         // With distance start getting shooting stuff set

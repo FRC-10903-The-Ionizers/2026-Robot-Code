@@ -151,6 +151,9 @@ public class Constants {
    */
   public static class ShooterConstants {
 
+    //Projectile (fuel) flight time
+    public static final double kFlightTime = 0.45;
+
     // --- Motor IDs ---
     public static final int kTopMotorID = 2;
     public static final int kBottomMotorID = 3;
