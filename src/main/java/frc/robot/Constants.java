@@ -231,8 +231,8 @@ public class Constants {
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 1;
-    public static final double kOutJigglyPercentage = 1;
+    public static final double kInJigglyPercentage = 0.5;
+    public static final double kOutJigglyPercentage = 0.9;
     public static final double kJiggleIntervalSeconds = 0.5;
 
     /** Drive motor output when intake is in (retracted). */
