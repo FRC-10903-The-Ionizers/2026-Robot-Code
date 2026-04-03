@@ -54,6 +54,8 @@ public class Robot extends TimedRobot {
 
     Swerve swerve = robotContainer.getSwerve();
 
+    addPeriodic(() -> robotContainer.getShooter().fastPeriodic(), 0.005);
+
     AutoFactory autoFactory = new AutoFactory(
         swerve::getPose, // A function that returns the current robot pose
         swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d

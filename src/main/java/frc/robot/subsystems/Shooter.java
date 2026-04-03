@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
      * speed PID. Applies
      * low-pass filtering and battery voltage compensation to motor outputs.
      */
-    public void periodic() {
+    public void fastPeriodic() {
 
         hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
         hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
