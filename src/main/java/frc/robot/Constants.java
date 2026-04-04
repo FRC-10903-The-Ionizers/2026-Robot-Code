@@ -42,10 +42,11 @@ public class Constants {
 
     // --- Controller Multipliers ---
     public static final double kControllerDriveMultiplier = 1.0;
-    public static final double kControllerRotationMultiplier = 3.0;
+    public static final double kControllerRotationMultiplier = 4*3.1415;
     public static final double kAutoDriveMultiplier = 4.5;
     public static final double kLOW_GEAR_MULTIPLIER = 2.0;
     public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
+    
     public static final double kGearStep = 2.0;
 
     // --- Speed Limits & Input Thresholds ---
