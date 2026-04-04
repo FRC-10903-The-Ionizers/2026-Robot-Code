@@ -33,6 +33,8 @@ public class Swerve extends SubsystemBase {
     private static final Logger logger = LogManager.getLogger(Swerve.class);
     private SwerveDrive swerveDrive;
     private boolean initialized = false;
+    private ChassisSpeeds prevSpeed = new ChassisSpeeds();
+    private ChassisSpeeds currentSpeed = new ChassisSpeeds();
     private Field2d field = new Field2d();
 
     private final PIDController controllerX = Constants.DriveConstants.kXController;
@@ -77,6 +79,8 @@ public class Swerve extends SubsystemBase {
      * @since 2025-10
      */
     public void periodic() {
+        prevSpeed = currentSpeed;
+        currentSpeed = swerveDrive.getFieldVelocity();
         if (!initialized) {
             return;
         }
@@ -162,7 +166,12 @@ public class Swerve extends SubsystemBase {
         if (!initialized) {
             return new ChassisSpeeds();
         }
-        return swerveDrive.getRobotVelocity();
+        return swerveDrive.getFieldVelocity();
+    }
+
+    public Translation2d getRobotAcceleration() {
+        return new Translation2d((currentSpeed.vxMetersPerSecond - prevSpeed.vxMetersPerSecond) / 0.02,
+                (currentSpeed.vyMetersPerSecond - prevSpeed.vyMetersPerSecond) / 0.02);
     }
 
     /**

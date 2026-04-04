@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
 
         addPeriodic(() -> {
             robotContainer.getShooter().updateHoodMotorPeriodic();
-        }, 0.005, 0.005);
+        }, 0.005);
     }
 
     /** Runs the command scheduler every robot loop iteration. */

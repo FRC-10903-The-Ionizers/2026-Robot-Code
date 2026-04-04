@@ -57,6 +57,8 @@ public class ShootAndDrive extends Command {
         this.interpolationMatrix = interpolationMatrix;
         time = 0;
         addRequirements(swerve, hopper, shooter, intake);
+
+        SmartDashboard.putNumber("Flight Time", 0.55);
     }
 
     public ShootAndDrive(Swerve swerve, Shooter shooter, Intake intake, Hopper hopper, Controller controller,
@@ -86,6 +88,8 @@ public class ShootAndDrive extends Command {
          * Method that drives the swerves
          */
         // Get target translation
+
+        double flightTime = SmartDashboard.getNumber("Flight Time", 0.55);
 
         if (timer != null && !timer.isRunning()) {
             timer.start();
@@ -121,8 +125,13 @@ public class ShootAndDrive extends Command {
         double vx = speeds.vxMetersPerSecond;
         double vy = speeds.vyMetersPerSecond;
 
-        Translation2d robotVelocity = new Translation2d(vx * Constants.ShooterConstants.kFlightTime, vy * Constants.ShooterConstants.kFlightTime);
+        Translation2d robotVelocity = new Translation2d(vx * flightTime, vy * flightTime);
         targetTranslation = targetTranslation.minus(robotVelocity);
+
+        // Translation2d robotAcceleration = swerve.getRobotAcceleration();
+        // robotAcceleration = new Translation2d(robotAcceleration.getX()*Constants.ShooterConstants.kAccelerationCompensationConstant,
+        // robotAcceleration.getY()*Constants.ShooterConstants.kAccelerationCompensationConstant);
+        // targetTranslation = targetTranslation.minus(robotAcceleration);
 
         Pose2d currentPose = swerve.getPose();
 
@@ -138,6 +147,10 @@ public class ShootAndDrive extends Command {
 
         double angleOffset = Math.asin(0.254 / distanceToTarget);
         target_angle = target_angle + angleOffset;
+        headingController.setP(SmartDashboard.getNumber("HeadingP", Constants.DriveConstants.kHeadingP));
+        headingController.setI(SmartDashboard.getNumber("HeadingI", Constants.DriveConstants.kHeadingI));
+        headingController.setD(SmartDashboard.getNumber("HeadingD", Constants.DriveConstants.kHeadingD));
+
         headingController.setSetpoint(target_angle);
 
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());

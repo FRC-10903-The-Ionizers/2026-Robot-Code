@@ -69,7 +69,11 @@ public class Shooter extends SubsystemBase {
      * low-pass filtering and battery voltage compensation to motor outputs.
      */
 
-    public void periodic() {
+    public void updateHoodMotorPeriodic(){
+        hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
+        hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
+        hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
+        double hoodLPF = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
 
         shooterSpeedPID.setSetpoint(-targetSpeed);
         SmartDashboard.putNumber("Target Shooter Speed", targetSpeed);
@@ -83,14 +87,6 @@ public class Shooter extends SubsystemBase {
         output *= (12.1 / RobotController.getBatteryVoltage());
         topMotor.set(output);
         bottomMotor.set(-output);
-
-    }
-
-    public void updateHoodMotorPeriodic(){
-                hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
-        hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
-        hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));
-        double hoodLPF = SmartDashboard.getNumber("Hood LPF", Constants.ShooterConstants.kHoodLPF);
 
         if (!hoodIsZeroed) {
             hoodMotor.set(0.2);

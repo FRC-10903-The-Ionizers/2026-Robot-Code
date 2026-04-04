@@ -65,8 +65,10 @@ public class RobotContainer {
         // send data to Elastic
         SmartDashboard.putData("SwerveField", swerve.getField());
         SmartDashboard.putData(swerve);
+        SmartDashboard.putNumber("HeadingP", Constants.DriveConstants.kHeadingP);
+        SmartDashboard.putNumber("HeadingI", Constants.DriveConstants.kHeadingI);
+        SmartDashboard.putNumber("HeadingD", Constants.DriveConstants.kHeadingD);
 
-        
     }
 
     /**

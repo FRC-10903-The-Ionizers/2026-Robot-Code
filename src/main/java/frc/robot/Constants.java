@@ -64,9 +64,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    private static final double kHeadingP = 4;
-    private static final double kHeadingI = 0.0;
-    private static final double kHeadingD = 0.5;
+    public static final double kHeadingP = 5;
+    public static final double kHeadingI = 0.0;
+    public static final double kHeadingD = 0.05;
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
@@ -151,8 +151,10 @@ public class Constants {
    */
   public static class ShooterConstants {
 
-    //Projectile (fuel) flight time
-    public static final double kFlightTime = 0.45;
+    // Projectile (fuel) flight time
+    public static final double kFlightTime = 0.55;
+
+    public static final double kAccelerationCompensationConstant = 0.2;
 
     // --- Motor IDs ---
     public static final int kTopMotorID = 2;
@@ -167,11 +169,12 @@ public class Constants {
     public static final double kShooterKV = 0.000181;
 
     // --- Hood PID & Mechanics ---
-    public static final double kHoodP = 0.4;
+    public static final double kHoodP = 0.24;
     public static final double kHoodI = 0.0;
-    public static final double kHoodD = 0.017;
-    public static final double kHoodLPF = 0.85;
-    public static final double kHoodClipping = 0.355;
+    public static final double kHoodD = 0.007;
+    public static final double kHoodLPF = 0.6;
+
+    public static final double kHoodClipping = 0.5;
     public static final double kHoodZeroingOutput = 0.2;
     public static final double kHoodStallCurrentAmps = 50;
     public static final double kHoodMaxAngleRad = 1.4;
