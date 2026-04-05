@@ -137,10 +137,9 @@ public class RobotContainer {
      * @since 2025-10
      */
     private void configureBindings() {
-        // Bind aiming command to a button (e.g., A button)
-        // xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new
-        // Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter
-        // for aim drive)
+
+        xboxController.a().onTrue(Commands.runOnce(() -> intake.toggleJigglyEnabled()));
+
         xboxController.x().onTrue(intake.toggleIntakeCommand());
         xboxController
                 .rightTrigger(Constants.DriveConstants.kRightTriggerThreshold)

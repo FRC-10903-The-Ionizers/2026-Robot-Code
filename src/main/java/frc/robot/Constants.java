@@ -152,7 +152,7 @@ public class Constants {
   public static class ShooterConstants {
 
     // Projectile (fuel) flight time
-    public static final double kFlightTime = 0.8;
+    public static final double kFlightTime = 0.82;
 
     public static final double kAccelerationCompensationConstant = 0.035;
 
