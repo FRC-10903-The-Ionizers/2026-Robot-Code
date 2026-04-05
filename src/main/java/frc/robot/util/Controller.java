@@ -64,7 +64,6 @@ public class Controller {
 
   // ---- Swerve control state ----
 
-
   /**
    * Returns whether the controller is in field-relative mode.
    *

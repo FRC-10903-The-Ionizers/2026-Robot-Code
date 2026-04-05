@@ -31,6 +31,7 @@ public class Constants {
   public static Level kLogLevel = Level.INFO;
   public static int kXboxControllerPort = 0;
 
+  public static final double kTotalTeleopTime = 140;
   /**
    * Drive constants for the robot, including controller multipliers, gear ratios,
    * deadband, and PID

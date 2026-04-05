@@ -7,6 +7,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants;
+
+
+
+
 public class HubTimer extends SubsystemBase {
 
     private String ourAlliance = "";
@@ -38,55 +43,27 @@ public class HubTimer extends SubsystemBase {
 
     public void updateElastic() {
         if (DriverStation.isAutonomousEnabled()) {
-            // Hub is always active in autonomous
+            //auto period, both hubs active
             SmartDashboard.putBoolean("isHubActive", true);
-            SmartDashboard.putNumber("Seconds Till Change", 0);
-        }
-
-        boolean weActiveFirst; // Match time is number of seconds till game ends (not including auto, including
-                               // endgame)
-        double matchTime = DriverStation.getMatchTime();
-        String gameData = DriverStation.getGameSpecificMessage();
-
-        if (gameData.length() > 0 && String.valueOf(gameData.charAt(0)) == ourAlliance) {
-            // If we win auto, the gameData will be equal to ourAlliance and so we will NOT
-            // be active first
-            weActiveFirst = false;
+            SmartDashboard.putNumber("Seconds Till Change", DriverStation.getMatchTime());
         } else {
-            // If we lose auto, the gameData will reflect that the other alliance is
-            // inactive first
-            // So WE will be active first
-            weActiveFirst = true;
-        }
+            //teleoperiod, only one hub active
+            String firstInactiveAlliance = String.valueOf(DriverStation.getGameSpecificMessage().charAt(0));
+            double timeLeftTeleop = Constants.kTotalTeleopTime - DriverStation.getMatchTime();
 
-        SmartDashboard.putBoolean("Won Auto", !weActiveFirst);
-        SmartDashboard.putBoolean("Our Hub First", weActiveFirst);
+            if (timeLeftTeleop > 30) {
+                SmartDashboard.putNumber("Seconds Till Change", (timeLeftTeleop - 30) % 20);
+                if (firstInactiveAlliance.equals(ourAlliance)) {
+                    // if the first inactive alliance is the same as our alliance, the hub is active if the number of shifts since teleop starting are even
+                    SmartDashboard.putBoolean("isHubActive", ((int)((timeLeftTeleop - 30) / 20)) % 2 == 0);
+                } else {
+                    // if the first inactive alliance is not the same as our alliance, the hub is inactive
+                    SmartDashboard.putBoolean("isHubActive", ((int)((timeLeftTeleop - 30) / 20)) % 2 == 1);
+                }
+            } else {
+                SmartDashboard.putNumber("Seconds Till Change", timeLeftTeleop-110);
+            }
 
-        // NOTE: All of teleop is 140 seconds
-        if (matchTime > 130) {
-            // First 10 seconds is transition, hub active
-            SmartDashboard.putBoolean("isHubActive", true);
-            SmartDashboard.putNumber("Seconds Till Change", 0);
-        } else if (matchTime > 105) {
-            // Next 25 seconds First phase/shift. Won auto, inactive. Lost auto, active.
-            SmartDashboard.putBoolean("isHubActive", weActiveFirst);
-            SmartDashboard.putNumber("Seconds Till Change", (int) (matchTime - 105));
-        } else if (matchTime > 80) {
-            // Next 25 seconds. Second phase/shift. Won auto, active. Lost auto, inactive.
-            SmartDashboard.putBoolean("isHubActive", !weActiveFirst);
-            SmartDashboard.putNumber("Seconds Till Change", (int) (matchTime - 80));
-        } else if (matchTime > 55) {
-            // Next 25 seconds. Third phase/shift. Won auto, inactive. Lost auto, active.
-            SmartDashboard.putBoolean("isHubActive", weActiveFirst);
-            SmartDashboard.putNumber("Seconds Till Change", (int) (matchTime - 55));
-        } else if (matchTime > 30) {
-            // Next 25 seconds. Fourth phase/shift. Won auto, active. Lost auto, inactive.
-            SmartDashboard.putBoolean("isHubActive", !weActiveFirst);
-            SmartDashboard.putNumber("Seconds Till Change", (int) (matchTime - 30));
-        } else {
-            // Last 30 seconds is endgame, hub is active.
-            SmartDashboard.putBoolean("isHubActive", true);
-            SmartDashboard.putNumber("Seconds Till Change", matchTime);
         }
     }
 }
