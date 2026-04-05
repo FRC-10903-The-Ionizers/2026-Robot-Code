@@ -5,6 +5,8 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.time.Instant;
 import frc.robot.Constants;
 
 /**
@@ -23,7 +25,9 @@ public class Hopper extends SubsystemBase {
 
   // ---- State ----
   private boolean isSpindexerRunning = false;
-  private boolean isSpindexerBackwards = false;
+  private int isSpindexerBackwards = -1;
+
+  private Instant spindexerStuckStartTime = Instant.MIN;
 
   /**
    * Constructs the Hopper subsystem. Sets the default command to stop the hopper and publishes
@@ -40,20 +44,30 @@ public class Hopper extends SubsystemBase {
    * speed values from SmartDashboard to allow live tuning.
    */
   public void periodic() {
-    if (isSpindexerRunning) {
-      if (!isSpindexerBackwards){
-        spindexerMotor.set(
-            SmartDashboard.getNumber(
-                "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
-        bobMotor.set(
-            SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
-      } else {
-        spindexerMotor.set(
-            -SmartDashboard.getNumber(
-                "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
-        bobMotor.set(
-            SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
+    if (isSpindexerRunning && Instant.now().isAfter(spindexerStuckStartTime.plusMillis(Constants.HopperConstants.kSpindexerStuckUnstuckTime))) {
+
+      // detect whether spindexer is stuck with voltage
+
+      Boolean isSpindexerStuck = spindexerMotor.getOutputCurrent() > Constants.HopperConstants.kSpindexerStuckCurrentThreshold && spindexerMotor.getEncoder().getVelocity() < Constants.HopperConstants.kSpindexerStuckVelocityThreshold;
+
+      if (isSpindexerStuck) {
+        // If the spindexer is stuck, reverse it for .1 seconds to try to clear the jam
+        spindexerStuckStartTime = Instant.now();
       }
+        spindexerMotor.set(
+            isSpindexerBackwards*SmartDashboard.getNumber(
+                "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
+        bobMotor.set(
+            SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
+    }
+    else if (isSpindexerRunning && Instant.now().isBefore(spindexerStuckStartTime.plusMillis(Constants.HopperConstants.kSpindexerStuckUnstuckTime))) {
+      // If the spindexer is currently in the "unstucking" phase, run it backwards
+      spindexerMotor.set(
+          -isSpindexerBackwards*SmartDashboard.getNumber(
+              "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
+      bobMotor.set(
+          -SmartDashboard.getNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed));
+
     } else {
       spindexerMotor.set(0);
       bobMotor.set(0);
@@ -84,6 +98,10 @@ public class Hopper extends SubsystemBase {
   }
   
   public void setSpindexerBackwards(boolean isBackwards){
-    isSpindexerBackwards = isBackwards;
+    if (isBackwards) {
+      isSpindexerBackwards = -1;
+    } else {
+      isSpindexerBackwards = 1;
+    }
   }
 }

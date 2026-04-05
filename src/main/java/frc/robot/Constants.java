@@ -258,6 +258,10 @@ public class Constants {
     public static final int kBobMotorID = 5;
     public static final double kSpindexerSpeed = -0.5;
     public static final double kBobSpeed = 0.6;
+
+    public static final double kSpindexerStuckCurrentThreshold = 1.5;
+    public static final double kSpindexerStuckVelocityThreshold = 10;
+    public static final double kSpindexerStuckUnstuckTime = 100; // in millisecond
   }
 
   /**
