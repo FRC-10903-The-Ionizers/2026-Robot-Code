@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * Hopper subsystem for the robot. Controls the spindexer and bob motors that feed game pieces from
+ * Hopper subsystem for the robot. Controls the spindexer and bob motors that
+ * feed game pieces from
  * the intake into the shooter.
  *
  * @since 2025-10
@@ -16,32 +17,34 @@ import frc.robot.Constants;
 public class Hopper extends SubsystemBase {
 
   // ---- Motors ----
-  private final SparkMax spindexerMotor =
-      new SparkMax(Constants.HopperConstants.kSpindexerMotorID, MotorType.kBrushless);
-  private final SparkMax bobMotor =
-      new SparkMax(Constants.HopperConstants.kBobMotorID, MotorType.kBrushless);
+  private final SparkMax spindexerMotor = new SparkMax(Constants.HopperConstants.kSpindexerMotorID,
+      MotorType.kBrushless);
+  private final SparkMax bobMotor = new SparkMax(Constants.HopperConstants.kBobMotorID, MotorType.kBrushless);
 
   // ---- State ----
   private boolean isSpindexerRunning = false;
   private boolean isSpindexerBackwards = false;
 
   /**
-   * Constructs the Hopper subsystem. Sets the default command to stop the hopper and publishes
+   * Constructs the Hopper subsystem. Sets the default command to stop the hopper
+   * and publishes
    * tuning values to SmartDashboard.
    */
   public Hopper() {
     this.setDefaultCommand(new InstantCommand(() -> setIsHopperRunning(false), this));
     SmartDashboard.putNumber("Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed);
     SmartDashboard.putNumber("Hopper Bob Speed", Constants.HopperConstants.kBobSpeed);
+    SmartDashboard.putBoolean("Is shooting rn", false);
   }
 
   /**
-   * Periodically sets the motors to the correct speed based on the current running state. Reads
+   * Periodically sets the motors to the correct speed based on the current
+   * running state. Reads
    * speed values from SmartDashboard to allow live tuning.
    */
   public void periodic() {
     if (isSpindexerRunning) {
-      if (!isSpindexerBackwards){
+      if (!isSpindexerBackwards) {
         spindexerMotor.set(
             SmartDashboard.getNumber(
                 "Hopper Spindexer Speed", Constants.HopperConstants.kSpindexerSpeed));
@@ -76,14 +79,15 @@ public class Hopper extends SubsystemBase {
    */
   public void setIsHopperRunning(boolean isRunning) {
     this.isSpindexerRunning = isRunning;
+    SmartDashboard.putBoolean("Is shooting rn", isRunning);
   }
 
   /** Toggles the spindexer between running and stopped. */
   public void toggleIsSpindexerRunning() {
     isSpindexerRunning = !isSpindexerRunning;
   }
-  
-  public void setSpindexerBackwards(boolean isBackwards){
+
+  public void setSpindexerBackwards(boolean isBackwards) {
     isSpindexerBackwards = isBackwards;
   }
 }

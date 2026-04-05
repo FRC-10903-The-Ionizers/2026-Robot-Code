@@ -58,7 +58,6 @@ public class ShootAndDrive extends Command {
         time = 0;
         addRequirements(swerve, hopper, shooter, intake);
 
-        SmartDashboard.putNumber("Flight Time", 0.55);
     }
 
     public ShootAndDrive(Swerve swerve, Shooter shooter, Intake intake, Hopper hopper, Controller controller,
@@ -126,12 +125,13 @@ public class ShootAndDrive extends Command {
         double vy = speeds.vyMetersPerSecond;
 
         Translation2d robotVelocity = new Translation2d(vx * flightTime, vy * flightTime);
-        targetTranslation = targetTranslation.minus(robotVelocity);
 
-        // Translation2d robotAcceleration = swerve.getRobotAcceleration();
-        // robotAcceleration = new Translation2d(robotAcceleration.getX()*Constants.ShooterConstants.kAccelerationCompensationConstant,
-        // robotAcceleration.getY()*Constants.ShooterConstants.kAccelerationCompensationConstant);
-        // targetTranslation = targetTranslation.minus(robotAcceleration);
+        Translation2d robotAcceleration = swerve.getRobotAcceleration();
+        robotAcceleration = robotAcceleration.times(SmartDashboard.getNumber("Acceleration Compensation Constant",
+                Constants.ShooterConstants.kAccelerationCompensationConstant));
+        robotVelocity = robotVelocity.minus(robotAcceleration);
+
+        targetTranslation = targetTranslation.minus(robotVelocity);
 
         Pose2d currentPose = swerve.getPose();
 
@@ -142,16 +142,20 @@ public class ShootAndDrive extends Command {
         double currentX = currentPose.getX();
         double currentY = currentPose.getY();
         Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
-        double target_angle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
+        double targetAngle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
                 + Math.PI / 2;
 
         double angleOffset = Math.asin(0.254 / distanceToTarget);
-        target_angle = target_angle + angleOffset;
+        targetAngle = targetAngle + angleOffset;
         headingController.setP(SmartDashboard.getNumber("HeadingP", Constants.DriveConstants.kHeadingP));
         headingController.setI(SmartDashboard.getNumber("HeadingI", Constants.DriveConstants.kHeadingI));
         headingController.setD(SmartDashboard.getNumber("HeadingD", Constants.DriveConstants.kHeadingD));
 
-        headingController.setSetpoint(target_angle);
+        SmartDashboard.putNumber("TargetAngle", targetAngle);
+        headingController.setSetpoint(targetAngle);
+
+        // SmartDashboard.putNumber("Heading Error", headingController.getError());
+        SmartDashboard.putNumber("Heading Error", headingController.getError());
 
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
 
@@ -168,7 +172,9 @@ public class ShootAndDrive extends Command {
         }
 
         this.shooter.setSpeedAndAngle(interpolatedShooterSpeed, interpolatedHoodAngle);
-        if ((this.shooter.getIsReadyToShoot()) && Math.abs(rotation) < 0.3) {
+        if ((this.shooter.getIsReadyToShoot())
+                && Math.abs(headingController.getError()) < SmartDashboard.getNumber("Heading Tollerance",
+                        Constants.ShooterConstants.kAimRotationTolerance)) {
             hopper.setIsHopperRunning(true);
         } else {
             hopper.setIsHopperRunning(false);

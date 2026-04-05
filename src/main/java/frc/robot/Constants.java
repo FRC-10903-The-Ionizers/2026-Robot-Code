@@ -64,9 +64,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    public static final double kHeadingP = 5;
-    public static final double kHeadingI = 0.0;
-    public static final double kHeadingD = 0.05;
+    public static final double kHeadingP = 8;
+    public static final double kHeadingI = 0.003;
+    public static final double kHeadingD = 0.1;
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
@@ -152,9 +152,9 @@ public class Constants {
   public static class ShooterConstants {
 
     // Projectile (fuel) flight time
-    public static final double kFlightTime = 0.55;
+    public static final double kFlightTime = 0.8;
 
-    public static final double kAccelerationCompensationConstant = 0.2;
+    public static final double kAccelerationCompensationConstant = 0.035;
 
     // --- Motor IDs ---
     public static final int kTopMotorID = 2;
@@ -162,11 +162,12 @@ public class Constants {
     public static final int kHoodMotorID = 4;
 
     // --- Flywheel PID & Feed-Forward ---
-    public static final double kShooterP = 0.00002;
+    public static final double kShooterP = 0.000035;
     public static final double kShooterI = 0.0;
     public static final double kShooterD = 0.0;
-    public static final double kShooterLPF = 0.87;
+    public static final double kShooterLPF = 0.85;
     public static final double kShooterKV = 0.000181;
+    public static final double kShooterSpeedTolerance = 60;
 
     // --- Hood PID & Mechanics ---
     public static final double kHoodP = 0.24;
@@ -184,7 +185,7 @@ public class Constants {
     public static final double kNominalBatteryVoltage = 12.1;
     public static final double kShooterSpeedToleranceRPM = 25;
     public static final double kShooterIdleSpeed = 2700;
-    public static final double kAimRotationTolerance = 0.32; // In radians, tune this value
+    public static final double kAimRotationTolerance = 0.2; // In radians, tune this value
     public static final double kRobotToShooterOffsetMeters = 0.254;
     public static final double kInterpolationLambda = 100;
 
@@ -219,7 +220,7 @@ public class Constants {
     public static final int kActuationMotorID = 6;
 
     /** PID gains for intake actuation when moving in (retracted). */
-    public static final double kInP = 0.11;
+    public static final double kInP = 0.16;
 
     public static final double kInI = 0.0;
     public static final double kInD = 0.001;
@@ -240,7 +241,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.55;
+    public static final double kDriveSpeedOut = 0.67;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
@@ -256,7 +257,7 @@ public class Constants {
   public static class HopperConstants {
     public static final int kSpindexerMotorID = 1;
     public static final int kBobMotorID = 5;
-    public static final double kSpindexerSpeed = -0.5;
+    public static final double kSpindexerSpeed = -0.75;
     public static final double kBobSpeed = 0.6;
   }
 

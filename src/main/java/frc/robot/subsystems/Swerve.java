@@ -169,6 +169,11 @@ public class Swerve extends SubsystemBase {
         return swerveDrive.getFieldVelocity();
     }
 
+    public double getHeading(){
+        Rotation2d currentOdometryHeading = swerveDrive.getOdometryHeading();
+        return currentOdometryHeading.getDegrees();
+    }
+
     public Translation2d getRobotAcceleration() {
         return new Translation2d((currentSpeed.vxMetersPerSecond - prevSpeed.vxMetersPerSecond) / 0.02,
                 (currentSpeed.vyMetersPerSecond - prevSpeed.vyMetersPerSecond) / 0.02);

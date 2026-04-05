@@ -66,6 +66,7 @@ public class Intake extends SubsystemBase {
         timer.reset();
         timer.start();
         lastToggleTime = timer.get();
+        SmartDashboard.putNumber("Intake Speed", Constants.IntakeConstants.kDriveSpeedOut);
 
         // Don't persist parameters since it takes time and this change is temporary
         actuationMotor.configure(
@@ -113,7 +114,7 @@ public class Intake extends SubsystemBase {
 
         // Drive motor control
         if (jiggly) {
-            driveMotor.set(Constants.IntakeConstants.kDriveSpeedOut);
+            driveMotor.set(SmartDashboard.getNumber("Intake Speed", Constants.IntakeConstants.kDriveSpeedOut));
         } else if (intakeIn) {
             driveMotor.set(0);
         }
@@ -170,7 +171,7 @@ public class Intake extends SubsystemBase {
 
     /** Deploys the intake outward and starts the drive motor at outtake speed. */
     private void intakeOut() {
-        driveMotor.set(Constants.IntakeConstants.kDriveSpeedOut);
+        driveMotor.set(SmartDashboard.getNumber("Intake Speed", Constants.IntakeConstants.kDriveSpeedOut));
         intakeIn = false;
         isRunning = true;
     }

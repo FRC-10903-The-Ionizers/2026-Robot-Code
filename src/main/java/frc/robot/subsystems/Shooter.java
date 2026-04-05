@@ -50,6 +50,8 @@ public class Shooter extends SubsystemBase {
             isRunning = false;
         }, this));
 
+        shooterSpeedPID.setTolerance(Constants.ShooterConstants.kShooterSpeedTolerance);
+
         hoodEncoder.setPosition(0);
         SmartDashboard.putNumber("Target Shooter Speed Offset", 0);
         SmartDashboard.putNumber("Target Hood Angle Offset", 0);
@@ -77,12 +79,16 @@ public class Shooter extends SubsystemBase {
 
         shooterSpeedPID.setSetpoint(-targetSpeed);
         SmartDashboard.putNumber("Target Shooter Speed", targetSpeed);
+
         double output = shooterSpeedPID.calculate(topMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("Shooter Speed", topMotor.getEncoder().getVelocity());
-        output = MathUtil.clamp(output, -1, 0);
+
+        output = MathUtil.clamp(output, -1, 0.4);
+
         SmartDashboard.putNumber("Shooter Speed Error", shooterSpeedPID.getPositionError());
         output = ((prevOutput * Constants.ShooterConstants.kShooterLPF) + (1 - Constants.ShooterConstants.kShooterLPF) *
                 (output - (targetSpeed * Constants.ShooterConstants.kShooterKV)));
+
         prevOutput = output;
         output *= (12.1 / RobotController.getBatteryVoltage());
         topMotor.set(output);
