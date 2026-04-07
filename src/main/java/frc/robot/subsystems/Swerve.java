@@ -30,190 +30,211 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
  */
 public class Swerve extends SubsystemBase {
 
-  private static final Logger logger = LogManager.getLogger(Swerve.class);
-  private SwerveDrive swerveDrive;
-  private boolean initialized = false;
-  private Field2d field = new Field2d();
+    private static final Logger logger = LogManager.getLogger(Swerve.class);
+    private SwerveDrive swerveDrive;
+    private boolean initialized = false;
+    private ChassisSpeeds prevSpeed = new ChassisSpeeds();
+    private ChassisSpeeds currentSpeed = new ChassisSpeeds();
+    private Field2d field = new Field2d();
 
-  private final PIDController controllerX = Constants.DriveConstants.kXController;
-  private final PIDController controllerY = Constants.DriveConstants.kYController;
-  private final PIDController headingController = Constants.DriveConstants.kHeadingController;
+    private final PIDController controllerX = Constants.DriveConstants.kXController;
+    private final PIDController controllerY = Constants.DriveConstants.kYController;
+    private final PIDController headingController = Constants.DriveConstants.kHeadingController;
 
-  private static boolean isLockedPosition = false;
-  public static double currentGear = 1.0;
+    private static boolean isLockedPosition = false;
+    public static double currentGear = 1.0;
 
-  /**
-   * Swerve constructor for the robot.
-   *
-   * @since 2025-10
-   */
-  public Swerve() {
-    try {
-      double maximumSpeed = Units.feetToMeters(Constants.DriveConstants.kMaxSpeedFeetPerSecond);
+    /**
+     * Swerve constructor for the robot.
+     *
+     * @since 2025-10
+     */
+    public Swerve() {
+        try {
+            double maximumSpeed = Units.feetToMeters(Constants.DriveConstants.kMaxSpeedFeetPerSecond);
 
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+            SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
-      // On the RIO, deploy files live here:
-      File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
-      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
+            // On the RIO, deploy files live here:
+            File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
+            swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(maximumSpeed);
 
-      swerveDrive.setCosineCompensator(true);
-      swerveDrive.setHeadingCorrection(true);
+            swerveDrive.setCosineCompensator(true);
+            swerveDrive.setHeadingCorrection(true);
 
-      swerveDrive.resetOdometry(new Pose2d(0, 0, Rotation2d.kZero));
+            swerveDrive.resetOdometry(new Pose2d(0, 0, Rotation2d.kZero));
 
-      logger.debug("Swerve initialized!");
-      initialized = true;
+            logger.debug("Swerve initialized!");
+            initialized = true;
 
-    } catch (Exception e) {
-      logger.fatal("FAILED TO LOAD SWERVE CONFIG", e);
-    }
-  }
-
-  /**
-   * Periodic method for the swerve subsystem. Updates the field position of the
-   * robot.
-   *
-   * @since 2025-10
-   */
-  public void periodic() {
-    if (!initialized) {
-      return;
+        } catch (Exception e) {
+            logger.fatal("FAILED TO LOAD SWERVE CONFIG", e);
+        }
     }
 
-    field.setRobotPose(swerveDrive.getPose());
-    SmartDashboard.putData(this);
-  }
+    /**
+     * Periodic method for the swerve subsystem. Updates the field position of the
+     * robot.
+     *
+     * @since 2025-10
+     */
+    public void periodic() {
+        prevSpeed = currentSpeed;
+        currentSpeed = swerveDrive.getFieldVelocity();
+        if (!initialized) {
+            return;
+        }
 
-  /**
-   * Resets the odometry of the robot.
-   *
-   * @param pose the pose to reset odometry to
-   * @return the new pose after resetting
-   * @since 2025-10
-   */
-  public Pose2d resetOdometry(Pose2d pose) {
-    if (!initialized) {
-      return new Pose2d();
-    }
-    swerveDrive.resetOdometry(pose);
-    return swerveDrive.getPose();
-  }
-
-  /**
-   * Gets the field position of the robot.
-   *
-   * @return the Field2d object
-   * @since 2025-10
-   */
-  public Field2d getField() {
-    return field;
-  }
-
-  /**
-   * Gets the pose of the robot.
-   *
-   * @return the current Pose2d
-   * @since 2025-10
-   */
-  public Pose2d getPose() {
-    if (!initialized) {
-      return new Pose2d();
+        field.setRobotPose(swerveDrive.getPose());
+        SmartDashboard.putData(this);
     }
 
-    return swerveDrive.getPose();
-  }
-
-  /**
-   * Follows a trajectory for the robot.
-   *
-   * @param sample the swerve sample to follow
-   * @since 2025-10
-   */
-  public void followTrajectory(SwerveSample sample) {
-    // Get the current pose of the robot
-    Pose2d pose = swerveDrive.getPose();
-
-    // Generate the next speeds for the robot
-    ChassisSpeeds speeds = new ChassisSpeeds(
-        sample.vx + controllerX.calculate(pose.getX(), sample.x),
-        sample.vy + controllerY.calculate(pose.getY(), sample.y),
-        sample.omega
-            + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
-
-    double speedX = speeds.vxMetersPerSecond;
-    double speedY = speeds.vyMetersPerSecond;
-    double rotation = speeds.omegaRadiansPerSecond;
-
-    swerveDrive.drive(new Translation2d(speedX, speedY), rotation, true, false);
-  }
-
-  /**
-   * Gets the swerve drive object.
-   *
-   * @return the SwerveDrive instance
-   * @since 2025-10
-   */
-  public SwerveDrive getSwerveDrive() {
-    return swerveDrive;
-  }
-
-  /**
-   * Adds a vision measurement to the swerve drive, uses standard deviations to
-   * weight the
-   * measurement along with swerve drive's odometry.
-   *
-   * @param visionPose        the vision-estimated pose
-   * @param timestamp         the timestamp of the vision measurement
-   * @param estimationStdDevs the standard deviations for the measurement
-   * @since 2025-10
-   */
-  public void addVisionMeasurement(
-      Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
-    if (!initialized) {
-      return;
+    /**
+     * Resets the odometry of the robot.
+     *
+     * @param pose the pose to reset odometry to
+     * @return the new pose after resetting
+     * @since 2025-10
+     */
+    public Pose2d resetOdometry(Pose2d pose) {
+        if (!initialized) {
+            return new Pose2d();
+        }
+        swerveDrive.resetOdometry(pose);
+        return swerveDrive.getPose();
     }
 
-    swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
-  }
-
-  /**
-   * Gets the current gear of the robot.
-   *
-   * @return the current gear multiplier
-   * @since 2026-01
-   */
-  public static double getCurrentGear() {
-    return currentGear;
-  }
-
-  /**
-   * Sets the current gear of the robot.
-   *
-   * @param gearMultiplier the gear multiplier to set
-   * @since 2026-01
-   */
-  public static void setCurrentGear(double gearMultiplier) {
-    currentGear = gearMultiplier;
-  }
-
-  /**
-   * Drives the robot.
-   *
-   * @param translation     the translation vector
-   * @param rotation        the rotation speed
-   * @param isFieldRelative whether driving is field-relative
-   * @since 2026-01
-   */
-  public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
-    if (isLockedPosition) {
-      // locked position (x position)
-      swerveDrive.lockPose();
-      // lock the brakes
-      swerveDrive.setMotorIdleMode(true);
-      return;
-    } else {
-      swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);
+    /**
+     * Gets the field position of the robot.
+     *
+     * @return the Field2d object
+     * @since 2025-10
+     */
+    public Field2d getField() {
+        return field;
     }
-  }
+
+    /**
+     * Gets the pose of the robot.
+     *
+     * @return the current Pose2d
+     * @since 2025-10
+     */
+    public Pose2d getPose() {
+        if (!initialized) {
+            return new Pose2d();
+        }
+
+        return swerveDrive.getPose();
+    }
+
+    /**
+     * Follows a trajectory for the robot.
+     *
+     * @param sample the swerve sample to follow
+     * @since 2025-10
+     */
+    public void followTrajectory(SwerveSample sample) {
+        // Get the current pose of the robot
+        Pose2d pose = swerveDrive.getPose();
+
+        // Generate the next speeds for the robot
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + controllerX.calculate(pose.getX(), sample.x),
+                sample.vy + controllerY.calculate(pose.getY(), sample.y),
+                sample.omega
+                        + headingController.calculate(pose.getRotation().getRadians(), sample.heading));
+
+        double speedX = speeds.vxMetersPerSecond;
+        double speedY = speeds.vyMetersPerSecond;
+        double rotation = speeds.omegaRadiansPerSecond;
+
+        swerveDrive.drive(new Translation2d(speedX, speedY), rotation, true, false);
+    }
+
+    /**
+     * Gets the swerve drive object.
+     *
+     * @return the SwerveDrive instance
+     * @since 2025-10
+     */
+    public SwerveDrive getSwerveDrive() {
+        return swerveDrive;
+    }
+
+    public ChassisSpeeds getRobotVelocity() {
+        if (!initialized) {
+            return new ChassisSpeeds();
+        }
+        return swerveDrive.getFieldVelocity();
+    }
+
+    public double getHeading(){
+        Rotation2d currentOdometryHeading = swerveDrive.getOdometryHeading();
+        return currentOdometryHeading.getDegrees();
+    }
+
+    public Translation2d getRobotAcceleration() {
+        return new Translation2d((currentSpeed.vxMetersPerSecond - prevSpeed.vxMetersPerSecond) / 0.02,
+                (currentSpeed.vyMetersPerSecond - prevSpeed.vyMetersPerSecond) / 0.02);
+    }
+
+    /**
+     * Adds a vision measurement to the swerve drive, uses standard deviations to
+     * weight the
+     * measurement along with swerve drive's odometry.
+     *
+     * @param visionPose        the vision-estimated pose
+     * @param timestamp         the timestamp of the vision measurement
+     * @param estimationStdDevs the standard deviations for the measurement
+     * @since 2025-10
+     */
+    public void addVisionMeasurement(
+            Pose2d visionPose, double timestamp, Matrix<N3, N1> estimationStdDevs) {
+        if (!initialized) {
+            return;
+        }
+
+        swerveDrive.addVisionMeasurement(visionPose, timestamp, estimationStdDevs);
+    }
+
+    /**
+     * Gets the current gear of the robot.
+     *
+     * @return the current gear multiplier
+     * @since 2026-01
+     */
+    public static double getCurrentGear() {
+        return currentGear;
+    }
+
+    /**
+     * Sets the current gear of the robot.
+     *
+     * @param gearMultiplier the gear multiplier to set
+     * @since 2026-01
+     */
+    public static void setCurrentGear(double gearMultiplier) {
+        currentGear = gearMultiplier;
+    }
+
+    /**
+     * Drives the robot.
+     *
+     * @param translation     the translation vector
+     * @param rotation        the rotation speed
+     * @param isFieldRelative whether driving is field-relative
+     * @since 2026-01
+     */
+    public void drive(Translation2d translation, double rotation, boolean isFieldRelative) {
+        if (isLockedPosition) {
+            // locked position (x position)
+            swerveDrive.lockPose();
+            // lock the brakes
+            swerveDrive.setMotorIdleMode(true);
+            return;
+        } else {
+            swerveDrive.drive(translation.times(currentGear), rotation, isFieldRelative, false);
+        }
+    }
 }

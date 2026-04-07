@@ -66,6 +66,15 @@ public class RobotContainer {
         SmartDashboard.putData("SwerveField", swerve.getField());
         SmartDashboard.putNumber("ShootOffset", -0.3);
         SmartDashboard.putData(swerve);
+        SmartDashboard.putNumber("HeadingP", Constants.DriveConstants.kHeadingP);
+        SmartDashboard.putNumber("HeadingI", Constants.DriveConstants.kHeadingI);
+        SmartDashboard.putNumber("HeadingD", Constants.DriveConstants.kHeadingD);
+        SmartDashboard.putNumber("Heading Tollerance", Constants.ShooterConstants.kAimRotationTolerance);
+        SmartDashboard.putNumber("Flight Time", Constants.ShooterConstants.kFlightTime);
+        SmartDashboard.putNumber("Heading Error", 0);
+        SmartDashboard.putNumber("Acceleration Compensation Constant", Constants.ShooterConstants.kAccelerationCompensationConstant);
+
+
     }
 
     /**
@@ -129,10 +138,9 @@ public class RobotContainer {
      * @since 2025-10
      */
     private void configureBindings() {
-        // Bind aiming command to a button (e.g., A button)
-        // xboxController.a().whileTrue(new TeleopAimDrive(swerve, controller, new
-        // Pose2d(0, 0, null))); // Pass appropriate target pose (angle doesn't matter
-        // for aim drive)
+
+        xboxController.a().onTrue(Commands.runOnce(() -> intake.toggleJigglyEnabled()));
+
         xboxController.x().onTrue(intake.toggleIntakeCommand());
         xboxController
                 .rightTrigger(Constants.DriveConstants.kRightTriggerThreshold)

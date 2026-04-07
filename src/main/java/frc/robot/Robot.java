@@ -28,140 +28,142 @@ import frc.robot.util.Controller;
  */
 public class Robot extends TimedRobot {
 
-  private RobotContainer robotContainer;
-  private final Timer timer = new Timer();
-  private Auto auto;
-  private RegionHandler regionHandler;
+    private RobotContainer robotContainer;
+    private final Timer timer = new Timer();
+    private Auto auto;
+    private RegionHandler regionHandler;
 
-  private static final Logger logger = LogManager.getLogger(Robot.class);
+    private static final Logger logger = LogManager.getLogger(Robot.class);
 
-  /**
-   * Robot constructor for the robot.
-   *
-   * @since 2025-10
-   */
-  public Robot() {
-
-    // start logging network tables to disk
-    DataLogManager.start();
-
-    logger.debug("Robot initializing");
-
-    // --- container and region setup ---
-
-    robotContainer = new RobotContainer();
-    regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
-
-    Swerve swerve = robotContainer.getSwerve();
-
-    addPeriodic(() -> robotContainer.getShooter().fastPeriodic(), 0.005);
-
-    AutoFactory autoFactory = new AutoFactory(
-        swerve::getPose, // A function that returns the current robot pose
-        swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
-        swerve::followTrajectory, // The drive subsystem trajectory follower
-        true, // If alliance flipping should be enabled (all paths on blue side are reflected
-              // about y axis when red alliance selected in DS)
-        swerve // The drive subsystem
-    );
-
-    Constants.AutoConstants.kAutoFactory = autoFactory;
-
-    // --- auto command ---
-
-    auto = new Auto(autoFactory, robotContainer, regionHandler);
-    logger.debug("Auto initialized!");
-    // RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
-
-    // Optionally disable the joystick connection warning
-    DriverStation.silenceJoystickConnectionWarning(true);
-  }
-
-  /** Runs the command scheduler every robot loop iteration. */
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
-
-  /**
-   * Schedules the autonomous command, runs automatically when the robot is in
-   * autonomous mode.
-   *
-   * @since 2026-01
-   */
-  @Override
-  public void autonomousInit() {
-
-    timer.restart();
-
-    Command autoCommand = auto.getAutoCommand();
-
-    if (autoCommand != null) {
-      autoCommand.schedule();
-    }
-  }
-
-  /**
-   * Called periodically during autonomous mode. Currently a no-op.
-   *
-   * @todo Remove this unless needed
-   */
-  @Override
-  public void autonomousPeriodic() {
-  }
-
-  /**
-   * Initializes the teleop mode.
-   *
-   * @since 2025-10
-   */
-  @Override
-  public void teleopInit() {
-
-    Swerve swerve = robotContainer.getSwerve();
-    Controller controller = robotContainer.getController();
-
-    TeleopDriveCommand teleopDriveCommand = new TeleopDriveCommand(swerve, controller);
-
-    swerve.setDefaultCommand(teleopDriveCommand);
-  }
-
-  /**
-   * Called periodically during teleop mode. Currently a no-op.
-   *
-   * @todo Remove this unless needed
-   */
-  @Override
-  public void teleopPeriodic() {
-  }
-
-  /**
-   * Exits the teleop mode, runs when the robot is no longer in teleop mode.
-   *
-   * @since 2025-10
-   */
-  @Override
-  public void teleopExit() {
-
-    Swerve swerve = robotContainer.getSwerve();
-    swerve.removeDefaultCommand();
-  }
-
-  private boolean isRedAlliance() {
     /**
-     * Checks if the robot is on the red alliance.
-     * 
-     * @args None
-     * @author Max Clemetson & Jake Xie
+     * Robot constructor for the robot.
+     *
      * @since 2025-10
-     * @return boolean
      */
+    public Robot() {
 
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
-      return (alliance.get() == Alliance.Red) ? true : false;
-    } else {
-      throw new Error("Set Alliance is DS pls");
+        // start logging network tables to disk
+        DataLogManager.start();
+
+        logger.debug("Robot initializing");
+
+        // --- container and region setup ---
+
+        robotContainer = new RobotContainer();
+        regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
+
+    Swerve swerve = robotContainer.getSwerve();
+
+        AutoFactory autoFactory = new AutoFactory(
+                swerve::getPose, // A function that returns the current robot pose
+                swerve::resetOdometry, // A function that resets the current robot pose to the provided Pose2d
+                swerve::followTrajectory, // The drive subsystem trajectory follower
+                true, // If alliance flipping should be enabled (all paths on blue side are reflected
+                      // about y axis when red alliance selected in DS)
+                swerve // The drive subsystem
+        );
+
+        Constants.AutoConstants.kAutoFactory = autoFactory;
+
+        // --- auto command ---
+
+        auto = new Auto(autoFactory, robotContainer, regionHandler);
+        logger.debug("Auto initialized!");
+        // RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
+
+        // Optionally disable the joystick connection warning
+        DriverStation.silenceJoystickConnectionWarning(true);
+
+        addPeriodic(() -> {
+            robotContainer.getShooter().updateHoodMotorPeriodic();
+        }, 0.005);
     }
-  }
+
+    /** Runs the command scheduler every robot loop iteration. */
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
+
+    /**
+     * Schedules the autonomous command, runs automatically when the robot is in
+     * autonomous mode.
+     *
+     * @since 2026-01
+     */
+    @Override
+    public void autonomousInit() {
+
+        timer.restart();
+
+        Command autoCommand = auto.getAutoCommand();
+
+        if (autoCommand != null) {
+            autoCommand.schedule();
+        }
+    }
+
+    /**
+     * Called periodically during autonomous mode. Currently a no-op.
+     *
+     * @todo Remove this unless needed
+     */
+    @Override
+    public void autonomousPeriodic() {
+    }
+
+    /**
+     * Initializes the teleop mode.
+     *
+     * @since 2025-10
+     */
+    @Override
+    public void teleopInit() {
+
+        Swerve swerve = robotContainer.getSwerve();
+        Controller controller = robotContainer.getController();
+
+        TeleopDriveCommand teleopDriveCommand = new TeleopDriveCommand(swerve, controller);
+
+        swerve.setDefaultCommand(teleopDriveCommand);
+    }
+
+    /**
+     * Called periodically during teleop mode. Currently a no-op.
+     *
+     * @todo Remove this unless needed
+     */
+    @Override
+    public void teleopPeriodic() {
+    }
+
+    /**
+     * Exits the teleop mode, runs when the robot is no longer in teleop mode.
+     *
+     * @since 2025-10
+     */
+    @Override
+    public void teleopExit() {
+
+        Swerve swerve = robotContainer.getSwerve();
+        swerve.removeDefaultCommand();
+    }
+
+    private boolean isRedAlliance() {
+        /**
+         * Checks if the robot is on the red alliance.
+         * 
+         * @args None
+         * @author Max Clemetson & Jake Xie
+         * @since 2025-10
+         * @return boolean
+         */
+
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return (alliance.get() == Alliance.Red) ? true : false;
+        } else {
+            throw new Error("Set Alliance is DS pls");
+        }
+    }
 }

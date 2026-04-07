@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -56,6 +57,7 @@ public class ShootAndDrive extends Command {
         this.interpolationMatrix = interpolationMatrix;
         time = 0;
         addRequirements(swerve, hopper, shooter, intake);
+
     }
 
     public ShootAndDrive(Swerve swerve, Shooter shooter, Intake intake, Hopper hopper, Controller controller,
@@ -85,6 +87,8 @@ public class ShootAndDrive extends Command {
          * Method that drives the swerves
          */
         // Get target translation
+
+        double flightTime = SmartDashboard.getNumber("Flight Time", 0.55);
 
         if (timer != null && !timer.isRunning()) {
             timer.start();
@@ -116,23 +120,45 @@ public class ShootAndDrive extends Command {
             }
         }
 
+        ChassisSpeeds speeds = swerve.getRobotVelocity();
+        double vx = speeds.vxMetersPerSecond;
+        double vy = speeds.vyMetersPerSecond;
+
+        Translation2d robotVelocity = new Translation2d(vx * flightTime, vy * flightTime);
+
+        Translation2d robotAcceleration = swerve.getRobotAcceleration();
+        robotAcceleration = robotAcceleration.times(SmartDashboard.getNumber("Acceleration Compensation Constant",
+                Constants.ShooterConstants.kAccelerationCompensationConstant));
+        robotVelocity = robotVelocity.minus(robotAcceleration);
+
+        targetTranslation = targetTranslation.minus(robotVelocity);
+
+        Pose2d currentPose = swerve.getPose();
+
         SmartDashboard.putNumber("Distance to Hub", (swerve.getPose().getTranslation().getDistance(targetTranslation)));
-        double distanceToTarget = swerve.getPose().getTranslation().getDistance(targetTranslation);
+        double distanceToTarget = currentPose.getTranslation().getDistance(targetTranslation);
 
         // Drivetrain stuff
-        Pose2d currentPose = swerve.getPose();
         double currentX = currentPose.getX();
         double currentY = currentPose.getY();
         Translation2d translation = new Translation2d(controller.getDriveX(), controller.getDriveY());
-        double target_angle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
+        double targetAngle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
                 + Math.PI / 2;
 
-        double distance = currentPose.getTranslation().getDistance(targetTranslation);
+        double angleOffset = Math.asin(0.254 / distanceToTarget);
+        targetAngle = targetAngle + angleOffset;
+        headingController.setP(SmartDashboard.getNumber("HeadingP", Constants.DriveConstants.kHeadingP));
+        headingController.setI(SmartDashboard.getNumber("HeadingI", Constants.DriveConstants.kHeadingI));
+        headingController.setD(SmartDashboard.getNumber("HeadingD", Constants.DriveConstants.kHeadingD));
 
-        double angleOffset = Math.asin(0.254 / distance);
-        target_angle = target_angle + angleOffset;
-        headingController.setSetpoint(target_angle);
+        SmartDashboard.putNumber("TargetAngle", targetAngle);
+        headingController.setSetpoint(targetAngle);
+
+        // SmartDashboard.putNumber("Heading Error", headingController.getError());
+        SmartDashboard.putNumber("Heading Error", headingController.getError());
+
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
+
         swerve.drive(translation, rotation, controller.isFieldRelative());
 
         // With distance start getting shooting stuff set
@@ -146,7 +172,9 @@ public class ShootAndDrive extends Command {
         }
 
         this.shooter.setSpeedAndAngle(interpolatedShooterSpeed, interpolatedHoodAngle);
-        if ((this.shooter.getIsReadyToShoot()) && Math.abs(rotation) < Constants.DriveConstants.kShootAndDriveTollerance) {
+        if ((this.shooter.getIsReadyToShoot())
+                && Math.abs(headingController.getError()) < SmartDashboard.getNumber("Heading Tollerance",
+                        Constants.ShooterConstants.kAimRotationTolerance)) {
             hopper.setIsHopperRunning(true);
         } else {
             hopper.setIsHopperRunning(false);
