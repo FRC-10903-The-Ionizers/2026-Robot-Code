@@ -17,7 +17,7 @@ import java.util.Optional;
 public class Controller {
 
   private final XboxController controller;
-  private int flippedValue;
+  private int flippedValue = 0;
   private int safetyFlippedValue = 1;
 
   /**
@@ -28,12 +28,6 @@ public class Controller {
    * @param port the USB port of the Xbox controller
    */
   public Controller(int port) {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == Alliance.Blue) {
-      this.flippedValue = -1;
-    } else {
-      this.flippedValue = -1;
-    }
     controller = new XboxController(port);
     SmartDashboard.putBoolean("Flipped", false);
   }
@@ -121,6 +115,14 @@ public class Controller {
   public double getRotation() {
     return applyDeadband(-controller.getRightX())
         * Constants.DriveConstants.kControllerRotationMultiplier;
+  }
+
+  public void setFlipped(int value){
+    this.flippedValue = value;
+  }
+
+  public boolean isFlippedSet(){
+    return (flippedValue != 0);
   }
 
   /**

@@ -70,6 +70,7 @@ public class RobotContainer {
         SmartDashboard.putNumber("HeadingI", Constants.DriveConstants.kHeadingI);
         SmartDashboard.putNumber("HeadingD", Constants.DriveConstants.kHeadingD);
         SmartDashboard.putNumber("Heading Tollerance", Constants.ShooterConstants.kAimRotationTolerance);
+        SmartDashboard.putNumber("Shooter Speed Multiplier", 1);
         SmartDashboard.putNumber("Flight Time", Constants.ShooterConstants.kFlightTime);
         SmartDashboard.putNumber("Heading Error", 0);
         SmartDashboard.putNumber("Acceleration Compensation Constant", Constants.ShooterConstants.kAccelerationCompensationConstant);

@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
         regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
 
-    Swerve swerve = robotContainer.getSwerve();
+        Swerve swerve = robotContainer.getSwerve();
 
         AutoFactory autoFactory = new AutoFactory(
                 swerve::getPose, // A function that returns the current robot pose
@@ -135,6 +135,13 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopPeriodic() {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+
+        if (!robotContainer.getController().isFlippedSet() && alliance.isPresent() && alliance.get() == Alliance.Blue) {
+            robotContainer.getController().setFlipped(1);
+        } else {
+            robotContainer.getController().setFlipped(-1);
+        }
     }
 
     /**

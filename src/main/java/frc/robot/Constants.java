@@ -42,7 +42,7 @@ public class Constants {
 
     // --- Controller Multipliers ---
     public static final double kControllerDriveMultiplier = 1.0;
-    public static final double kControllerRotationMultiplier = 4*3.1415;
+    public static final double kControllerRotationMultiplier = 2*3.1415;
     public static final double kAutoDriveMultiplier = 4.5;
     public static final double kLOW_GEAR_MULTIPLIER = 2.0;
     public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
@@ -155,7 +155,7 @@ public class Constants {
     // Projectile (fuel) flight time
     public static final double kFlightTime = 0.82;
 
-    public static final double kAccelerationCompensationConstant = 0.035;
+    public static final double kAccelerationCompensationConstant = 0.02;
 
     // --- Motor IDs ---
     public static final int kTopMotorID = 2;
@@ -244,7 +244,7 @@ public class Constants {
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.67;
+    public static final double kDriveSpeedOut = 0.85;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;
