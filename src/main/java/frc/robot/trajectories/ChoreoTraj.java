@@ -66,6 +66,27 @@ public record ChoreoTraj(
 	    new Pose2d(2.593, 0.688, Rotation2d.fromRadians(2.182)),
 	    new Pose2d(2.101, 0.678, Rotation2d.fromRadians(2.182))
 	);
+	public static final ChoreoTraj ChoppedCitrusRight = new ChoreoTraj(
+	    "ChoppedCitrusRight",
+	    OptionalInt.empty(),
+	    11.68772,
+	    new Pose2d(4.1, 0.63, Rotation2d.fromRadians(0)),
+	    new Pose2d(3.25, 2.5, Rotation2d.fromRadians(-0.785))
+	);
+	public static final ChoreoTraj ChoppedCitrusRight$0 = new ChoreoTraj(
+	    "ChoppedCitrusRight",
+	    OptionalInt.of(0),
+	    5.26335,
+	    new Pose2d(4.1, 0.63, Rotation2d.fromRadians(0)),
+	    new Pose2d(3.25, 2.5, Rotation2d.fromRadians(-0.785))
+	);
+	public static final ChoreoTraj ChoppedCitrusRight$1 = new ChoreoTraj(
+	    "ChoppedCitrusRight",
+	    OptionalInt.of(1),
+	    6.424370000000001,
+	    new Pose2d(3.25, 2.5, Rotation2d.fromRadians(-0.785)),
+	    new Pose2d(3.25, 2.5, Rotation2d.fromRadians(-0.785))
+	);
 	public static final ChoreoTraj CitrusLeft = new ChoreoTraj(
 	    "CitrusLeft",
 	    OptionalInt.empty(),
@@ -107,6 +128,27 @@ public record ChoreoTraj(
 	    7.379930000000001,
 	    new Pose2d(2, 2.5, Rotation2d.fromRadians(2.356)),
 	    new Pose2d(3, 2.5, Rotation2d.fromRadians(2.356))
+	);
+	public static final ChoreoTraj HearMeOut = new ChoreoTraj(
+	    "HearMeOut",
+	    OptionalInt.empty(),
+	    10.06556,
+	    new Pose2d(3.5, 2.5, Rotation2d.fromRadians(2.356)),
+	    new Pose2d(3.5, 2.5, Rotation2d.fromRadians(2.356))
+	);
+	public static final ChoreoTraj HearMeOut$0 = new ChoreoTraj(
+	    "HearMeOut",
+	    OptionalInt.of(0),
+	    5.21702,
+	    new Pose2d(3.5, 2.5, Rotation2d.fromRadians(2.356)),
+	    new Pose2d(3.5, 2.5, Rotation2d.fromRadians(2.356))
+	);
+	public static final ChoreoTraj HearMeOut$1 = new ChoreoTraj(
+	    "HearMeOut",
+	    OptionalInt.of(1),
+	    4.84854,
+	    new Pose2d(3.5, 2.5, Rotation2d.fromRadians(2.356)),
+	    new Pose2d(3.5, 2.5, Rotation2d.fromRadians(2.356))
 	);
 	public static final ChoreoTraj Left = new ChoreoTraj(
 	    "Left",
@@ -183,12 +225,18 @@ public record ChoreoTraj(
 		Map.entry("CheesyPoofsRight", CheesyPoofsRight),
 		Map.entry("CheesyPoofsRight$0", CheesyPoofsRight$0),
 		Map.entry("CheesyPoofsRight$1", CheesyPoofsRight$1),
+		Map.entry("ChoppedCitrusRight", ChoppedCitrusRight),
+		Map.entry("ChoppedCitrusRight$0", ChoppedCitrusRight$0),
+		Map.entry("ChoppedCitrusRight$1", ChoppedCitrusRight$1),
 		Map.entry("CitrusLeft", CitrusLeft),
 		Map.entry("CitrusLeft$0", CitrusLeft$0),
 		Map.entry("CitrusLeft$1", CitrusLeft$1),
 		Map.entry("CitrusRight", CitrusRight),
 		Map.entry("CitrusRight$0", CitrusRight$0),
 		Map.entry("CitrusRight$1", CitrusRight$1),
+		Map.entry("HearMeOut", HearMeOut),
+		Map.entry("HearMeOut$0", HearMeOut$0),
+		Map.entry("HearMeOut$1", HearMeOut$1),
 		Map.entry("Left", Left),
 		Map.entry("Left$0", Left$0),
 		Map.entry("Left$1", Left$1),
