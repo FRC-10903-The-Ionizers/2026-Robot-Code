@@ -145,7 +145,7 @@ public class ShootAndDrive extends Command {
         double targetAngle = Math.atan2(targetTranslation.getY() - currentY, targetTranslation.getX() - currentX)
                 + Math.PI / 2;
 
-        double angleOffset = Math.asin(0.254 / distanceToTarget);
+        double angleOffset = Math.asin(0.32 / (distanceToTarget + 0.00001));
         targetAngle = targetAngle + angleOffset;
         headingController.setP(SmartDashboard.getNumber("HeadingP", Constants.DriveConstants.kHeadingP));
         headingController.setI(SmartDashboard.getNumber("HeadingI", Constants.DriveConstants.kHeadingI));
@@ -153,8 +153,11 @@ public class ShootAndDrive extends Command {
 
         SmartDashboard.putNumber("TargetAngle", targetAngle);
         headingController.setSetpoint(targetAngle);
+        
+        // SmartDashboard.putNumber("Heading Error", headingController.getError());for
+        // some reason im getting an error that says x and y components of rotation are
+        // 0. whats going on there?
 
-        // SmartDashboard.putNumber("Heading Error", headingController.getError());
         SmartDashboard.putNumber("Heading Error", headingController.getError());
 
         double rotation = headingController.calculate(swerve.getPose().getRotation().getRadians());
@@ -173,8 +176,7 @@ public class ShootAndDrive extends Command {
 
         this.shooter.setSpeedAndAngle(interpolatedShooterSpeed, interpolatedHoodAngle);
         if ((this.shooter.getIsReadyToShoot())
-                && Math.abs(headingController.getError()) < SmartDashboard.getNumber("Heading Tollerance",
-                        Constants.ShooterConstants.kAimRotationTolerance)) {
+                && Math.abs(headingController.getError()) < Constants.ShooterConstants.kAimRotationTolerance) {
             hopper.setIsHopperRunning(true);
         } else {
             hopper.setIsHopperRunning(false);

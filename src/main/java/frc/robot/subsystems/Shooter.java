@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
             Constants.ShooterConstants.kHoodI, Constants.ShooterConstants.kHoodD);
     private double prevHoodOutput = 0; // Tune these values
     private final double kHoodClipping = 0.3;
-    private boolean hoodIsZeroed = false;
+    private boolean hoodIsZeroed = true;
     private boolean isRunning = false;
 
     private double targetSpeed = 0;
@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
      * low-pass filtering and battery voltage compensation to motor outputs.
      */
 
-    public void updateHoodMotorPeriodic(){
+    public void updateHoodMotorPeriodic() {
         hoodPID.setP(SmartDashboard.getNumber("Hood P", Constants.ShooterConstants.kHoodP));
         hoodPID.setI(SmartDashboard.getNumber("Hood I", Constants.ShooterConstants.kHoodI));
         hoodPID.setD(SmartDashboard.getNumber("Hood D", Constants.ShooterConstants.kHoodD));

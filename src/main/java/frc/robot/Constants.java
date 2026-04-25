@@ -42,11 +42,11 @@ public class Constants {
 
     // --- Controller Multipliers ---
     public static final double kControllerDriveMultiplier = 1.0;
-    public static final double kControllerRotationMultiplier = 2*3.1415;
+    public static final double kControllerRotationMultiplier = 2 * 3.1415;
     public static final double kAutoDriveMultiplier = 4.5;
     public static final double kLOW_GEAR_MULTIPLIER = 2.0;
     public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
-    
+
     public static final double kGearStep = 2.0;
 
     // --- Speed Limits & Input Thresholds ---
@@ -65,9 +65,9 @@ public class Constants {
     private static final double kYI = 0.0;
     private static final double kYD = 0.1;
 
-    public static final double kHeadingP = 8;
+    public static final double kHeadingP = 7;
     public static final double kHeadingI = 0.003;
-    public static final double kHeadingD = 0.1;
+    public static final double kHeadingD = 0.13;
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
@@ -140,7 +140,7 @@ public class Constants {
     public static final Time kTimeout = Units.Seconds.of(5);
     public static final Distance kEpsilonDist = Units.Inches.of(4);
 
-    public static final double kAutoShooterTimeout = 5;
+    public static final double kAutoShooterTimeout = 4;
   }
 
   /**
@@ -224,7 +224,7 @@ public class Constants {
     public static final int kActuationMotorID = 6;
 
     /** PID gains for intake actuation when moving in (retracted). */
-    public static final double kInP = 0.17;
+    public static final double kInP = 0.2;
     public static final double kInI = 0.0;
     public static final double kInD = 0.001;
 
@@ -236,15 +236,15 @@ public class Constants {
     /** Actuation encoder setpoint when intake is out (extended). */
     public static final double kActuationOutSetpoint = 4.6;
 
-    public static final double kInJigglyPercentage = 0.5;
-    public static final double kOutJigglyPercentage = 0.9;
-    public static final double kJiggleIntervalSeconds = 0.5;
+    public static final double kInJigglyPercentage = 0.7;
+    public static final double kOutJigglyPercentage = 1;
+    public static final double kJiggleIntervalSeconds = 0.9;
 
     /** Drive motor output when intake is in (retracted). */
     public static final double kDriveSpeedIn = 0.0;
 
     /** Drive motor output when intake is out (running). */
-    public static final double kDriveSpeedOut = 0.85;
+    public static final double kDriveSpeedOut = 1;
 
     public static final double kIntakeActuationP = 0.0;
     public static final double kIntakeActuationI = 0.0;

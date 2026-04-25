@@ -54,12 +54,12 @@ public class HubTimer extends SubsystemBase {
         if (gameData.length() > 0 && String.valueOf(gameData.charAt(0)) != ourAlliance) {
             // If we win auto, the gameData will be equal to ourAlliance and so we will NOT
             // be active first
-            weActiveFirst = false;
+            weActiveFirst = true;
         } else {
             // If we lose auto, the gameData will reflect that the other alliance is
             // inactive first
             // So WE will be active first
-            weActiveFirst = true;
+            weActiveFirst = false;
         }
 
         SmartDashboard.putBoolean("Won Auto", !weActiveFirst);
