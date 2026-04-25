@@ -90,23 +90,23 @@ public record ChoreoTraj(
 	public static final ChoreoTraj CitrusLeft = new ChoreoTraj(
 	    "CitrusLeft",
 	    OptionalInt.empty(),
-	    13.29083,
+	    14.16358,
 	    new Pose2d(4.1, 7.47, Rotation2d.fromRadians(0)),
-	    new Pose2d(3, 5.57, Rotation2d.fromRadians(0.785))
+	    new Pose2d(2.069, 5.564, Rotation2d.fromRadians(0.785))
 	);
 	public static final ChoreoTraj CitrusLeft$0 = new ChoreoTraj(
 	    "CitrusLeft",
 	    OptionalInt.of(0),
-	    6.5618,
+	    6.8198,
 	    new Pose2d(4.1, 7.47, Rotation2d.fromRadians(0)),
 	    new Pose2d(2, 5.57, Rotation2d.fromRadians(0.785))
 	);
 	public static final ChoreoTraj CitrusLeft$1 = new ChoreoTraj(
 	    "CitrusLeft",
 	    OptionalInt.of(1),
-	    6.72903,
+	    7.34378,
 	    new Pose2d(2, 5.57, Rotation2d.fromRadians(0.785)),
-	    new Pose2d(3, 5.57, Rotation2d.fromRadians(0.785))
+	    new Pose2d(2.069, 5.564, Rotation2d.fromRadians(0.785))
 	);
 	public static final ChoreoTraj CitrusRight = new ChoreoTraj(
 	    "CitrusRight",
