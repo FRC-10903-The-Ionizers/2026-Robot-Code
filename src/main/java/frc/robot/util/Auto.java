@@ -18,6 +18,7 @@ import static frc.robot.trajectories.ChoreoTraj.Outpost$0;
 import static frc.robot.trajectories.ChoreoTraj.Outpost$1;
 import static frc.robot.trajectories.ChoreoTraj.Right$0;
 import static frc.robot.trajectories.ChoreoTraj.Right$1;
+import static frc.robot.trajectories.ChoreoTraj.Depot;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -99,6 +100,7 @@ public class Auto {
         autoChooser.addRoutine("Chopped Citrus Right", this::choppedCitrusRight);
         autoChooser.addRoutine("Hear Me Out", this::hearMeOut);
         
+        autoChooser.addRoutine("Depot", this::depot);
         // Put the auto chooser on the dashboard
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -121,6 +123,19 @@ public class Auto {
         routine.active().onTrue(
                 new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix,
                         20));
+
+        return routine;
+    }
+
+    public AutoRoutine depot(){
+        AutoRoutine routine = AutoConstants.kAutoFactory.newRoutine("Auto");
+        AutoTrajectory trajectory = Depot.asAutoTraj(routine);
+
+        routine.active().onTrue(Commands.sequence(
+                trajectory.resetOdometry(),
+                cmdWithAccuracy(trajectory),
+                new ShootAndDrive(swerve, shooter, intake, hopper, controller, interpolationMatrix, 10)
+        ));
 
         return routine;
     }

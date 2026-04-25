@@ -57,8 +57,8 @@
    }
   },
   "mass":{
-   "exp":"150 lbs",
-   "val":68.0388555
+   "exp":"130 lbs",
+   "val":58.9670081
   },
   "inertia":{
    "exp":"6 kg m ^ 2",
@@ -105,7 +105,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"..\\..\\java\\frc\\robot\\trajectories",
+  "root":"..\\..\\..\\..\\..\\2026-Robot-Code\\src\\main\\java\\frc\\robot\\trajectories",
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true
