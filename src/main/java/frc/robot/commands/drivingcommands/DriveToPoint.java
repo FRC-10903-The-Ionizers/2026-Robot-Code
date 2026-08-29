@@ -19,10 +19,10 @@ public class DriveToPoint {
       Units.degreesToRadians(540),      // max ang vel
       Units.degreesToRadians(720));     // max ang accel
 
-  public static Command create(Swerve swerve, Translation2d point) {
+  public static Command create(Swerve swerve, Pose2d targetPose) {
     return Commands.defer(
         () -> AutoBuilder.pathfindToPose(
-            new Pose2d(point, swerve.getPose().getRotation()),
+            targetPose,
             CONSTRAINTS,
             0.0),
         Set.of(swerve));
