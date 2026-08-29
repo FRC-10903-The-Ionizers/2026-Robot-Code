@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
 import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,6 +14,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,6 +68,16 @@ public class Swerve extends SubsystemBase {
             swerveDrive.setHeadingCorrection(true);
 
             swerveDrive.resetOdometry(new Pose2d(0, 0, Rotation2d.kZero));
+
+            AutoBuilder.configure(
+                this::getPose,
+                this::resetOdometry,
+                () -> swerveDrive.getRobotVelocity(),
+                (speeds, ff) -> swerveDrive.drive(speeds, false, Translation2d.kZero),
+                new PPHolonomicDriveController(new PIDConstants(5, 0, 0), new PIDConstants(5, 0, 0)),
+                RobotConfig.fromGUISettings(),
+                () -> DriverStation.getAlliance().map(a -> a == DriverStation.Alliance.Red).orElse(false),
+                this);
 
             logger.debug("Swerve initialized!");
             initialized = true;

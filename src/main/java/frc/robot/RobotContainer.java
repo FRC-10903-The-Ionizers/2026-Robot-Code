@@ -10,6 +10,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.drivingcommands.DriveToPoint;
 import frc.robot.commands.drivingcommands.DriveToObject;
 import frc.robot.commands.drivingcommands.MovementOriented;
 import frc.robot.commands.drivingcommands.ShootAndDrive; // Assuming this command exists for aiming
@@ -160,6 +162,7 @@ public class RobotContainer {
         // driving
         xboxController.y().whileTrue(new MovementOriented(swerve, controller));
         xboxController.povUp().whileTrue(new DriveToObject(swerve));
+        xboxController.povRight().onTrue(DriveToPoint.create(swerve, new Translation2d(4.0, 4.0)));
         xboxController.povLeft().onTrue(new InstantCommand(() -> hopper.setSpindexerBackwards(true)))
                 .onFalse(new InstantCommand(() -> hopper.setSpindexerBackwards(false)));
         // Bind aligning command to another button (e.g., B button)

@@ -7,6 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import choreo.auto.AutoFactory;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -50,6 +53,8 @@ public class Robot extends TimedRobot {
         // --- container and region setup ---
 
         robotContainer = new RobotContainer();
+        Pathfinding.setPathfinder(new LocalADStar());
+        PathfindingCommand.warmupCommand().schedule();
         regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
 
         Swerve swerve = robotContainer.getSwerve();
