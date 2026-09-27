@@ -56,6 +56,7 @@ dependencies {
     implementation platform('org.apache.logging.log4j:log4j-bom:2.25.3')
     implementation 'org.apache.logging.log4j:log4j-api:${log4j-api.version}'
     implementation 'org.apache.logging.log4j:log4j-core'
+    implementation 'org.json:json:20231013'
 
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()

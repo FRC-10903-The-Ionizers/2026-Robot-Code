@@ -1,18 +1,14 @@
 package frc.robot;
 
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
+import com.pathplanner.lib.auto.NamedCommands;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
@@ -22,8 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.drivingcommands.DriveToPoint;
 import frc.robot.commands.drivingcommands.DriveToObject;
+import frc.robot.commands.drivingcommands.DriveToPoint;
 import frc.robot.commands.drivingcommands.MovementOriented;
 import frc.robot.commands.drivingcommands.ShootAndDrive; // Assuming this command exists for aiming
 import frc.robot.commands.drivingcommands.TrenchWarfare;
@@ -77,9 +73,13 @@ public class RobotContainer {
         SmartDashboard.putNumber("Shooter Speed Multiplier", 1);
         SmartDashboard.putNumber("Flight Time", Constants.ShooterConstants.kFlightTime);
         SmartDashboard.putNumber("Heading Error", 0);
-        SmartDashboard.putNumber("Acceleration Compensation Constant", Constants.ShooterConstants.kAccelerationCompensationConstant);
+        SmartDashboard.putNumber("Acceleration Compensation Constant",
+                Constants.ShooterConstants.kAccelerationCompensationConstant);
+        SmartDashboard.putString("Alliance", "Blue");
 
-
+        NamedCommands.registerCommand("toggleIntake", intake.toggleIntakeCommand());
+        NamedCommands.registerCommand("shoot", new ShootAndDrive(
+                swerve, shooter, intake, hopper, controller, interpolationMatrix));
     }
 
     /**
@@ -164,9 +164,17 @@ public class RobotContainer {
         // driving
         xboxController.y().whileTrue(new MovementOriented(swerve, controller));
         xboxController.povUp().whileTrue(new DriveToObject(swerve));
-        xboxController.povRight().onTrue(DriveToPoint.create(swerve, new Pose2d(new Translation2d(4, 4), new Rotation2d(90))));
-        xboxController.povLeft().onTrue(new InstantCommand(() -> hopper.setSpindexerBackwards(true)))
-                .onFalse(new InstantCommand(() -> hopper.setSpindexerBackwards(false)));
+        xboxController.povRight().onTrue(
+                Commands.defer(
+                        () -> DriveToPoint.createPath(
+                                swerve,
+                                Paths.get(Filesystem.getDeployDirectory().getPath(), "ptp_paths/t.json").toString()),
+                        Set.of(swerve)));
+
+        xboxController.povLeft().whileTrue(new InstantCommand(
+                () -> {
+                    hopper.setIsHopperRunning(true);
+                }));
         // Bind aligning command to another button (e.g., B button)
 
         // change gear commands

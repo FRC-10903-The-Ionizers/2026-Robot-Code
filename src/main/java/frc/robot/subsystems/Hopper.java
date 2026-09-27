@@ -81,7 +81,6 @@ public class Hopper extends SubsystemBase {
     this.isSpindexerRunning = isRunning;
     SmartDashboard.putBoolean("Is shooting rn", isRunning);
   }
-
   /** Toggles the spindexer between running and stopped. */
   public void toggleIsSpindexerRunning() {
     isSpindexerRunning = !isSpindexerRunning;
