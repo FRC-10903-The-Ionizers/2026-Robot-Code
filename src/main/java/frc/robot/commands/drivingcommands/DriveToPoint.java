@@ -25,8 +25,8 @@ import frc.robot.subsystems.Swerve;
 public class DriveToPoint {
 
     private static final PathConstraints CONSTRAINTS = new PathConstraints(
-        1.0,                       // max vel (m/s)
-        3.0,                 // max accel (m/s²)
+        0.25,                       // max vel (m/s) originally 1
+        0.25,                 // max accel (m/s²) originally 3
         Units.degreesToRadians(540),      // max ang vel
         Units.degreesToRadians(720));     // max ang accel
 
@@ -42,7 +42,7 @@ public class DriveToPoint {
 
     public static Command createPath(Swerve swerve, String filepath) {
         List<Command> commandList = new ArrayList<>();
-
+        commandList.add(Commands.print("Command Started"));
         try {
             String content = new String(Files.readAllBytes(Paths.get(filepath)));
             JSONObject path = new JSONObject(content);

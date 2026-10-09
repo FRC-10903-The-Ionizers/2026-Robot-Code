@@ -15,6 +15,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -77,6 +78,8 @@ public class RobotContainer {
                 Constants.ShooterConstants.kAccelerationCompensationConstant);
         SmartDashboard.putString("Alliance", "Blue");
 
+        SmartDashboard.putString("PTP Auto File", "t.json");
+
         NamedCommands.registerCommand("toggleIntake", intake.toggleIntakeCommand());
         NamedCommands.registerCommand("shoot", new ShootAndDrive(
                 swerve, shooter, intake, hopper, controller, interpolationMatrix));
@@ -137,6 +140,20 @@ public class RobotContainer {
         return controller;
     }
 
+
+    public Command getAutonomousCommand() {
+        String file = SmartDashboard.getString("PTP Auto File", "t.json");
+        String pathString = Paths.get(
+            Filesystem.getDeployDirectory().getAbsolutePath(),
+            "ptp_paths",
+            file
+        ).toString();
+
+        return Commands.defer(
+            () -> DriveToPoint.createPath(swerve, pathString),
+            Set.of(swerve, shooter, intake, hopper)
+        );
+    }
     /**
      * Configures the bindings for the robot controller buttons.
      *
@@ -162,14 +179,11 @@ public class RobotContainer {
         // degrees
         // while
         // driving
-        xboxController.y().whileTrue(new MovementOriented(swerve, controller));
+
+        // xboxController.y().whileTrue(new MovementOriented(swerve, controller));
+
         xboxController.povUp().whileTrue(new DriveToObject(swerve));
-        xboxController.povRight().onTrue(
-                Commands.defer(
-                        () -> DriveToPoint.createPath(
-                                swerve,
-                                Paths.get(Filesystem.getDeployDirectory().getPath(), "ptp_paths/t.json").toString()),
-                        Set.of(swerve)));
+
 
         xboxController.povLeft().whileTrue(new InstantCommand(
                 () -> {

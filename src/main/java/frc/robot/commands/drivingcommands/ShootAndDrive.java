@@ -174,6 +174,7 @@ public class ShootAndDrive extends Command {
                 && Math.abs(headingController.getError()) < Constants.ShooterConstants.kAimRotationTolerance) {
             hopper.setIsHopperRunning(true);
         } else {
+            System.out.println("shooters gotta shoot");
             hopper.setIsHopperRunning(false);
         }
 
