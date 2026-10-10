@@ -5,10 +5,7 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.pathfinding.Pathfinding;
+import org.dyn4j.dynamics.contact.Contact;
 
 import choreo.auto.AutoFactory;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -21,10 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.drivingcommands.TeleopDriveCommand;
 import frc.robot.statesensors.RegionHandler;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve;
+import frc.robot.util.Auto;
 import frc.robot.util.Controller;
 
 /**
@@ -36,17 +31,11 @@ public class Robot extends TimedRobot {
 
     private RobotContainer robotContainer;
     private final Timer timer = new Timer();
-
-    // private Auto auto;
-
+    private Auto auto;
     private RegionHandler regionHandler;
 
     private static final Logger logger = LogManager.getLogger(Robot.class);
 
-    private Swerve swerve;
-    private Shooter shooter;
-    private Intake intake;
-    private Hopper hopper;
     /**
      * Robot constructor for the robot.
      *
@@ -62,14 +51,9 @@ public class Robot extends TimedRobot {
         // --- container and region setup ---
 
         robotContainer = new RobotContainer();
-        Pathfinding.setPathfinder(new LocalADStar());
-        PathfindingCommand.warmupCommand().schedule();
         regionHandler = new RegionHandler(new File(Filesystem.getDeployDirectory(), "misc/regions.json"));
 
-        swerve = robotContainer.getSwerve();
-        shooter = robotContainer.getShooter();
-        intake = robotContainer.getIntake();
-        hopper = robotContainer.getHopper();
+        Swerve swerve = robotContainer.getSwerve();
 
         AutoFactory autoFactory = new AutoFactory(
                 swerve::getPose, // A function that returns the current robot pose
@@ -84,8 +68,7 @@ public class Robot extends TimedRobot {
 
         // --- auto command ---
 
-        //auto = new Auto(autoFactory, robotContainer, regionHandler);
-
+        auto = new Auto(autoFactory, robotContainer, regionHandler);
         logger.debug("Auto initialized!");
         // RobotModeTriggers.autonomous().onTrue(auto.getAutoCommand());
 
@@ -111,9 +94,16 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void autonomousInit() {
-        timer.restart();
 
-        Command autoCommand = robotContainer.getAutonomousCommand();
+        timer.restart();
+        Command autoCommand;
+
+        if(robotContainer.getAutoType()){
+            autoCommand = auto.getAutoCommand();
+        } else {
+            autoCommand = robotContainer.getPTPAuto();
+        }
+
         if (autoCommand != null) {
             autoCommand.schedule();
         }

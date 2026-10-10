@@ -40,13 +40,11 @@ public class DriveToPoint {
         );
     }
 
-    public static Command createPath(Swerve swerve, String filepath) {
+    public static Command createPath(Swerve swerve, JSONObject pathJSON) {
         List<Command> commandList = new ArrayList<>();
         commandList.add(Commands.print("Command Started"));
         try {
-            String content = new String(Files.readAllBytes(Paths.get(filepath)));
-            JSONObject path = new JSONObject(content);
-            JSONArray waypoints = path.getJSONArray("waypoints");
+            JSONArray waypoints = pathJSON.getJSONArray("waypoints");
 
             for (int i = 0; i < waypoints.length(); i++) {
                 JSONObject waypoint = waypoints.getJSONObject(i);
@@ -83,7 +81,7 @@ public class DriveToPoint {
                 commandList.add(waypointStep);
             }
             return Commands.sequence(commandList.toArray(new Command[0]));
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println("Spooky... somethings wrong with JSON " + e.getMessage());
             return Commands.none();
         }

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -83,6 +84,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("toggleIntake", intake.toggleIntakeCommand());
         NamedCommands.registerCommand("shoot", new ShootAndDrive(
                 swerve, shooter, intake, hopper, controller, interpolationMatrix));
+
+        SmartDashboard.putBoolean("useChoreo", true);
     }
 
     /**
@@ -141,18 +144,18 @@ public class RobotContainer {
     }
 
 
-    public Command getAutonomousCommand() {
-        String file = SmartDashboard.getString("PTP Auto File", "t.json");
-        String pathString = Paths.get(
-            Filesystem.getDeployDirectory().getAbsolutePath(),
-            "ptp_paths",
-            file
-        ).toString();
+    public Command getPTPAuto() {
+        String JSONString = SmartDashboard.getString("PTP Auto JSON", "{}");
+        JSONObject pathJSON = new JSONObject(JSONString);
 
         return Commands.defer(
-            () -> DriveToPoint.createPath(swerve, pathString),
+            () -> DriveToPoint.createPath(swerve, pathJSON),
             Set.of(swerve, shooter, intake, hopper)
         );
+    }
+
+    public boolean getAutoType(){
+        return SmartDashboard.getBoolean("useChoreo", true);
     }
     /**
      * Configures the bindings for the robot controller buttons.
