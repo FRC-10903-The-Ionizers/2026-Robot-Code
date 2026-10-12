@@ -30,6 +30,10 @@ public class DriveToPoint {
         Units.degreesToRadians(540),      // max ang vel
         Units.degreesToRadians(720));     // max ang accel
 
+    public DriveToPoint(){
+        throw new Error("i hate this");
+    }
+    
     public static Command createGoToPointCommand(Swerve swerve, Pose2d targetPose) {
         return Commands.defer(
             () -> AutoBuilder.pathfindToPose(

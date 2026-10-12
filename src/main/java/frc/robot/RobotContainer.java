@@ -79,13 +79,12 @@ public class RobotContainer {
                 Constants.ShooterConstants.kAccelerationCompensationConstant);
         SmartDashboard.putString("Alliance", "Blue");
 
-        SmartDashboard.putString("PTP Auto File", "t.json");
-
         NamedCommands.registerCommand("toggleIntake", intake.toggleIntakeCommand());
         NamedCommands.registerCommand("shoot", new ShootAndDrive(
                 swerve, shooter, intake, hopper, controller, interpolationMatrix));
 
         SmartDashboard.putBoolean("useChoreo", true);
+        SmartDashboard.putString("PTP Auto JSON", "{}");
     }
 
     /**
@@ -142,7 +141,6 @@ public class RobotContainer {
     public Controller getController() {
         return controller;
     }
-
 
     public Command getPTPAuto() {
         String JSONString = SmartDashboard.getString("PTP Auto JSON", "{}");

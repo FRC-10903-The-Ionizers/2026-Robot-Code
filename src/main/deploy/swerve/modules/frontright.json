@@ -3,19 +3,19 @@
     "front": 10,
     "left": -12
   },
-  "absoluteEncoderOffset": 330,
+  "absoluteEncoderOffset": 307,
   "drive": {
     "type": "talonfx",
     "id": 0,
     "canbus": "SwerveCanivore"
   },
   "angle": {
-    "type": "krakenx44",
+    "type": "talonfx",
     "id": 4,
     "canbus": "SwerveCanivore"
   },
   "encoder": {
-    "type": "thrifty" ,
+    "type": "thrifty",
     "id": 0
   },
   "inverted": {

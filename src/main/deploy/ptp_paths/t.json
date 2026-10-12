@@ -1,7 +1,0 @@
-{
-    "waypoints": [
-        {"x": 15.8, "y": 7.4, "rot": 0, "event": "toggleIntake", "stop": false},
-        {"x": 14.5, "y": 6.5, "rot": 90, "event": "toggleIntake", "stop": false},
-        {"x": 14, "y": 6, "rot": 45, "event": "shoot", "stop": true, "duration": 5}
-    ]
-}
