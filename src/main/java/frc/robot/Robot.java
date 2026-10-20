@@ -125,7 +125,6 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void teleopInit() {
-
         Swerve swerve = robotContainer.getSwerve();
         Controller controller = robotContainer.getController();
 

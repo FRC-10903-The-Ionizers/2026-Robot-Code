@@ -42,7 +42,7 @@ public class Constants {
 
     // --- Controller Multipliers ---
     public static final double kControllerDriveMultiplier = 1.0;
-    public static final double kControllerRotationMultiplier = 2 * 3.1415;
+    public static final double kControllerRotationMultiplier = 1.5 * 3.1415; //Originally 2*pi
     public static final double kAutoDriveMultiplier = 4.5;
     public static final double kLOW_GEAR_MULTIPLIER = 2.0;
     public static final double kHIGH_GEAR_MULTIPLIER = 6.0;
@@ -66,8 +66,8 @@ public class Constants {
     private static final double kYD = 0.1;
 
     public static final double kHeadingP = 7;
-    public static final double kHeadingI = 0.003;
-    public static final double kHeadingD = 0.13;
+    public static final double kHeadingI = 0; //Originally 0.003
+    public static final double kHeadingD = 0.045; //Originally 0.13
 
     // --- PID Controllers ---
     public static final PIDController kXController = new PIDController(
