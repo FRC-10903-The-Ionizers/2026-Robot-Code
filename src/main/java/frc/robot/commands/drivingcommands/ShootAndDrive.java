@@ -175,7 +175,7 @@ public class ShootAndDrive extends Command {
             hopper.setIsHopperRunning(true);
         } else {
             System.out.println("shooters gotta shoot");
-            hopper.setIsHopperRunning(false);
+            hopper.setIsHopperRunning(true);
         }
 
         intake.setJiggly(true);
